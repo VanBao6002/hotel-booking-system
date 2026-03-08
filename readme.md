@@ -232,22 +232,9 @@ The database is initialized with sample data:
 
 ## 📝 API Documentation
 
-### Quick Reference
+For complete API endpoint documentation, request/response examples, and authentication details, see [docs/API.md](docs/API.md).
 
-Current implementation status: only `GET /api/hello` is available now. The endpoints below are planned for MVP implementation.
-
-| Endpoint | Method | Description | Auth Required |
-|----------|--------|-------------|---------------|
-| `/api/auth/register` | POST | Register new user | No |
-| `/api/auth/login` | POST | User login | No |
-| `/api/hotels` | GET | List all hotels | No |
-| `/api/hotels/{id}` | GET | Get hotel details | No |
-| `/api/rooms/available` | GET | Search available rooms | No |
-| `/api/bookings` | POST | Create booking | Yes |
-| `/api/bookings/my` | GET | Get user bookings | Yes |
-| `/api/bookings/{id}` | DELETE | Cancel booking | Yes |
-
-For planned API documentation, see [docs/API.md](docs/API.md) or visit the Swagger UI at http://localhost:8080/swagger-ui.html
+For interactive API testing, visit the **Swagger UI** at http://localhost:8080/swagger-ui.html or the **OpenAPI spec** at http://localhost:8080/v3/api-docs
 
 ## 🧪 Testing
 
