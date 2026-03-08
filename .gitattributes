@@ -1,0 +1,36 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Windows scripts
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Unix scripts
+*.sh text eol=lf
+mvnw text eol=lf
+
+# Java/Maven
+*.java text eol=lf
+*.xml text eol=lf
+*.properties text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+# Frontend
+*.js text eol=lf
+*.ts text eol=lf
+*.jsx text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+
+# SQL
+*.sql text eol=lf
+
+# Markdown
+*.md text eol=lf
+
+# Docker
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf

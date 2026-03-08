@@ -2,35 +2,50 @@ version: '3.8'
 
 services:
 
-  postgres:
-    image: postgres:15
+  mysql:
+    image: mysql:8.0
     container_name: hotel_db
     restart: always
     environment:
-      POSTGRES_USER: hotel_user
-      POSTGRES_PASSWORD: hotel_pass
-      POSTGRES_DB: hotel_booking
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: hotel_booking
+      MYSQL_USER: hotel_user
+      MYSQL_PASSWORD: hotel_pass
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  redis:
-    image: redis:7
-    container_name: hotel_redis
-    ports:
-      - "6379:6379"
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   backend:
     build: ./backend
     container_name: hotel_backend
+    restart: always
     ports:
-      - "3000:3000"
+      - "8080:8080"
     depends_on:
-      - postgres
-      - redis
-    env_file:
-      - .env
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/hotel_booking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: hotel_user
+      SPRING_DATASOURCE_PASSWORD: hotel_pass
+
+  frontend:
+    build: ./frontend
+    container_name: hotel_frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:8080
 
 volumes:
-  postgres_data:
+  mysql_data:
