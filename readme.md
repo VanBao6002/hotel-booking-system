@@ -1,6 +1,6 @@
 # 🏨 Hotel Booking System
 
-A modern, full-stack hotel booking platform built with Spring Boot, React, MySQL, and Redis. This system enables users to search hotels, view rooms, make reservations, and manage bookings with a secure and scalable architecture.
+A modern, full-stack hotel booking MVP built with Spring Boot, React, and MySQL. The project is currently in setup and core API development stage.
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/team/hotel-booking)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -11,33 +11,28 @@ A modern, full-stack hotel booking platform built with Spring Boot, React, MySQL
 ## ✨ Features
 
 ### Core Functionality
-- 🔐 **User Authentication** - Secure JWT-based authentication with Spring Security
-- 🏨 **Hotel Management** - Browse hotels by location, rating, and amenities
-- 🛏️ **Room Availability** - Real-time room availability checking
-- 📅 **Booking System** - Create, view, and manage reservations
-- 💳 **Payment Tracking** - Track booking costs and payment status
-- ✅ **Check-in/Check-out** - Digital check-in and check-out process
-- 🔍 **Search & Filter** - Advanced search by city, dates, capacity, and price
-- 📊 **User Dashboard** - View booking history and upcoming reservations
+- ✅ **Backend Service Running** - Spring Boot app is up and reachable at `/api/hello`
+- ✅ **Database Ready** - MySQL schema and seed data are loaded from SQL scripts
+- ✅ **Frontend Running** - React + TypeScript app is running on Vite
+- 🔄 **Authentication API** - Register/login endpoints are in progress
+- 🔄 **Hotel & Room APIs** - Listing and availability endpoints are in progress
+- 🔄 **Booking Flow** - Create/view/cancel booking APIs are in progress
 
 ### Technical Features
-- 🚀 **RESTful API** - Well-structured REST endpoints with OpenAPI documentation
-- 🔒 **Secure** - Password encryption, JWT tokens, CORS configuration
-- ⚡ **Fast** - Redis caching for improved performance
-- 🐳 **Containerized** - Docker-ready with multi-stage builds
-- 📱 **Responsive** - Modern React UI with TypeScript
-- 📈 **Scalable** - Microservices-ready architecture
-- 🧪 **Testable** - Unit and integration test support
+- 🚀 **REST API Foundation** - Basic Spring Boot REST setup with OpenAPI/Swagger enabled
+- 🔒 **Security Baseline** - Spring Security configured for MVP API testing
+- 🐳 **Containerized** - Docker Compose setup for frontend, backend, and MySQL
+- 📱 **Frontend Foundation** - React + TypeScript starter ready for feature implementation
+- 🧪 **Backend Testing Support** - Maven test setup is available
 
 ## 🛠️ Tech Stack
 
 ### Backend
 - **Framework:** Spring Boot 3.5.11
 - **Language:** Java 17
-- **Security:** Spring Security + JWT
+- **Security:** Spring Security (JWT flow not implemented yet)
 - **Database:** MySQL 8.0
 - **ORM:** Spring Data JPA (Hibernate)
-- **Cache:** Redis 7
 - **Validation:** Bean Validation (Hibernate Validator)
 - **API Docs:** SpringDoc OpenAPI 3
 - **Build Tool:** Maven 3.9
@@ -54,7 +49,6 @@ A modern, full-stack hotel booking platform built with Spring Boot, React, MySQL
 ### DevOps & Tools
 - **Containerization:** Docker & Docker Compose
 - **Database:** MySQL 8.0
-- **Cache:** Redis 7
 - **Version Control:** Git
 
 ## 🚀 Quick Start
@@ -105,10 +99,11 @@ A modern, full-stack hotel booking platform built with Spring Boot, React, MySQL
 
 **Backend:**
 ```bash
-cd backend
+# Run this from project root first
+docker compose up mysql -d
 
-# Start MySQL and Redis first (via Docker)
-docker compose up mysql redis -d
+# Then go to backend
+cd backend
 
 # Run Spring Boot application
 ./mvnw spring-boot:run
@@ -195,10 +190,6 @@ DB_USER=hotel_user
 DB_PASS=hotel_pass
 DB_ROOT_PASSWORD=rootpass
 
-# Redis Configuration
-REDIS_HOST=redis
-REDIS_PORT=6379
-
 # JWT Configuration
 JWT_SECRET=your-secret-key-change-this-in-production-min-256-bits
 JWT_EXPIRATION=86400000
@@ -212,7 +203,6 @@ VITE_API_URL=http://localhost:8080
 **Backend:** `backend/src/main/resources/application.yaml`
 - Database connection
 - JPA/Hibernate settings
-- Redis configuration
 - Server port
 - Logging levels
 
@@ -244,6 +234,8 @@ The database is initialized with sample data:
 
 ### Quick Reference
 
+Current implementation status: only `GET /api/hello` is available now. The endpoints below are planned for MVP implementation.
+
 | Endpoint | Method | Description | Auth Required |
 |----------|--------|-------------|---------------|
 | `/api/auth/register` | POST | Register new user | No |
@@ -255,7 +247,7 @@ The database is initialized with sample data:
 | `/api/bookings/my` | GET | Get user bookings | Yes |
 | `/api/bookings/{id}` | DELETE | Cancel booking | Yes |
 
-For complete API documentation, see [docs/API.md](docs/API.md) or visit the Swagger UI at http://localhost:8080/swagger-ui.html
+For planned API documentation, see [docs/API.md](docs/API.md) or visit the Swagger UI at http://localhost:8080/swagger-ui.html
 
 ## 🧪 Testing
 
@@ -277,38 +269,31 @@ cd backend
 ```bash
 cd frontend
 
-# Run tests
-npm test
+# Lint code
+npm run lint
 
-# Run with coverage
-npm run test:coverage
-
-# Run in watch mode
-npm run test:watch
+# Build check
+npm run build
 ```
 
 ## 🚢 Deployment
 
-### Production Docker Build
+### MVP Docker Deployment (Local)
 
 ```bash
-# Build optimized images
-docker compose -f docker-compose.prod.yml build
-
-# Start in production mode
-docker compose -f docker-compose.prod.yml up -d
-
-# View logs
+# Current deployment target (MVP local environment)
+docker compose up --build -d
+docker compose ps
 docker compose logs -f
 ```
 
 ### Environment-Specific Deployment
 
-1. Update `.env` with production credentials
+1. Update `.env` with secure credentials
 2. Set `JWT_SECRET` to a strong random value
-3. Configure external MySQL and Redis if needed
-4. Enable HTTPS/SSL in production
-5. Set up proper logging and monitoring
+3. Configure external MySQL if needed
+4. Add HTTPS/SSL when moving to production
+5. Add logging and monitoring in a later stage
 
 ## 🐛 Troubleshooting
 
@@ -367,9 +352,6 @@ curl http://localhost:8080/api/hello
 
 # Database connection
 docker compose exec mysql mysql -uhotel_user -photel_pass -e "SELECT 1"
-
-# Redis connection
-docker compose exec redis redis-cli ping
 ```
 
 ## 🤝 Contributing
@@ -427,5 +409,3 @@ For issues, questions, or suggestions:
 - [ ] Loyalty program
 
 ---
-
-**Made with ❤️ by the Hotel Booking Team**
