@@ -9,12 +9,8 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 
 ############################
-# Node / React / Vite
+# 
 ############################
-node_modules/
-dist/
-dist-ssr/
-build/
 
 .env
 *.local

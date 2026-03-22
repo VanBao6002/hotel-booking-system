@@ -2,12 +2,170 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>Booking Hotel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" href="css/genaral.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/modall.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/font/fontawesome-free-7.2.0/css/all.min.css">
+
+    <script src="js/components/header.js" defer ></script>
+
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div class="app" style="background-color: var(--ivoryWhite-color);">
+      <div class="header">
+        <div class="grid">
+          <nav class="header__navbar">
+            <div class="header__navbar-logo header__navbar-box">
+              <a href="/" class="header__navbar-logo-link">
+                <img src="assets/images/app-logo.jpg" alt="logo-app" class="header__navbar-logo-img">
+              </a>
+            </div>
+
+
+            <div class="header__navbar-title">
+              <span>PTBL Booking Hotel</span>
+            </div>
+
+            <!-- Dang nhap: logged-in -->
+            <div class="header__navbar-user ">
+              <div class="header__navbar-extras">
+                <span class="header__navbar-extras-booking">Đặt Chỗ của tôi</span>
+              </div>
+              <div class="header__navbar-language">
+                <img src="assets/images/vn-flag.png" alt="flag" class="header__navbar-select-language-img">
+                <i class="fa-solid fa-caret-down"></i>
+              </div>
+
+              <div class="header__navbar-user-auth">
+                <div class="user__info">
+                  <div class="user__info-avatar">
+                    <img src="assets/images/default-avt.png" alt="avatar-icon" class="user__info-avatar-icon">
+                  </div>
+                  <div class="user__info-name">
+                    <span>Tran Quang Phuoc</span>
+                  </div>
+                </div>
+
+                <button class="auth__btn auth__btn-login">
+                  Đăng Nhập
+                  <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+                <button class="auth__btn auth__btn-regist">Đăng Ký</button>
+              </div>
+
+
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <div class="main">
+
+      </div>
+      <div class="footer">
+
+      </div>
+      
+      <div class="modal">
+        <div class="modal__overlay"></div>
+        <div class="modal__body">
+
+          <!-- Sign in form -->
+          <!-- valid-input khi kh hop le (chua xu ly xong) -->
+          <form class="auth-form" id ="form-sign-in">
+            <div class="auth-form__container">
+              <div class="auth-form__header">
+                <span class="auth-form__header-title">Đăng Nhập</span>
+                <span class="auth-form__header-description">Nhập thông tin đăng nhập của bạn để truy cập vào tài khoản</span>
+              </div>
+              <div class="auth-form__form">
+                <div class="form-group ">
+                  <input id="email" type="email" class="form-input" placeholder="" required>
+                  <label for="email">Email</label>
+                  <span class="form-error"></span>
+                </div>
+                <div class="form-group">
+                  <input id="password" type="password" class="form-input" placeholder="" required>
+                  <label for="password">Mật khẩu</label>
+                  <span class="form-error"></span>
+                </div>
+                <div class="auth-form__form-option">
+                  <label for="checkbox" class="remember-wrapper">
+                    <input type="checkbox" name="checkbox" id="checkbox" class="checkbox-input">
+                    <span class="checbox-label">
+                      Lưu mật khẩu
+                    </span>
+                  </label>
+                  <a href="#" class="fogot-password">Quên mật khẩu?</a>
+                </div>
+                <button class="confirm-btn" type="submit">
+                  <span class="confirm-btn-text">Đăng nhập</span>
+                  <span class="confirm-btn-loading"></span>
+                </button>
+              </div>
+              <div class="auth-form__footer">
+                <p>Không có tài khoản?
+                  <span class="sign-up-btn">Tạo ngay</span>
+                </p>
+              </div>
+            </div>
+          </form>
+        
+          <!-- Sign up form -->
+          <form class="auth-form" id="form-sign-up">
+            <div class="auth-form__container">
+              <div class="auth-form__header">
+                <div class="auth-form__header-title">Đăng ký</div>
+                <div class="auth-form__header-description">Đăng ký để tiếp tục</div>
+              </div>
+              <div class="auth-form__form">
+                <div class="form-group">
+                  <input id="username" type="text" class="form-input" placeholder="" required>
+                  <label for="username">Họ và tên</label>
+                  <span class="form-error"></span>
+                </div>
+                <div class="form-group">
+                  <input id="email" type="text" class="form-input" placeholder="" required>
+                  <label for="email'">Email</label>
+                  <span class="form-error"></span>
+                </div>
+                <div class="form-group">
+                  <input id="phone-number" type="text" class="form-input" placeholder="" required>
+                  <label for="phone-number">Số điện thoại</label>
+                  <span class="form-error"></span>
+                </div>
+                <div class="form-group">
+                  <input id="password" type="text" class="form-input" placeholder="" required>
+                  <label for="password">Mật khẩu</label>
+                  <span class="form-error"></span>
+                </div>
+                <div class="form-group">
+                  <input id="confirm-password" type="text" class="form-input" placeholder="" required>
+                  <label for="confirm-password">xác nhận mật khẩu</label>
+                  <span class="form-error"></span>
+                </div>
+                <button class="confirm-btn" type="submit">
+                  <span class="confirm-btn-text">Đăng Ký</span>
+                  <span class="confirm-btn-loading"></span>
+                </button>
+              </div>
+              <div class="auth-form__footer">
+                  <p>Đã có tài khoản?
+                  <span class="sign-in-btn">Đăng nhập ngay</span>
+                  </p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      </div>
+
+    </div>
   </body>
 </html>

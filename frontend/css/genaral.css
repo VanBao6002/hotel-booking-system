@@ -1,0 +1,65 @@
+:root{
+    --ivoryWhite-color: #F8F5F0; /*main backgrund*/
+    --navyBlue-color: #0A2540; /*header,footer, primary-btn*/
+    --gold-color: #C5A572; /*accent color*/
+    --lightGray-color: #D9D9D9; /*border, second background*/
+    --text-gray-color: #888888;
+    --error-color: #FF0000;
+
+}
+
+* {
+    box-sizing: inherit;
+}
+
+html {
+    font-size: 62.5%;
+    line-height: 1.6rem;
+    font-family:"Roboto", Arial, sans-serif ;
+    box-sizing: border-box;
+}
+
+
+/* reponsive */
+
+.grid {
+    width: 1200px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.grid__full-width {
+    width: 100%;
+}
+
+.grid__row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -12px;
+    margin-right: -12px;
+}
+
+
+/* Animation */
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleUp {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+
+
