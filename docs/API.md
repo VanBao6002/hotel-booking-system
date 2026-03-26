@@ -1,178 +1,148 @@
 # API Documentation
 
-Base URL: `http://localhost:8080/api`
+This document reflects the **current implemented backend APIs**.
 
-## Authentication
+## Base URL
 
-### Register User
+`http://localhost:8080`
+
+## Implemented Endpoints
+
+### Get User by Username
+
 ```http
-POST /api/auth/register
+GET /api/v1/users/by-username/{userName}
+```
+
+Example:
+
+```http
+GET /api/v1/users/by-username/john_doe
+```
+
+Success response (`200 OK`):
+
+```json
+{
+  "id": 1,
+  "userName": "john_doe",
+  "email": "john.doe@example.com",
+  "fullName": "John Doe",
+  "isActive": true,
+  "createdAt": "2026-03-24T14:25:32"
+}
+```
+
+Notes:
+
+- If username exists, API returns user DTO (without password hash).
+- If username does not exist, current implementation throws runtime exception and returns `500`.
+- Planned improvement: return `404 Not Found` with standardized error body.
+
+## Planned (Not Implemented Yet)
+
+The following sections are planned and currently **not available** in source code:
+
+- Authentication (`/api/v1/auth/...`)
+- Hotels (`/api/hotels/...`)
+- Rooms (`/api/rooms/...`)
+- Bookings (`/api/bookings/...`)
+- Check-in / Check-out
+- Health endpoint (`/api/health`)
+
+## Planned Authentication APIs (MVP)
+
+### Register
+
+```http
+POST /api/v1/auth/register
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "userName": "john_doe",
+  "email": "john.doe@example.com",
   "password": "password123",
-  "firstName": "John",
-  "lastName": "Doe",
-  "phone": "+1234567890"
+  "fullName": "John Doe"
 }
 ```
 
 ### Login
+
 ```http
-POST /api/auth/login
+POST /api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
+  "userNameOrEmail": "john_doe",
   "password": "password123"
 }
-
-Response:
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "type": "Bearer",
-  "id": 1,
-  "email": "user@example.com",
-  "firstName": "John"
-}
 ```
 
-## Hotels
-
-### Get All Hotels
-```http
-GET /api/hotels
-```
-
-### Get Hotel by ID
-```http
-GET /api/hotels/{id}
-```
-
-### Search Hotels
-```http
-GET /api/hotels/search?city=Miami&checkIn=2026-03-15&checkOut=2026-03-18
-```
-
-## Rooms
-
-### Get All Rooms
-```http
-GET /api/rooms
-```
-
-### Get Room by ID
-```http
-GET /api/rooms/{id}
-```
-
-### Get Available Rooms
-```http
-GET /api/rooms/available?hotelId=1&checkIn=2026-03-15&checkOut=2026-03-18&capacity=2
-```
-
-## Bookings
-
-### Create Booking
-```http
-POST /api/bookings
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "roomId": 1,
-  "checkIn": "2026-03-15",
-  "checkOut": "2026-03-18",
-  "totalPrice": 360.00
-}
-```
-
-### Get User Bookings
-```http
-GET /api/bookings/my
-Authorization: Bearer {token}
-```
-
-### Get Booking by ID
-```http
-GET /api/bookings/{id}
-Authorization: Bearer {token}
-```
-
-### Cancel Booking
-```http
-DELETE /api/bookings/{id}
-Authorization: Bearer {token}
-```
-
-### Update Booking Status
-```http
-PUT /api/bookings/{id}/status
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "status": "CONFIRMED"
-}
-```
-
-## Check-in / Check-out
-
-### Check-in
-```http
-POST /api/checkin
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "bookingId": 1
-}
-```
-
-### Check-out
-```http
-POST /api/checkout
-Authorization: Bearer {token}
-Content-Type: application/json
-
-{
-  "bookingId": 1
-}
-```
-
-## Health Check
-
-### Service Status
-```http
-GET /api/health
-```
-
-## Error Responses
-
-All endpoints return errors in the following format:
+Example success response:
 
 ```json
 {
-  "timestamp": "2026-03-07T10:30:00",
-  "status": 400,
-  "error": "Bad Request",
-  "message": "Invalid input data",
-  "path": "/api/bookings"
+  "accessToken": "<jwt-token>",
+  "tokenType": "Bearer",
+  "expiresIn": 3600,
+  "user": {
+    "id": 1,
+    "userName": "john_doe",
+    "email": "john.doe@example.com",
+    "fullName": "John Doe"
+  }
 }
 ```
 
-### Common Status Codes
-- `200` - Success
-- `201` - Created
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `500` - Internal Server Error
+### Logout
+
+```http
+POST /api/v1/auth/logout
+Authorization: Bearer <jwt-token>
+```
+
+MVP note:
+
+- Stateless JWT logout can be handled client-side by deleting the token.
+- Optional phase 2: server-side token blacklist/revocation.
+
+### Get Current User (Me)
+
+```http
+GET /api/v1/auth/me
+Authorization: Bearer <jwt-token>
+```
+
+### Change Password
+
+```http
+PUT /api/v1/auth/change-password
+Authorization: Bearer <jwt-token>
+Content-Type: application/json
+
+{
+  "currentPassword": "oldPassword123",
+  "newPassword": "newPassword456"
+}
+```
+
+### Recommended Next APIs (After MVP)
+
+- `POST /api/v1/auth/refresh-token`
+- `POST /api/v1/auth/forgot-password`
+- `POST /api/v1/auth/reset-password`
+
+## Error Response (Current)
+
+Error format is not standardized yet. Depending on exception type, Spring Boot default error response is returned.
 
 ## Interactive Documentation
 
-For interactive API documentation, visit:
-- **Swagger UI:** http://localhost:8080/swagger-ui.html
-- **OpenAPI JSON:** http://localhost:8080/v3/api-docs  
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+
+If Swagger shows no endpoints, rebuild and restart backend:
+
+```bash
+docker compose up --build -d backend
+```

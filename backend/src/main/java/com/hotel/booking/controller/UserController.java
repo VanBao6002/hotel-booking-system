@@ -14,7 +14,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/getUser/{userName}")
+    @GetMapping("/api/v1/users/by-username/{userName}")
     public ResponseEntity<UserDTO> getUser(@PathVariable String userName){
         UserDTO user = userService.getUser(userName);
         return ResponseEntity.ok(user);
