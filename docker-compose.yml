@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
 
   mysql:
@@ -11,8 +9,6 @@ services:
       MYSQL_DATABASE: hotel_booking
       MYSQL_USER: hotel_user
       MYSQL_PASSWORD: hotel_pass
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
