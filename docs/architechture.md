@@ -71,6 +71,40 @@ This is intentionally simple for a student MVP and can be evolved later.
 - `init.sql` table/schema creation
 - `seed.sql` baseline data for testing/demo
 
+### Users Table (Current Auth-First Schema)
+
+Purpose: stores account credentials, account status, and user profile basics.
+
+| Column | Type | Null | Default | Key | Description |
+|---|---|---|---|---|---|
+| id | INT | No | AUTO_INCREMENT | PK | User identifier |
+| user_name | VARCHAR(50) | Yes | - | UNIQUE | Optional username |
+| email | VARCHAR(255) | No | - | UNIQUE | Login identity |
+| password_hash | VARCHAR(255) | No | - | - | BCrypt password hash |
+| role_id | INT | No | - | FK | Role reference |
+| full_name | VARCHAR(100) | Yes | - | - | Display/full name |
+| date_of_birth | DATE | Yes | - | - | Birth date |
+| gender_id | INT | Yes | - | FK | Gender reference |
+| phone_number | VARCHAR(20) | Yes | - | - | Contact phone |
+| current_address | VARCHAR(255) | Yes | - | - | Current address |
+| country_id | INT | Yes | - | FK | Country reference |
+| is_active | BOOLEAN | No | TRUE | - | Account enabled/disabled |
+| failed_login_attempts | INT | No | 0 | - | Failed login counter |
+| locked_until | DATETIME | Yes | NULL | - | Account lock expiry |
+| last_login_at | DATETIME | Yes | NULL | - | Last successful login |
+| created_at | TIMESTAMP | No | CURRENT_TIMESTAMP | - | Creation time |
+| updated_at | TIMESTAMP | No | CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP | - | Last update time |
+
+Relationships:
+- `users.role_id -> roles.id`
+- `users.gender_id -> genders.id`
+- `users.country_id -> countries.id`
+
+Indexes:
+- `idx_users_role_id`
+- `idx_users_gender_id`
+- `idx_users_country_id`
+
 ## 5.4 Infrastructure (`docker-compose.yml`)
 
 - Multi-container local environment
@@ -171,6 +205,7 @@ These are out of MVP scope for now.
 ## 13. Update Log
 
 - `2026-03-08`: Initial MVP architecture document created and aligned with current codebase state.
+- `2026-03-24`: Added users table schema dictionary and DB relationship details aligned with `database/init.sql`.
 
 ## 14. Delivery Plan
 
