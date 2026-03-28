@@ -38,8 +38,33 @@ html {
     margin-left: -12px;
     margin-right: -12px;
 }
+.grid__column-3 {
+    width: 33.33%;
+    padding-left: 12px;
+    padding-right: 12px;
+}
 
 
+
+.btn {
+    padding: 12px 24px;
+    font-size: 1.4rem;
+    line-height: 1.4rem;
+    height: 46px;
+    border-radius: 30px;
+    border: none;
+    margin: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #0a9af2;
+    color: var(--ivoryWhite-color);
+}
+.btn:hover {
+    filter: brightness(80%);
+    cursor: pointer;
+}
 /* Animation */
 
 @keyframes fadeIn {
@@ -60,6 +85,18 @@ html {
     }
 }
 
+@keyframes slideDown {
+    0% {
+        transform: scaleY(0);
+        transform-origin: top;
+        opacity: 0;
+    }
+    100% {
+        transform: scaleY(1);
+        transform-origin: top;
+        opacity: 1;
+    }
+}
 
 
 

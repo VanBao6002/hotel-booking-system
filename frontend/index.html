@@ -7,16 +7,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="css/genaral.css">
     <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/modall.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/booking-search.css">
+    <link rel="stylesheet" href="css/advertising-banner.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/font/fontawesome-free-7.2.0/css/all.min.css">
 
-    <script src="js/components/header.js" defer ></script>
+
 
   </head>
-  <body>
+  <body style="height: 3000px;">
     <div class="app" style="background-color: var(--ivoryWhite-color);">
       <div class="header">
         <div class="grid">
@@ -52,13 +54,12 @@
                   </div>
                 </div>
 
-                <button class="auth__btn auth__btn-login">
+                <button class="btn auth__btn-login">
                   Đăng Nhập
                   <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
-                <button class="auth__btn auth__btn-regist">Đăng Ký</button>
+                <button class="btn auth__btn-regist">Đăng Ký</button>
               </div>
-
 
             </div>
           </nav>
@@ -66,7 +67,181 @@
       </div>
 
       <div class="main">
+        <section class="booking-search">
+          <div class="grid">
+            <div class="booking-search__picture">
+              <img src="assets/images/thumnnail-img.jpeg" alt="booking-search-img" class="booking-search__picture-img">
+            </div>
+            <div class="booking-search__container">
+              <div class="booking-search__header">
+                <h1>Đặt khách sạn giá tốt với PTBL Booking Hotel</h1>
+                <h2>Khám phá nhiều lựa chọn đối với khách sạn</h2>
+              </div>
+              <div class="booking-search__body">
+                <div class="booking-search__body-wrap">
+                  <div class="booking-search__search">
+                    <div class="booking-search__box">
+                      <div class="booking-search__label">
+                        Địa điểm khách sạn:
+                      </div>
+                      <div class="booking-search__input">
+                        <div class="booking-search__icon">
+                          <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <input type="text" name="hotel-location" id="hotel-location" placeholder="Khu vực" readonly>
+                      </div>
 
+                      <div class="booking-search__dropdown booking-search__dropdown--location">
+                        <div class="location-heading">
+                          <h1>Điểm đến</h1>
+                        </div>
+                        <div class="location-option">
+                          <ul class="location-list">
+                            <li class="location-item">Hải Châu</li>
+                            <li class="location-item">Thanh Khê</li>
+                            <li class="location-item">Liên Chiểu</li>
+                            <li class="location-item">Sơn Trà</li>
+                            <li class="location-item">Ngũ Hành Sơn</li>
+                            <li class="location-item">Cẩm lệ</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="booking-search__box">
+                      <div class="booking-search__label">
+                        Ngày nhận phòng và trả phòng:
+                      </div>
+                      <div class="booking-search__input">
+                        <div class="booking-search__icon">
+                          <i class="fa-regular fa-calendar-days"></i>
+                        </div>
+                        <input type="text" name="stay-duration" id="stay-duration" readonly>
+                      </div>
+                      <div class="booking-search__dropdown booking-search__dropdown--duration">
+
+                      </div>
+                    </div>
+                    <div class="booking-search__box">
+                      <div class="booking-search__label">
+                        Khách và phòng:
+                      </div>
+                      <div class="booking-search__input">
+                        <div class="booking-search__icon">
+                          <i class="fa-solid fa-people-group"></i>
+                        </div>
+                        <input type="text" name="guests-rooms" id="guests-rooms" readonly>
+                      </div>
+                      <div class="booking-search__dropdown booking-search__dropdown--guests-rooms">
+                        <div class="booking-search__guests-rooms-box">
+                          <div class="booking-search__info">
+                            <i class="fa-solid fa-person"></i>
+                            <span>Người lớn</span>
+                          </div>
+                          <div class="booking-search__control">
+                            <div class="booking-search__control-btn-minus booking-search__control-btn--limit">
+                              <i class="fa-solid fa-minus minus-btn"></i>
+                            </div>
+                            <span></span>
+                            <div class="booking-search__control-btn--plus">
+                              <i class="fa-solid fa-plus plus-btn"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="booking-search__guests-rooms-box">
+                          <div class="booking-search__info">
+                            <i class="fa-solid fa-baby"></i>
+                            <span>Trẻ em</span>
+                          </div>
+                          <div class="booking-search__control">
+                            <div class="booking-search__control-btn-minus booking-search__control-btn--limit">
+                              <i class="fa-solid fa-minus minus-btn"></i>
+                            </div>
+                            <span></span>
+                            <div class="booking-search__control-btn--plus">
+                              <i class="fa-solid fa-plus plus-btn"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="booking-search__guests-rooms-box">
+                          <div class="booking-search__info">
+                            <i class="fa-solid fa-door-closed"></i>
+                            <span>Phòng</span>
+                          </div>
+                          <div class="booking-search__control">
+                            <div class="booking-search__control-btn-minus booking-search__control-btn--limit">
+                              <i class="fa-solid fa-minus minus-btn"></i>
+                            </div>
+                            <span></span>
+                            <div class="booking-search__control-btn--plus">
+                              <i class="fa-solid fa-plus plus-btn"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="guests-rooms-msg">
+                        <span>Số phòng không thể lớn hơn số khách người lớn</span>
+                      </div>
+                    </div>
+                    <div class="btn booking-search__submit">
+                      Tìm kiếm
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                  </div>
+                  <div class="booking-search__last-view">
+                    <span class="booking-search__last-view-text">
+                      Khách sạn xem gần đây
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="advertising-banner">
+          <div class="grid">
+            <h2 class="advertising-banner__title">
+              Tìm và đặt phòng giá rẻ với các ưu đãi sau đây
+            </h2>
+            <div class="advertising-banner__box">
+              
+              <div class="advertising-banner__wrap">
+                <div class="advertising-banner__picture">
+                  <img src="assets/images/example-banner.jpeg" alt="example">
+                </div>
+                <div class="advertising-banner__picture">
+                  <img src="assets/images/example-banner.jpeg" alt="example">
+                </div>
+                <div class="advertising-banner__picture">
+                  <img src="assets/images/example-banner.jpeg" alt="example">
+                </div>
+                <div class="advertising-banner__picture">
+                  <img src="assets/images/example-banner.jpeg" alt="example">
+                </div>
+                <div class="advertising-banner__picture">
+                  <img src="assets/images/example-banner.jpeg" alt="example">
+                </div>
+                <div class="advertising-banner__picture">
+                  <img src="assets/images/example-banner.jpeg" alt="example">
+                </div>
+              </div>
+
+              <div class="advertising-banner__btn advertising-banner__btn-next">
+                <i class="fa-solid fa-chevron-right"></i>
+              </div>
+              <div class="advertising-banner__btn advertising-banner__btn-previous">
+                <i class="fa-solid fa-chevron-left"></i>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="popular-destinations">
+          
+        </section>
+
+        </div>
       </div>
       <div class="footer">
 
@@ -77,7 +252,7 @@
         <div class="modal__body">
 
           <!-- Sign in form -->
-          <!-- valid-input khi kh hop le (chua xu ly xong) -->
+          <!-- invalid khi kh hop le (chua xu ly xong) -->
           <form class="auth-form" id ="form-sign-in">
             <div class="auth-form__container">
               <div class="auth-form__header">
@@ -167,5 +342,7 @@
       </div>
 
     </div>
+
+    <script type="module" src="./js/app.js"></script>
   </body>
 </html>

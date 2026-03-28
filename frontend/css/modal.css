@@ -93,6 +93,15 @@
     background-color: var(--ivoryWhite-color);
 }
 
+.form-group.invalid .form-input {
+    outline: 2px solid var(--error-color);
+    background-color: rgba(251, 0, 0,0.25);
+    border-color: rgba(251, 0, 0,0.25);
+}
+.form-group.invalid label {
+    color: var(--navyBlue-color);
+}
+
 .form-error  {
     display: block;
     margin-bottom: 22px;

@@ -1,61 +1,51 @@
 // Su kien Dang nhap/ Dang ky
-function modalElement() {
-    return document.querySelector('.modal');
-}
 
-function formSignInElement() {
-    return document.querySelector('#form-sign-in');
-}
+const getModal = () => { return document.querySelector(".modal"); }
+const getFormSignIn = () => { return document.querySelector("#form-sign-in");}
+const getFormSignUp = () => { return document.querySelector("#form-sign-up");}
+const getModalOverlay = () => { return document.querySelector(".modal__overlay");}
 
-function formSignUpElement() {
-    return document.querySelector('#form-sign-up');
-}
 
-function modalOverlayElement() {
-    return document.querySelector('.modal__overlay');
-}
-
-function turnOffModal() {
-    modalElement().classList.remove('active');
-    
+export function turnOffModal() {
+    getModal().classList.remove('active');
 }
 
 function turnOnModal() {
-    modalElement().classList.add('active');
+    getModal().classList.add('active');
 }
 
-modalOverlayElement().onclick = () => {
-    turnOffModal();
-    formSignInElement().style.display = 'none';
-    formSignUpElement().style.display = 'none';
+export function showForm(type) {
+    const isSignIn = type === "sign-in";
+    getFormSignIn().style.display = isSignIn ? "block" : "none";
+    getFormSignUp().style.display = isSignIn ? "none" : "block";
 }
 
-var signInButton = document.querySelector('.auth__btn-login');
-signInButton.onclick = () => {
-    turnOnModal();
-    formSignInElement().style.display = 'block';
-}
-
-var signUpButton = document.querySelector('.auth__btn-regist');
-signUpButton.onclick = () => {
-    turnOnModal();
-    formSignUpElement().style.display = 'block';
+export function hideAllForm() {
+    getFormSignIn().style.display = "none";
+    getFormSignUp().style.display = "none";
 }
 
 
-document.addEventListener("DOMContentLoaded", () => {
 
-    var signInBtn = document.querySelector('.sign-in-btn');
-    var signUpBtn = document.querySelector('.sign-up-btn');
-
-    signInBtn.addEventListener("click", () => {
-        formSignUpElement().style.display = 'none';
-        formSignInElement().style.display = 'block';
-    }); 
-
-    signUpBtn.addEventListener("click", () => {
-        formSignUpElement().style.display = 'block';
-        formSignInElement().style.display = 'none';
+export function initHeader() {
+    getModalOverlay().addEventListener("click", () => {
+        turnOffModal();
+        hideAllForm();
     });
 
-})
+    document.querySelector('.auth__btn-login').addEventListener("click", () => {
+        turnOnModal();
+        showForm("sign-in");
+    });
+    document.querySelector('.auth__btn-regist').addEventListener("click", () => {
+        turnOnModal();
+        showForm("sign-up");
+    });
+
+    document.querySelector(".sign-in-btn").addEventListener("click", () => {
+        showForm("sign-in");
+    });
+    document.querySelector(".sign-up-btn").addEventListener("click", () => {
+        showForm("sign-up");
+    });
+}
