@@ -1,0 +1,61 @@
+.advertising-banner {
+    margin-top: 200px;
+}
+
+.advertising-banner__title {
+    font-size: 2.2rem;
+}
+.advertising-banner__box {
+    position: relative;
+}
+.advertising-banner__wrap {
+    display: flex;
+    height: 224px;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    background-color: white;
+    border-radius: 10px;
+    z-index: 0;
+}
+.advertising-banner__picture {
+    min-width: 376px;
+    margin: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.advertising-banner__picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.advertising-banner__btn {
+    display: none;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    border-radius: 50%;
+    justify-content: center;
+    align-self: center;
+    cursor: pointer;
+    border: 1px solid var(--lightGray-color);
+    color: #0a9af2;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.advertising-banner__btn i {
+    font-size: 1.6rem;
+    margin: auto;
+}
+
+.advertising-banner__btn-next {
+    display: flex;
+    right: -20px;
+}
+
+.advertising-banner__btn-previous {
+    left: -20px;
+}
+
