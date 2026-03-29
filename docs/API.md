@@ -60,9 +60,10 @@ Content-Type: application/json
 
 {
   "userName": "john_doe",
-  "email": "john.doe@example.com",
   "password": "password123",
-  "fullName": "John Doe"
+  "email": "john.doe@example.com",
+  "fullName": "John Doe",
+  "phoneNumber": "0123456789"
 }
 ```
 
