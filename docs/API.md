@@ -6,6 +6,12 @@ This document reflects the **current implemented backend APIs**.
 
 `http://localhost:8080`
 
+## Frontend Integration Context
+
+- Current frontend is a static HTML/CSS/JavaScript app served at `http://localhost:3000`.
+- Backend API is consumed over HTTP from the browser (CORS is required for integration).
+- At the moment, frontend API wiring is still in progress; this document remains backend-first.
+
 ## Implemented Endpoints
 
 ### Get User by Username

@@ -12,7 +12,7 @@ The goal is to ship a usable MVP first, then iterate.
 ## 2. Architecture Style
 
 - **Pattern:** Layered monolith (single backend service)
-- **Frontend:** SPA (React + TypeScript)
+- **Frontend:** Static web UI (HTML + CSS + JavaScript modules)
 - **Backend:** REST API (Spring Boot)
 - **Database:** MySQL (single relational DB)
 - **Runtime:** Docker Compose for local development
@@ -26,17 +26,17 @@ This is intentionally simple for a student MVP and can be evolved later.
 		|
 		| HTTP (JSON)
 		v
-[ Frontend: React/Vite ]  --->  [ Backend: Spring Boot API ]  --->  [ MySQL ]
-					 :5173                         :8080                         :3306
+[ Frontend: Static UI + http-server ]  --->  [ Backend: Spring Boot API ]  --->  [ MySQL ]
+					 :3000                               :8080                         :3306 (container)
 ```
 
 ## 4. Current Implemented State (Verified)
 
 ### 4.1 Running Services
 
-- `frontend` container on `http://localhost:5173`
+- `frontend` container on `http://localhost:3000`
 - `backend` container on `http://localhost:8080`
-- `mysql` container on `localhost:3306`
+- `mysql` container on `localhost:3307` (mapped to container `3306`)
 
 ### 4.2 Backend Capabilities
 
@@ -54,9 +54,10 @@ This is intentionally simple for a student MVP and can be evolved later.
 
 ## 5.1 Frontend (`frontend/`)
 
-- `src/` UI logic and pages
-- Calls backend via `VITE_API_URL`
-- Current focus: foundation and API integration
+- `index.html` is the UI entry point
+- `css/` contains style modules
+- `js/` contains ES module scripts and component logic
+- Current focus: static UI completion and backend API integration
 
 ## 5.2 Backend (`backend/`)
 
@@ -206,6 +207,7 @@ These are out of MVP scope for now.
 
 - `2026-03-08`: Initial MVP architecture document created and aligned with current codebase state.
 - `2026-03-24`: Added users table schema dictionary and DB relationship details aligned with `database/init.sql`.
+- `2026-03-29`: Frontend architecture updated from React/Vite assumptions to static HTML/CSS/JavaScript with `http-server` on port `3000`.
 
 ## 14. Delivery Plan
 

@@ -1,19 +1,19 @@
 # 🏨 Hotel Booking System
 
-A modern, full-stack hotel booking MVP built with Spring Boot, React, and MySQL. The project is currently in setup and core API development stage.
+A modern, full-stack hotel booking MVP built with Spring Boot, static HTML/CSS/JavaScript, and MySQL. The project is currently in setup and core API development stage.
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/team/hotel-booking)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.11-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://reactjs.org/)
+[![Frontend](https://img.shields.io/badge/Frontend-HTML%2FCSS%2FJS-blue.svg)](#frontend)
 
 ## ✨ Features
 
 ### Core Functionality
 - ✅ **Backend Service Running** - Spring Boot app is up and reachable at `/api/hello`
 - ✅ **Database Ready** - MySQL schema and seed data are loaded from SQL scripts
-- ✅ **Frontend Running** - React + TypeScript app is running on Vite
+- ✅ **Frontend Running** - Static HTML/CSS/JavaScript app is running via `http-server`
 - 🔄 **Authentication API** - Register/login endpoints are in progress
 - 🔄 **Hotel & Room APIs** - Listing and availability endpoints are in progress
 - 🔄 **Booking Flow** - Create/view/cancel booking APIs are in progress
@@ -22,7 +22,7 @@ A modern, full-stack hotel booking MVP built with Spring Boot, React, and MySQL.
 - 🚀 **REST API Foundation** - Basic Spring Boot REST setup with OpenAPI/Swagger enabled
 - 🔒 **Security Baseline** - Spring Security configured for MVP API testing
 - 🐳 **Containerized** - Docker Compose setup for frontend, backend, and MySQL
-- 📱 **Frontend Foundation** - React + TypeScript starter ready for feature implementation
+- 📱 **Frontend Foundation** - Static UI modules are ready for API integration
 - 🧪 **Backend Testing Support** - Maven test setup is available
 
 ## 🛠️ Tech Stack
@@ -39,12 +39,11 @@ A modern, full-stack hotel booking MVP built with Spring Boot, React, and MySQL.
 - **Dev Tools:** Spring DevTools, Lombok
 
 ### Frontend
-- **Framework:** React 19.2
-- **Language:** TypeScript 5.9
-- **Build Tool:** Vite 8 (Beta)
-- **Routing:** React Router 7
-- **HTTP Client:** Axios 1.13
-- **Linting:** ESLint 9
+- **Architecture:** Static web app (single HTML entry + modular JS)
+- **Languages:** HTML5, CSS3, JavaScript (ES Modules)
+- **Static Server:** `http-server` (Node 20 container)
+- **UI Assets:** Font Awesome 7.2, custom CSS modules
+- **Build Step:** Not required for current frontend
 
 ### DevOps & Tools
 - **Containerization:** Docker & Docker Compose
@@ -90,7 +89,7 @@ A modern, full-stack hotel booking MVP built with Spring Boot, React, and MySQL.
    ```
 
 5. **Access the application**
-   - 🌐 **Frontend:** http://localhost:5173
+   - 🌐 **Frontend:** http://localhost:3000
    - 🔧 **Backend API:** http://localhost:8080/api/hello
    - 📚 **API Documentation:** http://localhost:8080/swagger-ui.html
    - 📊 **OpenAPI Spec:** http://localhost:8080/v3/api-docs
@@ -116,11 +115,11 @@ mvnw.cmd spring-boot:run
 ```bash
 cd frontend
 
-# Install dependencies
-npm install
+# Option A: Run with Python static server
+python3 -m http.server 3000
 
-# Start development server
-npm run dev
+# Option B: Run with Node (without global install)
+npx http-server . -p 3000
 ```
 
 ## 📁 Project Structure
@@ -145,21 +144,15 @@ hotel-booking-system/
 │   ├── .dockerignore
 │   └── pom.xml                   # Maven Configuration
 │
-├── frontend/                     # React Frontend
-│   ├── public/                   # Static Assets
-│   ├── src/
-│   │   ├── assets/               # Images, Icons
-│   │   ├── components/           # React Components
-│   │   ├── pages/                # Page Components
-│   │   ├── services/             # API Services
-│   │   ├── utils/                # Utility Functions
-│   │   ├── App.tsx               # Root Component
-│   │   └── main.tsx              # Entry Point
+├── frontend/                     # Static Frontend
+│   ├── index.html                # Main UI entry point
+│   ├── css/                      # Stylesheets
+│   ├── js/                       # JavaScript modules
+│   │   └── components/           # UI component scripts
+│   ├── assets/                   # Images, fonts, icons
 │   ├── Dockerfile
 │   ├── .dockerignore
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── vite.config.ts
+│   └── node_modules/             # Local static server dependencies
 │
 ├── database/                     # Database Scripts
 │   ├── init.sql                  # Schema Definition
@@ -195,7 +188,7 @@ JWT_SECRET=your-secret-key-change-this-in-production-min-256-bits
 JWT_EXPIRATION=86400000
 
 # API Configuration
-VITE_API_URL=http://localhost:8080
+API_BASE_URL=http://localhost:8080
 ```
 
 ### Application Configuration
@@ -206,10 +199,10 @@ VITE_API_URL=http://localhost:8080
 - Server port
 - Logging levels
 
-**Frontend:** `frontend/vite.config.ts`
-- Development server settings
-- Build configuration
-- Proxy settings
+**Frontend:** `frontend/index.html`, `frontend/css/`, `frontend/js/`
+- Static markup and layout structure
+- Styles and component-level UI behavior
+- Client-side module wiring
 
 ## 🗄️ Database Schema
 
@@ -256,11 +249,10 @@ cd backend
 ```bash
 cd frontend
 
-# Lint code
-npm run lint
+# Run static frontend locally
+python3 -m http.server 3000
 
-# Build check
-npm run build
+# Then open http://localhost:3000 and verify UI interactions manually
 ```
 
 ## 🚢 Deployment
@@ -290,8 +282,8 @@ docker compose logs -f
 ```bash
 # Check what's using the port
 sudo lsof -i :8080  # For backend
-sudo lsof -i :5173  # For frontend
-sudo lsof -i :3306  # For MySQL
+sudo lsof -i :3000  # For frontend
+sudo lsof -i :3307  # For MySQL (host)
 
 # Stop conflicting services or change ports in docker-compose.yml
 ```
@@ -309,7 +301,7 @@ docker compose restart mysql
 ```
 
 **3. Frontend can't connect to backend**
-- Check `VITE_API_URL` in `.env`
+- Check frontend API integration code (if added) points to `http://localhost:8080`
 - Verify backend is running: http://localhost:8080/api/hello
 - Check CORS configuration in backend
 
@@ -360,8 +352,8 @@ We welcome contributions! Please follow these steps:
 
 ### Code Style
 - **Java:** Follow Google Java Style Guide
-- **TypeScript/React:** Follow Airbnb Style Guide
-- Use ESLint and Prettier for formatting
+- **Frontend (HTML/CSS/JS):** Follow clean modular structure and naming conventions
+- Use a formatter/linter as the frontend grows (optional in current MVP stage)
 
 ## 📄 License
 
@@ -374,7 +366,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - Spring Boot team for the amazing framework
-- React team for the powerful UI library
+- Open-source frontend tooling community (Font Awesome, normalize.css, http-server)
 - All contributors who help improve this project
 
 ## 📞 Support

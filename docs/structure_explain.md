@@ -298,16 +298,16 @@
 **English:**
 - Orchestrates 3 services: Backend, Frontend, MySQL
 - Defines `backend` service (port 8080, Spring Boot)
-- Defines `frontend` service (port 5173, React/Vite)
-- Defines `mysql` service (port 3306, database)
+- Defines `frontend` service (port 3000, static web app via `http-server`)
+- Defines `mysql` service (host port 3307 mapped to container port 3306)
 - Links services with volume mounts
 - Command: `docker compose up --build` starts all 3
 
 **Tiếng Việt:**
 - Điều phối 3 services: Backend, Frontend, MySQL
 - Định nghĩa `backend` service (port 8080, Spring Boot)
-- Định nghĩa `frontend` service (port 5173, React/Vite)
-- Định nghĩa `mysql` service (port 3306, database)
+- Định nghĩa `frontend` service (port 3000, static web app chạy bằng `http-server`)
+- Định nghĩa `mysql` service (host port 3307 map tới container port 3306)
 - Links services với volume mounts
 - Command: `docker compose up --build` starts all 3
 
@@ -387,232 +387,120 @@
 ### `frontend/Dockerfile`
 
 **English:**
-- Containerizes the React/Vite application
-- Build stage: `npm install` + `npm run build`
-- Production stage: Serves compiled files with a web server
-- Runs on port 5173 inside container
+- Containerizes the static frontend application
+- Copies frontend files into a Node 20 container
+- Installs and uses `http-server` to serve static files
+- Runs on port 3000 inside container
 
 **Tiếng Việt:**
-- Containerizes React/Vite application
-- Build stage: `npm install` + `npm run build`
-- Production stage: Serves compiled files với web server
-- Chạy trên port 5173 bên trong container
-
----
-
-### `frontend/package.json`
-
-**English:**
-- Lists all npm dependencies (React, TypeScript, Axios, etc.)
-- Defines build scripts: `npm run dev`, `npm run build`, `npm run lint`
-- Scripts run locally and inside Docker container
-
-**Tiếng Việt:**
-- Liệt kê tất cả npm dependencies (React, TypeScript, Axios, etc.)
-- Định nghĩa build scripts: `npm run dev`, `npm run build`, `npm run lint`
-- Scripts chạy locally và bên trong Docker container
-
----
-
-### `frontend/src/components/`
-
-**English:**
-- Reusable React components
-- Examples: `Button.tsx`, `Modal.tsx`, `HotelCard.tsx`, `Header.tsx`
-- Small, focused components for single-use cases
-- Exported as `export default HotelCard`
-- Can receive props and emit events
-
-**Tiếng Việt:**
-- Reusable React components
-- Ví dụ: `Button.tsx`, `Modal.tsx`, `HotelCard.tsx`, `Header.tsx`
-- Small, focused components cho single-use cases
-- Exported as `export default HotelCard`
-- Có thể receive props và emit events
-
----
-
-### `frontend/src/pages/`
-
-**English:**
-- Full page components (not UI elements)
-- Examples: `HomePage.tsx`, `HotelsPage.tsx`, `BookingPage.tsx`, `AccountPage.tsx`
-- Top-level components that render in Router
-- Combine smaller components to form complete pages
-- Fetch data from API services
-
-**Tiếng Việt:**
-- Full page components (không phải UI elements)
-- Ví dụ: `HomePage.tsx`, `HotelsPage.tsx`, `BookingPage.tsx`, `AccountPage.tsx`
-- Top-level components render trong Router
-- Kết hợp smaller components tạo complete pages
-- Fetch data từ API services
-
----
-
-### `frontend/src/services/`
-
-**English:**
-- API integration layer
-- Functions to call backend: `api.getHotels()`, `api.bookRoom(data)`, `api.login(credentials)`
-- Uses Axios to make HTTP requests
-- Handles response transformation and error handling
-- Centralized place for all API logic
-
-**Tiếng Việt:**
-- API integration layer
-- Functions để gọi backend: `api.getHotels()`, `api.bookRoom(data)`, `api.login(credentials)`
-- Sử dụng Axios tạo HTTP requests
-- Xử lý response transformation và error handling
-- Centralized place cho tất cả API logic
-
----
-
-### `frontend/src/utils/`
-
-**English:**
-- Helper functions used across the app
-- Examples: `formatDate()`, `validateEmail()`, `calculatePrice()`
-- Pure functions with no side effects
-- Examples: string formatting, form validation, calculations
-- Exported for reuse: `export const formatDate = ...`
-
-**Tiếng Việt:**
-- Helper functions sử dụng across app
-- Ví dụ: `formatDate()`, `validateEmail()`, `calculatePrice()`
-- Pure functions không có side effects
-- Ví dụ: string formatting, form validation, calculations
-- Exported để reuse: `export const formatDate = ...`
-
----
-
-### `frontend/src/App.tsx`
-
-**English:**
-- Root component of the React app
-- Sets up routing using React Router
-- Renders layout components (Header, Sidebar, Footer)
-- Manages global state if using Context API
-- Example: `<Routes>`, `<Route path="/hotels" element={<HotelsPage />}`
-
-**Tiếng Việt:**
-- Root component của React app
-- Set up routing sử dụng React Router
-- Render layout components (Header, Sidebar, Footer)
-- Manage global state nếu sử dụng Context API
-- Ví dụ: `<Routes>`, `<Route path="/hotels" element={<HotelsPage />}`
-
----
-
-### `frontend/src/main.tsx`
-
-**English:**
-- JavaScript entry point
-- Loads React and mounts the app into HTML
-- Code: `ReactDOM.createRoot(document.getElementById('root')).render(<App />`
-- Runs once when page loads
-- Connects `App.tsx` to `index.html`'s `<div id="root">`
-
-**Tiếng Việt:**
-- JavaScript entry point
-- Loads React và mounts app vào HTML
-- Code: `ReactDOM.createRoot(document.getElementById('root')).render(<App />`
-- Chạy một lần khi page loads
-- Kết nối `App.tsx` với `index.html`'s `<div id="root">`
-
----
-
-### `frontend/src/index.css` & `frontend/src/App.css`
-
-**English:**
-- Global and component-specific styles
-- `index.css`: Font, colors, reset styles
-- `App.css`: Layout styles for main app
-- Can use Tailwind CSS classes instead
-- Responsive design with `@media` queries
-
-**Tiếng Việt:**
-- Global và component-specific styles
-- `index.css`: Font, colors, reset styles
-- `App.css`: Layout styles cho main app
-- Có thể sử dụng Tailwind CSS classes thay thế
-- Responsive design với `@media` queries
+- Containerizes ứng dụng frontend static
+- Copy frontend files vào Node 20 container
+- Cài và chạy `http-server` để serve static files
+- Chạy trên port 3000 bên trong container
 
 ---
 
 ### `frontend/index.html`
 
 **English:**
-- HTML entry point
-- Contains `<div id="root"></div>` where React mounts
-- Links to CSS and JavaScript
-- Sets meta tags, favicon, title
-- Structure:
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hotel Booking System</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-```
+- Main HTML entry point for the frontend
+- Defines layout sections and binds stylesheet/script imports
+- Loads CSS files from `frontend/css/` and JS modules from `frontend/js/`
 
 **Tiếng Việt:**
-- HTML entry point
-- Chứa `<div id="root"></div>` nơi React mounts
-- Links tới CSS và JavaScript
-- Sets meta tags, favicon, title
-- Structure:
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hotel Booking System</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-```
+- Entry point HTML chính của frontend
+- Định nghĩa layout sections và liên kết stylesheet/script
+- Load CSS từ `frontend/css/` và JS modules từ `frontend/js/`
+
+---
+
+### `frontend/js/components/`
+
+**English:**
+- Reusable UI behavior modules (plain JavaScript)
+- Examples in current codebase: `header.js`, `booking-search.js`, `advertising-banner.js`
+- Each module initializes a UI section and DOM events
+- Imported by `frontend/js/app.js`
+
+**Tiếng Việt:**
+- Các module hành vi UI có thể tái sử dụng (JavaScript thuần)
+- Ví dụ trong code hiện tại: `header.js`, `booking-search.js`, `advertising-banner.js`
+- Mỗi module khởi tạo một phần giao diện và các DOM events
+- Được import bởi `frontend/js/app.js`
+
+---
+
+### `frontend/css/`
+
+**English:**
+- Stylesheets split by UI area
+- Current files include `header.css`, `booking-search.css`, `modal.css`, `advertising-banner.css`, `notify.css`, and `genaral.css`
+- Loaded directly by `index.html`
+
+**Tiếng Việt:**
+- Các stylesheet được tách theo khu vực UI
+- File hiện có gồm `header.css`, `booking-search.css`, `modal.css`, `advertising-banner.css`, `notify.css`, và `genaral.css`
+- Được load trực tiếp bởi `index.html`
+
+---
+
+### `frontend/js/app.js`
+
+**English:**
+- Frontend JavaScript entry point
+- Imports component initialization modules
+- Boots UI behavior on `DOMContentLoaded`
+
+**Tiếng Việt:**
+- JavaScript entry point của frontend
+- Import các module khởi tạo component
+- Khởi chạy hành vi UI khi `DOMContentLoaded`
+
+---
+
+### `frontend/assets/`
+
+**English:**
+- Static assets for UI
+- Includes images and Font Awesome package files
+- Referenced directly from HTML/CSS
+
+**Tiếng Việt:**
+- Static assets phục vụ giao diện
+- Bao gồm images và bộ Font Awesome
+- Được tham chiếu trực tiếp từ HTML/CSS
 
 ---
 
 ### `frontend/node_modules/`
 
 **English:** ⚠️ **Auto-generated - Don't Edit**
-- Contains 3000+ npm dependency packages
-- Downloaded by `npm install`
+- Contains installed npm packages used by local tools like `http-server`
+- Downloaded when npm packages are installed
 - Can be deleted safely and regenerated
 - Add to `.gitignore` (ignored in version control)
-- Very large folder (~500 MB)
+- Can become large over time
 
 **Tiếng Việt:** ⚠️ **Auto-generated - Không Chỉnh Sửa**
-- Chứa 3000+ npm dependency packages
-- Downloaded bởi `npm install`
+- Chứa các npm packages cho công cụ local như `http-server`
+- Được tải xuống khi cài npm packages
 - Có thể deleted safely và regenerated
 - Add vào `.gitignore` (ignored trong version control)
-- Rất lớn folder (~500 MB)
+- Có thể trở thành thư mục lớn theo thời gian
 
 ---
 
-### `frontend/public/`
+### `frontend/index.html` (Current Pattern)
 
 **English:**
-- Static assets served as-is (no processing)
-- favicon.ico, images, JSON files
-- Accessed at root path: `/favicon.ico`, `/assets/image.png`
-- Can copy files here for direct access
+- HTML entry point for the current static frontend
+- Uses direct links to CSS files and ES module scripts
+- No virtual DOM mount point is required
 
 **Tiếng Việt:**
-- Static assets served as-is (không process)
-- favicon.ico, images, JSON files
-- Accessed ở root path: `/favicon.ico`, `/assets/image.png`
-- Có thể copy files ở đây cho direct access
+- Entry point HTML của frontend static hiện tại
+- Dùng liên kết trực tiếp tới CSS và ES module scripts
+- Không cần virtual DOM mount point
 
 ---
 
@@ -622,10 +510,10 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ 1️⃣  FRONTEND (React)                                            │
+│ 1️⃣  FRONTEND (Static Web UI)                                    │
 │ ──────────────────────────────────────────────────────────────  │
-│ User clicks "Book Hotel" button in HotelsPage.tsx              │
-│ → Calls hotelService.bookRoom(roomId, userId)                  │
+│ User clicks "Book Hotel" button in the booking/search UI       │
+│ → Calls a frontend JS module function                            │
 │ → Makes HTTP POST request to /api/bookings                      │
 │ → Sends JSON: { "roomId": 101, "userId": 5, "dates": [...] }  │
 └──────────────────────┬──────────────────────────────────────────┘
@@ -683,14 +571,14 @@
 │   "totalPrice": 299.99,                                          │
 │   "confirmationNumber": "HB-2026-0123456"                        │
 │ }                                                                │
-│ → HTTP 200 OK response sent to Frontend                          │
+│ → HTTP 200 OK response sent to frontend                           │
 └──────────────────────┬──────────────────────────────────────────┘
                        │ HTTP Response
                        ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│ 6️⃣  FRONTEND DISPLAYS RESULT                                    │
+│ 6️⃣  FRONTEND DISPLAYS RESULT                                     │
 │ ──────────────────────────────────────────────────────────────  │
-│ React component receives response                               │
+│ Frontend JS module receives response                              │
 │ → Shows success message: "Booking confirmed!"                   │
 │ → Displays confirmation number to user                          │
 │ → Redirects to confirmation page                                │
@@ -709,9 +597,9 @@
 | **Repository** | Database queries | Service | Database records |
 | **Model** | Data structure | Repository | JPA Entity object |
 | **DTO** | Data transfer format | Controller/Service | Request/Response shape |
-| **Frontend Page** | Render UI | User interaction | HTML/React DOM |
-| **Frontend Service** | API calls | Page component | HTTP response data |
-| **Frontend Component** | Single UI element | Parent component | Rendered JSX |
+| **Frontend Page** | Render UI | User interaction | HTML output |
+| **Frontend Script Module** | API calls and DOM interactions | Page scripts | HTTP response data |
+| **Frontend Component Script** | Single UI behavior block | App initializer | DOM updates |
 
 ---
 
@@ -724,12 +612,12 @@
 - ✅ Returns JSON responses
 - ✅ Handles concurrency with `@Transactional`, `@Version`
 
-### Frontend (React)
+### Frontend (Static HTML/CSS/JS)
 - ✅ Renders user interface
 - ✅ Calls backend API for data
 - ✅ Displays responses to users
 - ✅ Handles form submissions
-- ✅ Manages local state
+- ✅ Manages local state in JavaScript modules
 
 ### Database (MySQL)
 - ✅ Stores data permanently
