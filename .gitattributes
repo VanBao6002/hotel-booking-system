@@ -18,9 +18,7 @@ mvnw text eol=lf
 
 # Frontend
 *.js text eol=lf
-*.ts text eol=lf
-*.jsx text eol=lf
-*.tsx text eol=lf
+# *.jsx text eol=lf
 *.json text eol=lf
 *.css text eol=lf
 *.html text eol=lf

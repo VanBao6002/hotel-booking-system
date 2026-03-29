@@ -1,0 +1,276 @@
+.booking-search {
+    margin-top: 84px;
+}
+
+.booking-search__picture {
+    width: 1200px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+.booking-search__container {
+    position: relative;
+    width: 1100px;
+    margin: 0px auto;
+}
+.booking-search__header {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 120px;
+    text-align: center;
+    background-color: rgba(11,11,11,0.60);
+    text-align: center;
+    justify-content: center;
+    border-radius: 20px;
+    top: -125px;
+
+}
+
+.booking-search__header h1,
+.booking-search__header h2{
+    color: white;
+    margin: 0;
+}
+
+.booking-search__header h1 {
+    font-size: 2.6rem;
+    line-height: 3.2rem;
+    font-weight: 600;
+}
+.booking-search__header h2 {
+    font-size: 1.5rem;
+    line-height: 2.4rem;
+    font-weight: 400;
+}
+
+.booking-search__body {
+   position: absolute;
+   width: 100%;
+   border: 1px solid var(--lightGray-color);
+   border-radius: 20px;
+   background-color: white;
+   top: -32px;
+}
+
+.booking-search__body-wrap {
+    padding: 24px;
+}
+
+.booking-search__box {
+    position: relative;
+    cursor: pointer;
+}
+
+.booking-search__label {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.booking-search__input {
+    display: flex;
+    border: 1px solid var(--lightGray-color);
+    border-radius: 10px;
+    width: 295px;
+    height: 42px;
+    text-align: center;
+    justify-content: center;
+}
+
+.booking-search__input:focus-within {
+    border-color: var(--navyBlue-color);
+}
+.booking-search__input i {
+    font-size: 2.2rem;
+}
+
+.booking-search__input input {
+    width: 240px;
+    height: 70%;
+    margin: auto auto auto 0;
+    outline: none;
+    border: none;
+    background-color: white;
+    font-size: 1.6rem;
+}
+
+.booking-search__icon {
+    width: 28px;
+    height: 28px;
+    margin: auto;
+}
+
+.booking-search__icon,
+.booking-search__label {
+    cursor: pointer;
+}
+
+
+
+.booking-search__search {
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+}
+
+.booking-search__submit {
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.booking-search__last-view {
+    margin-top: 30px;
+    cursor: pointer;
+}
+
+.booking-search__last-view-text {
+    display: block ;
+    color: #0a9af2;
+    font-size: 1.4rem;
+    line-height: 2rem;
+    font-weight: bold;
+}
+
+.booking-search__last-view-text i {
+    font-size: 2rem;
+}
+
+
+.location-heading h1 {
+    font-size: 2.2rem;
+    line-height: 2.2rem;
+    padding: 20px 0 20px 0;
+    margin: 0;
+    border-bottom: 1px solid var(--lightGray-color);
+}
+
+
+.booking-search__dropdown {
+    display: none;
+    position: absolute;
+    border: 1px solid var(--lightGray-color);
+    border-radius: 10px;
+    width: 240px;
+    background-color: white;
+    animation: slideDown linear 0.15s;
+    z-index: 1;
+}
+.booking-search__dropdown.booking-search__dropdown--location {
+    left: 45px;
+}
+
+.location-list {
+    list-style: none;
+    text-align: left;
+    font-size: 1.6rem;
+    font-weight: 600;
+    padding-left: 0;
+    margin-top: 0;
+}
+
+.location-item {
+    padding: 20px 0 20px 20px;
+    border-bottom: 1px solid var(--lightGray-color);
+}
+
+.location-item:hover {
+    background-color: var(--ivoryWhite-color);
+}
+
+
+.booking-search__dropdown.booking-search__dropdown--guests-rooms {
+   width: 100%;
+}
+
+.booking-search__guests-rooms-box {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    text-align: center;
+    cursor: default;
+}
+
+.booking-search__control {
+    display: flex;
+    text-align: center;
+}
+.booking-search__control  span{
+    font-size: 1.6rem;
+    width: 50px;
+}
+.booking-search__control-btn--plus,
+.booking-search__control-btn-minus {
+    display: flex;
+    font-size: 2rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background-color: #d1f0ff;
+}
+
+.booking-search__control-btn-minus.booking-search__control-btn--limit,
+.booking-search__control-btn--plus.booking-search__control-btn--limit {
+    background-color: var(--lightGray-color);
+}
+
+.booking-search__control-btn-minus.booking-search__control-btn--limit:hover,
+.booking-search__control-btn--plus.booking-search__control-btn--limit:hover {
+    cursor: default;
+    background-color: var(--lightGray-color);
+}
+
+
+.booking-search__control-btn--plus:hover,
+.booking-search__control-btn-minus:hover {
+    background-color: #0a9af2;
+}
+
+.booking-search__info {
+    display: flex;
+    font-size: 1.8rem;
+}
+.booking-search__info i {
+    font-size: 2rem;
+}
+
+.booking-search__info i,
+.booking-search__info span,
+.booking-search__control span {
+    margin:auto 2px;
+}
+.booking-search__control i {
+    font-size: 1.6rem;
+    margin: auto;
+    color: gray;
+}
+
+.guests-rooms-msg {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    background-color: var(--error-color);
+    border-radius: 10px;
+    top: -60px;
+}
+.guests-rooms-msg::after {
+    display: block;
+    position: absolute;
+    content: "";
+    border: 5px solid;
+    border-color: var(--error-color) transparent transparent transparent;
+    bottom: -10px;
+   
+}
+
+.guests-rooms-msg span {
+    display: block;
+    font-size: 1.6rem;
+    line-height: 1.6rem;
+    color: white;
+}
+
