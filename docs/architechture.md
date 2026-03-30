@@ -36,7 +36,7 @@ This is intentionally simple for a student MVP and can be evolved later.
 
 - `frontend` container on `http://localhost:3000`
 - `backend` container on `http://localhost:8080`
-- `mysql` container on `localhost:3307` (mapped to container `3306`)
+- `mysql` container on `localhost:3308` (mapped to container `3306`)
 
 ### 4.2 Backend Capabilities
 

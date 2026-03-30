@@ -283,7 +283,7 @@ docker compose logs -f
 # Check what's using the port
 sudo lsof -i :8080  # For backend
 sudo lsof -i :3000  # For frontend
-sudo lsof -i :3307  # For MySQL (host)
+sudo lsof -i :3308  # For MySQL (host)
 
 # Stop conflicting services or change ports in docker-compose.yml
 ```

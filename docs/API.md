@@ -42,21 +42,21 @@ Success response (`200 OK`):
 Notes:
 
 - If username exists, API returns user DTO (without password hash).
-- If username does not exist, current implementation throws runtime exception and returns `500`.
-- Planned improvement: return `404 Not Found` with standardized error body.
+- If username does not exist, API returns `404 Not Found` with standardized error body.
 
 ## Planned (Not Implemented Yet)
 
 The following sections are planned and currently **not available** in source code:
 
-- Authentication (`/api/v1/auth/...`)
 - Hotels (`/api/hotels/...`)
 - Rooms (`/api/rooms/...`)
 - Bookings (`/api/bookings/...`)
 - Check-in / Check-out
 - Health endpoint (`/api/health`)
 
-## Planned Authentication APIs (MVP)
+## Authentication APIs
+
+The following auth endpoints are currently implemented in backend source code.
 
 ### Register
 
@@ -70,6 +70,19 @@ Content-Type: application/json
   "email": "john.doe@example.com",
   "fullName": "John Doe",
   "phoneNumber": "0123456789"
+}
+```
+
+Success response (`200 OK`):
+
+```json
+{
+  "id": 7,
+  "userName": "john_doe",
+  "email": "john.doe@example.com",
+  "fullName": "John Doe",
+  "isActive": true,
+  "createdAt": "2026-03-30T08:00:00"
 }
 ```
 
@@ -100,6 +113,51 @@ Example success response:
   }
 }
 ```
+
+Notes:
+
+- `accessToken` is a JWT.
+- `tokenType` is always `Bearer`.
+- `expiresIn` is configured by `jwt.access-token-expiration-seconds`.
+
+### Forgot Password
+
+```http
+POST /api/v1/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com"
+}
+```
+
+Example success response (`200 OK`):
+
+```json
+{
+  "resetToken": "<reset-jwt-token>",
+  "expiresIn": 900
+}
+```
+
+MVP note:
+
+- For local development, reset token is returned in API response.
+- In production, this token should be delivered by email and not returned directly.
+
+### Reset Password
+
+```http
+POST /api/v1/auth/reset-password
+Content-Type: application/json
+
+{
+  "resetToken": "<reset-jwt-token>",
+  "newPassword": "newPassword456"
+}
+```
+
+Success response: `204 No Content`
 
 ### Logout
 
@@ -133,15 +191,29 @@ Content-Type: application/json
 }
 ```
 
-### Recommended Next APIs (After MVP)
+Success response: `204 No Content`
 
+## Auth APIs Still Missing
+
+- `POST /api/v1/auth/logout`
+- `GET /api/v1/auth/me`
 - `POST /api/v1/auth/refresh-token`
-- `POST /api/v1/auth/forgot-password`
-- `POST /api/v1/auth/reset-password`
 
 ## Error Response (Current)
 
-Error format is not standardized yet. Depending on exception type, Spring Boot default error response is returned.
+Error format is standardized by global exception handling.
+
+Example:
+
+```json
+{
+  "timestamp": "2026-03-30T08:12:19.711383444",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Username or password not match",
+  "path": "/api/v1/auth/login"
+}
+```
 
 ## Interactive Documentation
 
