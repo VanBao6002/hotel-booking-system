@@ -299,7 +299,7 @@
 - Orchestrates 3 services: Backend, Frontend, MySQL
 - Defines `backend` service (port 8080, Spring Boot)
 - Defines `frontend` service (port 3000, static web app via `http-server`)
-- Defines `mysql` service (host port 3307 mapped to container port 3306)
+- Defines `mysql` service (host port 3308 mapped to container port 3306)
 - Links services with volume mounts
 - Command: `docker compose up --build` starts all 3
 
@@ -307,7 +307,7 @@
 - Điều phối 3 services: Backend, Frontend, MySQL
 - Định nghĩa `backend` service (port 8080, Spring Boot)
 - Định nghĩa `frontend` service (port 3000, static web app chạy bằng `http-server`)
-- Định nghĩa `mysql` service (host port 3307 map tới container port 3306)
+- Định nghĩa `mysql` service (host port 3308 map tới container port 3306)
 - Links services với volume mounts
 - Command: `docker compose up --build` starts all 3
 

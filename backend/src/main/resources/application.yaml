@@ -26,3 +26,8 @@ logging:
   level:
     com.hotel.booking: DEBUG
     org.springframework.security: DEBUG
+
+jwt:
+  secret: 8fd7bb9a0ce0f34c2896a17debf3d8a67ef0d3237dc194f174f305f5f9b6a0ed
+  access-token-expiration-seconds: 3600
+  reset-token-expiration-seconds: 900
