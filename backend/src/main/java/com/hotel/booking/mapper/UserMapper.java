@@ -22,4 +22,4 @@ public final class UserMapper {
         dto.setCreatedAt(user.getCreatedAt());
         return dto;
     }
-}
+}  
