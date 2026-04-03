@@ -63,7 +63,7 @@ public class AuthService {
         User savedUser = userRepository.save(user);
         return UserMapper.toDto(savedUser);
     }
-
+    
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByUserNameOrEmail(request.getUserNameOrEmail(), request.getUserNameOrEmail())
             .orElseThrow(this::invalidCredentialsException);
@@ -89,7 +89,9 @@ public class AuthService {
         return buildLoginResponse(savedUser);
     }
 
-    public void changePassword(String userName, ChangePasswordRequest request) {
+    public void changePassword(String authorizationHeader, ChangePasswordRequest request) {
+        String userName = extractUserNameFromAuthHeader(authorizationHeader);
+
         User user = userRepository.findByUserName(userName)
             .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userName));
 
@@ -129,6 +131,21 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    public void logout(String authorizationHeader) {
+        extractUserNameFromAuthHeader(authorizationHeader);
+    }
+
+    public UserDTO me(String authorizationHeader) {
+        String userName = extractUserNameFromAuthHeader(authorizationHeader);
+        User user = userRepository.findByUserName(userName).orElseThrow(() -> new ResourceNotFoundException("User not found: " + userName));
+        return UserMapper.toDto(user);
+    }
+
+    private String extractUserNameFromAuthHeader(String authorizationHeader) {
+        String token = jwtService.extractBearerToken(authorizationHeader);
+        return jwtService.extractSubject(token);
+    }
+
     private void handleFailedLogin(User user) {
         int failedAttempts = user.getFailedLoginAttempts() == null ? 0 : user.getFailedLoginAttempts();
         failedAttempts++;
@@ -159,4 +176,5 @@ public class AuthService {
     private UnauthorizedException invalidCredentialsException() {
         return new UnauthorizedException("Username or password not match");
     }
+
 }

@@ -27,6 +27,9 @@ public class JwtService {
 	@Value("${jwt.reset-token-expiration-seconds}")
 	private long resetTokenExpirationSeconds;
 
+	/**
+	 * Builds a signed access token for authenticated API calls.
+	 */
 	public String generateAccessToken(User user) {
 		Instant now = Instant.now();
 		Instant expiresAt = now.plusSeconds(accessTokenExpirationSeconds);
@@ -40,16 +43,26 @@ public class JwtService {
 			.signWith(getSigningKey())
 			.compact();
 	}
-
+	
+	/** 
+	 * Validates an access token and returns its subject (username).
+	 */
 	public String extractSubject(String token) {
-		return Jwts.parser()
-			.verifyWith(getSigningKey())
-			.build()
-			.parseSignedClaims(token)
-			.getPayload()
-			.getSubject();
+		try {
+			return Jwts.parser()
+				.verifyWith(getSigningKey())
+				.build()
+				.parseSignedClaims(token)
+				.getPayload()
+				.getSubject();
+		} catch (Exception ex) {
+			throw new UnauthorizedException("Invalid or expired access token");
+		}
 	}
 
+	/**
+	 * Builds a signed short-lived token used only for password reset.
+	 */
 	public String generateResetPasswordToken(User user) {
 		Instant now = Instant.now();
 		Instant expiresAt = now.plusSeconds(resetTokenExpirationSeconds);
@@ -63,6 +76,9 @@ public class JwtService {
 			.compact();
 	}
 
+	/**
+	 * Validates a reset token, checks its purpose claim, and returns email subject.
+	 */
 	public String extractEmailFromResetToken(String token) {
 		try {
 			var claims = Jwts.parser()
@@ -84,15 +100,44 @@ public class JwtService {
 		}
 	}
 
+	/**
+	 * Returns access token lifetime in seconds for API responses.
+	 */
 	public long getAccessTokenExpiresInSeconds() {
 		return accessTokenExpirationSeconds;
 	}
 
+	/**
+	 * Returns reset token lifetime in seconds for API responses.
+	 */
 	public long getResetTokenExpiresInSeconds() {
 		return resetTokenExpirationSeconds;
 	}
 
+	/**
+	 * Creates the HMAC signing key from configured secret.
+	 */
 	private SecretKey getSigningKey() {
 		return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 	}
+
+	/**
+	 * Extracts bearer token value from Authorization header and validates format.
+	 */
+	public String extractBearerToken(String authorizationHeader) {
+        if (authorizationHeader == null || authorizationHeader.isBlank()) {
+            throw new UnauthorizedException("Missing Authorization header");
+        }
+
+        if (!authorizationHeader.startsWith("Bearer ")) {
+            throw new UnauthorizedException("Authorization header must start with Bearer");
+        }
+
+        String token = authorizationHeader.substring(7).trim();
+        if (token.isEmpty()) {
+            throw new UnauthorizedException("Bearer token is missing");
+        }
+
+        return token;
+    }
 }

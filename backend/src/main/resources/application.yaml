@@ -3,9 +3,9 @@ spring:
     name: hotel-booking
 
   datasource:
-    url: jdbc:mysql://mysql:3306/hotel_booking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: hotel_user
-    password: hotel_pass
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/hotel_booking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:hotel_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:hotel_pass}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -28,6 +28,6 @@ logging:
     org.springframework.security: DEBUG
 
 jwt:
-  secret: 8fd7bb9a0ce0f34c2896a17debf3d8a67ef0d3237dc194f174f305f5f9b6a0ed
+  secret: ${JWT_SECRET:change-me-in-production}
   access-token-expiration-seconds: 3600
   reset-token-expiration-seconds: 900
