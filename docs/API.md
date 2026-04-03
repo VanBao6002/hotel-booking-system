@@ -14,16 +14,40 @@ This document reflects the **current implemented backend APIs**.
 
 ## Implemented Endpoints
 
+## Authentication & Authorization
+
+Current security behavior:
+
+- Stateless JWT authentication is enabled.
+- Public endpoints (no token required):
+  - `POST /api/v1/auth/register`
+  - `POST /api/v1/auth/login`
+  - `POST /api/v1/auth/forgot-password`
+  - `POST /api/v1/auth/reset-password`
+  - Swagger/OpenAPI endpoints
+- Protected endpoints (require `Authorization: Bearer <jwt-token>`):
+  - `GET /api/v1/auth/me`
+  - `PUT /api/v1/auth/change-password`
+  - `POST /api/v1/auth/logout`
+  - `GET /api/v1/users`
+  - `GET /api/v1/users/by-username/{userName}`
+
+If token is missing/invalid on protected routes, API returns `401 Unauthorized`.
+
+## User APIs
+
 ### Get User by Username
 
 ```http
 GET /api/v1/users/by-username/{userName}
+Authorization: Bearer <jwt-token>
 ```
 
 Example:
 
 ```http
 GET /api/v1/users/by-username/john_doe
+Authorization: Bearer <jwt-token>
 ```
 
 Success response (`200 OK`):
@@ -43,6 +67,28 @@ Notes:
 
 - If username exists, API returns user DTO (without password hash).
 - If username does not exist, API returns `404 Not Found` with standardized error body.
+
+### Get All Users
+
+```http
+GET /api/v1/users
+Authorization: Bearer <jwt-token>
+```
+
+Success response (`200 OK`):
+
+```json
+[
+  {
+    "id": 1,
+    "userName": "john_doe",
+    "email": "john.doe@example.com",
+    "fullName": "John Doe",
+    "isActive": true,
+    "createdAt": "2026-03-24T14:25:32"
+  }
+]
+```
 
 ## Planned (Not Implemented Yet)
 
@@ -178,6 +224,19 @@ GET /api/v1/auth/me
 Authorization: Bearer <jwt-token>
 ```
 
+Success response (`200 OK`):
+
+```json
+{
+  "id": 1,
+  "userName": "john_doe",
+  "email": "john.doe@example.com",
+  "fullName": "John Doe",
+  "isActive": true,
+  "createdAt": "2026-03-24T14:25:32"
+}
+```
+
 ### Change Password
 
 ```http
@@ -193,10 +252,8 @@ Content-Type: application/json
 
 Success response: `204 No Content`
 
-## Auth APIs Still Missing
+## Auth APIs Not Implemented Yet
 
-- `POST /api/v1/auth/logout`
-- `GET /api/v1/auth/me`
 - `POST /api/v1/auth/refresh-token`
 
 ## Error Response (Current)
