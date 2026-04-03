@@ -81,30 +81,38 @@
     border-color: var(--navyBlue-color);
 }
 .booking-search__input i {
-    font-size: 2.2rem;
+    font-size: 1.6rem;
+    margin: auto;
 }
 
 .booking-search__input input {
     width: 240px;
     height: 70%;
-    margin: auto auto auto 0;
+    margin: auto 0 auto auto;
     outline: none;
     border: none;
     background-color: white;
     font-size: 1.6rem;
+    padding-left: 10px;
 }
 
 .booking-search__icon {
     width: 28px;
     height: 28px;
     margin: auto;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    color: #808080;
 }
 
 .booking-search__icon,
 .booking-search__label {
     cursor: pointer;
 }
-
+.booking-search__icon:hover {
+    color: black;
+}
 
 
 .booking-search__search {
@@ -156,7 +164,7 @@
     z-index: 1;
 }
 .booking-search__dropdown.booking-search__dropdown--location {
-    left: 45px;
+    width: 100%;
 }
 
 .location-list {
@@ -178,11 +186,11 @@
 }
 
 
-.booking-search__dropdown.booking-search__dropdown--guests-rooms {
+.booking-search__dropdown.booking-search__dropdown--rooms {
    width: 100%;
 }
 
-.booking-search__guests-rooms-box {
+.booking-search__rooms-box {
     display: flex;
     justify-content: space-between;
     padding: 20px;
@@ -245,32 +253,3 @@
     margin: auto;
     color: gray;
 }
-
-.guests-rooms-msg {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    width: 100%;
-    height: 50px;
-    background-color: var(--error-color);
-    border-radius: 10px;
-    top: -60px;
-}
-.guests-rooms-msg::after {
-    display: block;
-    position: absolute;
-    content: "";
-    border: 5px solid;
-    border-color: var(--error-color) transparent transparent transparent;
-    bottom: -10px;
-   
-}
-
-.guests-rooms-msg span {
-    display: block;
-    font-size: 1.6rem;
-    line-height: 1.6rem;
-    color: white;
-}
-

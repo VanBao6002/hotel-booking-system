@@ -7,7 +7,7 @@ export function initAdvertisingBanner() {
     nextButton.addEventListener("click", () => {
         nextButton.style.display = "none";
         previousButton.style.display = "flex";
-        container.scrollLeft = 1200;
+        container.scrollLeft = 1223;
     });
 
     previousButton.addEventListener("click", () => {
@@ -17,7 +17,7 @@ export function initAdvertisingBanner() {
     });
 
     container.addEventListener("scroll", () => {
-        if(container.scrollLeft === 1200) {
+        if(container.scrollLeft === 1223) {
             nextButton.style.display = "none";
             previousButton.style.display = "flex";
         }

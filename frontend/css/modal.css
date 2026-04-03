@@ -105,7 +105,10 @@
 .form-error  {
     display: block;
     margin-bottom: 22px;
+    margin-top: 5px;
     padding-left: 5px;
+    font-size: 1.2rem;
+    color:  var(--error-color);
 }
 
 .form-input:focus {
