@@ -3,6 +3,7 @@ package com.hotel.booking.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +17,7 @@ import com.hotel.booking.dto.LoginResponse;
 import com.hotel.booking.dto.RegisterRequest;
 import com.hotel.booking.dto.ResetPasswordRequest;
 import com.hotel.booking.dto.UserDTO;
-import com.hotel.booking.exception.UnauthorizedException;
 import com.hotel.booking.service.AuthService;
-import com.hotel.booking.service.JwtService;
 
 import jakarta.validation.Valid;
 
@@ -27,11 +26,9 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtService jwtService;
 
-    public AuthController(AuthService authService, JwtService jwtService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.jwtService = jwtService;
     }
 
     @PostMapping("/register")
@@ -63,26 +60,21 @@ public class AuthController {
         @RequestHeader("Authorization") String authorizationHeader,
         @Valid @RequestBody ChangePasswordRequest request
     ) {
-        String token = extractBearerToken(authorizationHeader);
-        String userName = jwtService.extractSubject(token);
-        authService.changePassword(userName, request);
+        authService.changePassword(authorizationHeader, request);
         return ResponseEntity.noContent().build();
     }
 
-    private String extractBearerToken(String authorizationHeader) {
-        if (authorizationHeader == null || authorizationHeader.isBlank()) {
-            throw new UnauthorizedException("Missing Authorization header");
-        }
-
-        if (!authorizationHeader.startsWith("Bearer ")) {
-            throw new UnauthorizedException("Authorization header must start with Bearer");
-        }
-
-        String token = authorizationHeader.substring(7).trim();
-        if (token.isEmpty()) {
-            throw new UnauthorizedException("Bearer token is missing");
-        }
-
-        return token;
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authorizationHeader) {
+        authService.logout(authorizationHeader);
+        return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> getUser(@RequestHeader(value = "Authorization", required = false) String authorizationHeader
+    ){
+        UserDTO user = authService.me(authorizationHeader);
+        return ResponseEntity.ok(user);
+    }
+
 }
