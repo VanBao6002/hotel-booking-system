@@ -1,5 +1,5 @@
 .booking-search {
-    margin-top: 84px;
+    margin-top: calc(var(--header-height) + 24px);
 }
 
 .booking-search__picture {

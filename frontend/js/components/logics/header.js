@@ -85,6 +85,20 @@ function validateForm(formID, rules) {
 
 }
 
+function scrollPage() {
+    const main = document.querySelector(".main");
+    const goTo = document.querySelectorAll(".header__navbar-link");
+    goTo[0].addEventListener("click", () => {
+        main.querySelector(".booking-search").scrollIntoView({behavior: "smooth", block: "center"});
+    });
+    goTo[1].addEventListener("click", () => {
+        main.querySelector(".advertising-banner").scrollIntoView({behavior: "smooth", block: "center"});
+    });
+    goTo[2].addEventListener("click", () => {
+        main.querySelector(".popular-destinations").scrollIntoView({behavior: "smooth", block: "center"});
+    });
+}
+
 
 
 export function initHeader() {
@@ -162,4 +176,5 @@ export function initHeader() {
     validateForm("form-sign-in",[emailField,passwordField]);
     validateForm("form-sign-up",[fullnameField,usernameField,emailField,phoneNumberField,passwordFieldSIgnUp,confirmPasswordField]);
 
+    scrollPage();
 }

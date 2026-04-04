@@ -8,10 +8,10 @@ services:
     ports:
       - "3308:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:rootpass}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:hotel_booking}
-      MYSQL_USER: ${MYSQL_USER:hotel_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:hotel_pass}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-hotel_booking}
+      MYSQL_USER: ${MYSQL_USER:-hotel_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-hotel_pass}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
@@ -32,10 +32,10 @@ services:
       mysql:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/hotel_booking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:hotel_user}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:hotel_pass}
-      JWT_SECRET: ${JWT_SECRET:change-me-in-production}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:mysql://mysql:3306/hotel_booking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-hotel_user}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-hotel_pass}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
 
   frontend:
     build: ./frontend

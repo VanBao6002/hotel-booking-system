@@ -5,7 +5,7 @@
     --lightGray-color: #D9D9D9; /*border, second background*/
     --text-gray-color: #888888;
     --error-color: #FF0000;
-
+    --header-height: 100px;
 }
 
 * {
