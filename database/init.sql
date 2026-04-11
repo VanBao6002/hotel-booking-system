@@ -1,20 +1,92 @@
-CREATE TABLE IF NOT EXISTS roles (
+CREATE TABLE IF NOT EXISTS Services(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL UNIQUE
+    name VARCHAR(30) NOT NULL UNIQUE,
+    description TEXT ,
+    price BIGINT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS HotelBranch(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    address VARCHAR(100) NOT NULL UNIQUE,
+    phone_number VARCHAR(30) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS genders (
+
+CREATE TABLE IF NOT EXISTS Roles (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(20) NOT NULL UNIQUE
+    role_name VARCHAR(30) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS countries (
+CREATE TABLE IF NOT EXISTS Countries (
     id INT PRIMARY KEY AUTO_INCREMENT,
     code VARCHAR(3) NOT NULL UNIQUE,
-    name VARCHAR(100) NOT NULL UNIQUE
+    country_name VARCHAR(100) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE Table IF NOT EXISTS Locations(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    location VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE Table IF NOT EXISTS TypeRoom(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    type VARCHAR(30) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS Genders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    gender_name VARCHAR(20) NOT NULL UNIQUE
+);
+
+CREATE Table IF NOT EXISTS RoomStatus(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    status VARCHAR(30) NOT NULL UNIQUE
+);
+
+CREATE Table IF NOT EXISTS ReportType(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    type VARCHAR(30) NOT NULL UNIQUE
+);
+
+CREATE Table IF NOT EXISTS NotificationStatus(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    status VARCHAR(30) NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS Room(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    area VARCHAR(30) NOT NULL,
+    numberOfBed INT NOT NULL,
+    description TEXT NOT NULL,
+    roomIMG TEXT NOT NULL,
+    HotelBranchID INT,
+    TypeRoomID INT ,
+    LocationID INT ,
+    RoomStatusID INT ,
+    CONSTRAINT fk_room_HotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES HotelBranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_room_TypeRoom_id FOREIGN KEY (TypeRoomID) REFERENCES TypeRoom(id)  ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_room_Location_id FOREIGN KEY (LocationID) REFERENCES Locations(id)  ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_room_RoomStatus_id FOREIGN KEY (RoomStatusID) REFERENCES RoomStatus(id)  ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Booking(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    checkInDate DATE NOT NULL,
+    checkOutDate DATE  NOT NULL,
+    bookedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    roomIMG TEXT NOT NULL,
+    HotelBranchID INT ,
+    RoomID INT ,
+    CONSTRAINT fk_booking_HotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES HotelBranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_booking_room_id FOREIGN KEY (RoomID) REFERENCES Room(id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS BookingService(
+    Type_roomID INT ,
+    ServiceID INT ,
+    CONSTRAINT fk_bookingService_typeRoom_id FOREIGN KEY (Type_roomID) REFERENCES TypeRoom(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_bookingService_service_id FOREIGN KEY (ServiceID) REFERENCES Services(id) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_name VARCHAR(50) UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -32,21 +104,151 @@ CREATE TABLE IF NOT EXISTS users (
     last_login_at DATETIME NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id),
-    CONSTRAINT fk_users_gender FOREIGN KEY (gender_id) REFERENCES genders(id),
-    CONSTRAINT fk_users_country FOREIGN KEY (country_id) REFERENCES countries(id)
+    CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES Roles(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_users_gender FOREIGN KEY (gender_id) REFERENCES Genders(id)
+        ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_users_country FOREIGN KEY (country_id) REFERENCES Countries(id)
+        ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-CREATE INDEX idx_users_role_id ON users(role_id);
-CREATE INDEX idx_users_gender_id ON users(gender_id);
-CREATE INDEX idx_users_country_id ON users(country_id);
+CREATE TABLE IF NOT EXISTS Staff(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    UserID INT NOT NULL UNIQUE,
+    HotelBranchID INT ,
+    CONSTRAINT fk_staff_user FOREIGN KEY (UserID) REFERENCES Users(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_staff_branch FOREIGN KEY (HotelBranchID) REFERENCES HotelBranch(id)
+         ON DELETE SET NULL ON UPDATE CASCADE
+);
 
--- Ensure hotel_user has correct password and permissions
-DROP USER IF EXISTS 'hotel_user'@'%';
-DROP USER IF EXISTS 'hotel_user'@'localhost';
-CREATE USER 'hotel_user'@'%' IDENTIFIED WITH mysql_native_password BY 'hotel_pass';
-CREATE USER 'hotel_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'hotel_pass';
-GRANT ALL PRIVILEGES ON hotel_booking.* TO 'hotel_user'@'%';
-GRANT ALL PRIVILEGES ON hotel_booking.* TO 'hotel_user'@'localhost';
-FLUSH PRIVILEGES;
+CREATE TABLE IF NOT EXISTS HistoryLogin(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    timeLogin TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UserID INT NOT NULL ,
+    CONSTRAINT fk_historyLogin_user_id FOREIGN KEY (UserID) REFERENCES Users(id)  ON DELETE CASCADE  ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS RoomPrice(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    dateStart DATE NOT NULL,
+    dateEnd DATE NOT NULL,
+    price BIGINT NOT NULL,
+    HotelBranchID INT ,
+    RoomID INT ,
+    CONSTRAINT fk_roomPrice_HotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES HotelBranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_roomPrice_Room_id FOREIGN KEY (RoomID) REFERENCES Room(id) ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS Notification(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    message TEXT NOT NULL,
+    createAt DATETIME NOT NULL,
+    isBroadcast BOOLEAN NOT NULL,
+    UserID INT NOT NULL,
+    NotificationStatusID INT,
+    CONSTRAINT fk_notification_user_id FOREIGN KEY (UserID) REFERENCES Users(id) ON DELETE CASCADE  ON UPDATE CASCADE,
+    CONSTRAINT fk_notification_status_id FOREIGN KEY (NotificationStatusID) REFERENCES NotificationStatus(id) ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS Conversation(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status varchar(30) NOT NULL,
+    CustomerID INT NOT NULL,
+    HotelBranchID INT ,
+    CONSTRAINT fk_conversation_customer_id FOREIGN KEY (CustomerID) REFERENCES Users(id) ON DELETE  CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_conversation_hotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES HotelBranch(id) ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS Report(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    content TEXT NOT NULL,
+    periodStart DATE NOT NULL,
+    periodEnd DATE NOT NULL,
+    createBy INT NOT NULL,
+    HotelBranchID INT ,
+    reportTypeID INT,
+    CONSTRAINT fk_report_customer_id FOREIGN KEY (createBy) REFERENCES Users(id) ON DELETE CASCADE  ON UPDATE CASCADE,
+    CONSTRAINT fk_report_hotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES HotelBranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_report_reportType_id FOREIGN KEY (reportTypeID) REFERENCES ReportType(id) ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS Maintenance(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    description TEXT NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL,
+    RoomID INT NOT NULL UNIQUE,
+    HotelBranchID INT,
+    StaffID INT NOT NULL,
+    CONSTRAINT fk_maintenance_room_id FOREIGN KEY (RoomID) REFERENCES Room(id) ON DELETE CASCADE  ON UPDATE CASCADE,
+    CONSTRAINT fk_maintenance_hotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES HotelBranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_maintenance_staff_id FOREIGN KEY (StaffID) REFERENCES Staff(id) ON DELETE  CASCADE ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS Review(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    comment TEXT ,
+    rating INT NOT NULL,
+    createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CustomerID INT NOT NULL,
+    BookingID INT ,
+    CONSTRAINT fk_review_customer_id FOREIGN KEY (CustomerID) REFERENCES Users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_review_booking_id FOREIGN KEY (BookingID) REFERENCES Booking(id) ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS CheckIn(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    checkInTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    StaffID INT NOT NULL,
+    BookingID INT ,
+    CONSTRAINT fk_checkIn_staff_id FOREIGN KEY (StaffID) REFERENCES Staff(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_checkIn_booking_id FOREIGN KEY (BookingID) REFERENCES Booking(id) ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS CheckOut(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    checkOutTime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    StaffID INT NOT NULL,
+    BookingID INT,
+    CONSTRAINT fk_checkOut_staff_id FOREIGN KEY (StaffID) REFERENCES Staff(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_checkOut_booking_id FOREIGN KEY (BookingID) REFERENCES Booking(id) ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS Receipt(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    paymentMethod varchar(30) NOT NULL,
+    amount INT NOT NULL,
+    paymentDate DATE NOT NULL,
+    BookingID INT ,
+    CONSTRAINT fk_receipt_booking_id FOREIGN KEY (BookingID) REFERENCES Booking(id)  ON DELETE SET NULL ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS Message(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    content TEXT NOT NULL,
+    sentAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ConversationID INT ,
+    SenderID INT NOT NULL,
+    CONSTRAINT fk_message_conversation_id FOREIGN KEY (ConversationID) REFERENCES Conversation(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_message_sender_id FOREIGN KEY (SenderID) REFERENCES Users(id)  ON DELETE  CASCADE ON UPDATE CASCADE
+
+);
+
+
+
+
+
+
 
