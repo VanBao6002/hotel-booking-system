@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.hotel.booking.exception.UnauthorizedException;
+import com.hotel.booking.model.Role;
 import com.hotel.booking.model.User;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -38,6 +40,7 @@ public class JwtService {
 			.subject(user.getUserName())
 			.claim("userId", user.getId())
 			.claim("email", user.getEmail())
+			.claim("role", mapRoleName(user.getRoleId()))
 			.issuedAt(Date.from(now))
 			.expiration(Date.from(expiresAt))
 			.signWith(getSigningKey())
@@ -48,16 +51,40 @@ public class JwtService {
 	 * Validates an access token and returns its subject (username).
 	 */
 	public String extractSubject(String token) {
+		return parseAccessClaims(token).getSubject();
+	}
+
+	/**
+	 * Validates an access token and returns the role claim.
+	 */
+	public String extractRole(String token) {
+		Object role = parseAccessClaims(token).get("role");
+		if (role == null) {
+			throw new UnauthorizedException("Access token role is missing");
+		}
+
+		String roleName = role.toString();
+		if (!roleName.startsWith("ROLE_")) {
+			throw new UnauthorizedException("Invalid role claim in access token");
+		}
+
+		return roleName;
+	}
+
+	private Claims parseAccessClaims(String token) {
 		try {
 			return Jwts.parser()
 				.verifyWith(getSigningKey())
 				.build()
 				.parseSignedClaims(token)
-				.getPayload()
-				.getSubject();
+				.getPayload();
 		} catch (Exception ex) {
 			throw new UnauthorizedException("Invalid or expired access token");
 		}
+	}
+
+	private String mapRoleName(Integer roleId) {
+		return Integer.valueOf(Role.ADMIN).equals(roleId) ? "ROLE_ADMIN" : "ROLE_USER";
 	}
 
 	/**

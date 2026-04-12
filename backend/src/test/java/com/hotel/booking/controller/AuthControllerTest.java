@@ -1,5 +1,6 @@
 package com.hotel.booking.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -15,23 +16,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hotel.booking.dto.ForgotPasswordRequest;
 import com.hotel.booking.dto.LoginRequest;
 import com.hotel.booking.dto.RegisterRequest;
+import com.hotel.booking.model.Role;
 import com.hotel.booking.model.User;
 import com.hotel.booking.repository.UserRepository;
 
-/**
- * Integration tests for AuthController endpoints.
- * 
- * TODOs for you:
- * 1. Set up a test user in the database before each test (see @BeforeEach)
- * 2. Write a test that registers a new user, then logs in with those credentials
- * 3. Assert the response contains accessToken, tokenType, and expiresIn
- */
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class AuthControllerTest {
 
     @Autowired
@@ -52,71 +49,94 @@ public class AuthControllerTest {
 
     private LoginRequest invalidLoginRequest;
 
+    private RegisterRequest validAdminRegisterRequest;
+
+    private LoginRequest validAdminLoginRequest;
+
+    private ForgotPasswordRequest validForgotPasswordRequest;
+
     @BeforeEach
     void setUp() {
-        // TODO: Clear the database and create a test user here
-        // Example: userRepository.deleteAll();
-        // Then create a user with known credentials to use in your tests
-
         userRepository.deleteAll();
-
+        // normal user
         validRegisterRequest = new RegisterRequest();
-        validRegisterRequest.setUserName("testuser");
+        validRegisterRequest.setUserName("testUser");
         validRegisterRequest.setPassword("TestPassword123");
         validRegisterRequest.setFullName("Tester");
         validRegisterRequest.setEmail("Test@gmail.com");
         validRegisterRequest.setPhoneNumber("12345678");
 
-        User user = new User();
-        user.setUserName(validRegisterRequest.getUserName());
-        user.setEmail(validRegisterRequest.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(validRegisterRequest.getPassword()));
-        user.setFullName(validRegisterRequest.getFullName());
-        user.setPhoneNumber(validRegisterRequest.getPhoneNumber());
+        User normalUser = new User();
+        normalUser.setUserName(validRegisterRequest.getUserName());
+        normalUser.setEmail(validRegisterRequest.getEmail());
+        normalUser.setPasswordHash(passwordEncoder.encode(validRegisterRequest.getPassword()));
+        normalUser.setFullName(validRegisterRequest.getFullName());
+        normalUser.setPhoneNumber(validRegisterRequest.getPhoneNumber());
 
-        user.setRoleId(1); 
-        user.setIsActive(true);
-        user.setFailedLoginAttempts(0);
+        normalUser.setRoleId(Role.USER);
+        normalUser.setIsActive(true);
+        normalUser.setFailedLoginAttempts(0);
 
         LocalDateTime now = LocalDateTime.now();
-        user.setCreatedAt(now);
-        user.setUpdatedAt(now);
+        normalUser.setCreatedAt(now);
+        normalUser.setUpdatedAt(now);
 
-        userRepository.save(user);
+        userRepository.save(normalUser);
 
         validLoginRequest = new LoginRequest();
-        validLoginRequest.setUserNameOrEmail("testuser");
+        validLoginRequest.setUserNameOrEmail("testUser");
         validLoginRequest.setPassword("TestPassword123");
 
         invalidLoginRequest = new LoginRequest();
-        invalidLoginRequest.setUserNameOrEmail("testuser");
+        invalidLoginRequest.setUserNameOrEmail("testUser");
         invalidLoginRequest.setPassword("12345678");
+        
+        // admin user
+        validAdminRegisterRequest = new RegisterRequest();
+        validAdminRegisterRequest.setUserName("testAdmin");
+        validAdminRegisterRequest.setPassword("TestPassword123");
+        validAdminRegisterRequest.setFullName("Test_Admin");
+        validAdminRegisterRequest.setEmail("Test_Admin@gmail.com");
+        validAdminRegisterRequest.setPhoneNumber("1231231231");
+
+        User adminUser = new User();
+        adminUser.setUserName(validAdminRegisterRequest.getUserName());
+        adminUser.setEmail(validAdminRegisterRequest.getEmail());
+        adminUser.setPasswordHash(passwordEncoder.encode(validAdminRegisterRequest.getPassword()));
+        adminUser.setFullName(validAdminRegisterRequest.getFullName());
+        adminUser.setPhoneNumber(validAdminRegisterRequest.getPhoneNumber());
+
+        adminUser.setRoleId(Role.ADMIN);
+        adminUser.setIsActive(true);
+        adminUser.setFailedLoginAttempts(0);
+
+        adminUser.setCreatedAt(now);
+        adminUser.setUpdatedAt(now);
+
+        userRepository.save(adminUser);
+
+        validAdminLoginRequest = new LoginRequest();
+        validAdminLoginRequest.setUserNameOrEmail("testAdmin");
+        validAdminLoginRequest.setPassword("TestPassword123");
+
+        validForgotPasswordRequest = new ForgotPasswordRequest();
+        validForgotPasswordRequest.setEmail("Test_Admin@gmail.com");
+        
     }
 
     @SuppressWarnings("null")
     @Test
     void testLoginWithValidCredentials() throws Exception {
-        // TODO: Before this test runs, make sure a user exists in the database
-        // with userName "testuser" and password "TestPassword123"
-        
-        // Step 1: Send POST request to /api/v1/auth/login with valid credentials
         String requestBody = objectMapper.writeValueAsString(validLoginRequest);
-        
-        // Step 2: Assert response status is 200
+
         mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
         .andExpect(status().isOk())
-        // Step 3: Assert response contains accessToken
         .andExpect(jsonPath("$.accessToken").exists())
-        // Step 4: Assert response contains tokenType
         .andExpect(jsonPath("$.tokenType").value("Bearer"))
-        // Step 5: (Optional) Assert expiresIn is present
         .andExpect(jsonPath("$.expiresIn").exists());
     }
-
-    // TODO: Write a second test for invalid credentials
-    // It should assert the response status is 401 (Unauthorized)
 
     @SuppressWarnings("null")
     @Test
@@ -126,6 +146,123 @@ public class AuthControllerTest {
         mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
-        .andExpect(status().isUnauthorized());
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.status").value(401))
+        .andExpect(jsonPath("$.error").value("Unauthorized"))
+        .andExpect(jsonPath("$.message").value("Username or password not match"))
+        .andExpect(jsonPath("$.path").value("/api/v1/auth/login"));
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    void testNormalUserCannotAccessUsersList() throws Exception {
+        // Login as normal user
+        String loginBody = objectMapper.writeValueAsString(validLoginRequest);
+        String loginResponse = mockMvc.perform(post("/api/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(loginBody))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        // Extract token from response
+        String token = objectMapper.readTree(loginResponse).get("accessToken").asText();
+        
+        // Normal user should be forbidden from accessing /api/v1/users
+        mockMvc.perform(get("/api/v1/users")
+            .header("Authorization", "Bearer " + token))
+        .andExpect(status().isForbidden());
+    }
+    
+    @SuppressWarnings("null")
+    @Test
+    void testAdminCanAccessUsersList() throws Exception {
+        // Login as admin user
+        String loginBody = objectMapper.writeValueAsString(validAdminLoginRequest);
+        String loginResponse = mockMvc.perform(post("/api/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(loginBody))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        // Extract token from response
+        String token = objectMapper.readTree(loginResponse).get("accessToken").asText();
+        
+        // Admin user should be able to access /api/v1/users
+        mockMvc.perform(get("/api/v1/users")
+            .header("Authorization", "Bearer " + token))
+        .andExpect(status().isOk());
+    }
+
+    @Test
+    void testAuthMeWithoutAuthorizationHeader() throws Exception {
+        mockMvc.perform(get("/api/v1/auth/me"))
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.status").value(401));
+    }
+
+    @Test
+    void testAuthMeWithMalformedBearerToken() throws Exception {
+        mockMvc.perform(get("/api/v1/auth/me")
+            .header("Authorization", "NoBearer"))
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.status").value(401));
+    }
+
+    @Test
+    void testAuthMeWithGarbageToken() throws Exception {
+        mockMvc.perform(get("/api/v1/auth/me")
+            .header("Authorization", "Bearer IamAGarbageToken"))
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.status").value(401));
+    }
+
+    @SuppressWarnings("null")
+    @Test 
+    void testValidAuthMe() throws Exception {
+        // Login as admin user
+        String loginBody = objectMapper.writeValueAsString(validAdminLoginRequest);
+        String loginResponse = mockMvc.perform(post("/api/v1/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(loginBody))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        // Extract token from response
+        String token = objectMapper.readTree(loginResponse).get("accessToken").asText();
+        
+        mockMvc.perform(get("/api/v1/auth/me")
+            .header("Authorization", "Bearer " + token))
+        .andExpect(status().isOk());
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    void testForgotPasswordWithValidEmail() throws Exception {
+        String body = objectMapper.writeValueAsString(validForgotPasswordRequest);
+        mockMvc.perform(post("/api/v1/auth/forgot-password")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(body))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("If the email exists, a reset link has been sent."));       
+    }
+
+    @SuppressWarnings("null")
+    @Test
+    void testForgotPasswordWithUnknownEmail() throws Exception {
+        ForgotPasswordRequest unknownEmailRequest = new ForgotPasswordRequest();
+        unknownEmailRequest.setEmail("unknown@example.com");
+
+        String body = objectMapper.writeValueAsString(unknownEmailRequest);
+        mockMvc.perform(post("/api/v1/auth/forgot-password")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(body))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("If the email exists, a reset link has been sent."));
     }
 }

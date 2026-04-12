@@ -3,6 +3,7 @@ package com.hotel.booking.security;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel.booking.exception.ApiErrorResponse;
 import com.hotel.booking.exception.UnauthorizedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -45,11 +47,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String authorizationHeader = request.getHeader("Authorization");
                 String token = jwtService.extractBearerToken(authorizationHeader);
                 String userName = jwtService.extractSubject(token);
+                String role = jwtService.extractRole(token);
+                List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(role));
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userName,
                         null,
-                        java.util.Collections.emptyList());
+                    authorities);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
