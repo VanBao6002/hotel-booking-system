@@ -47,6 +47,6 @@ DROP USER IF EXISTS 'hotel_user'@'localhost';
 CREATE USER 'hotel_user'@'%' IDENTIFIED WITH mysql_native_password BY 'hotel_pass';
 CREATE USER 'hotel_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'hotel_pass';
 GRANT ALL PRIVILEGES ON hotel_booking.* TO 'hotel_user'@'%';
-GRANT ALL PRIVILEGES ON hotel_booking.* TO 'hotel_user'@'localhost';
+GRANT ALL PRIVILEGES ON hotel_  .* TO 'hotel_user'@'localhost';
 FLUSH PRIVILEGES;
 
