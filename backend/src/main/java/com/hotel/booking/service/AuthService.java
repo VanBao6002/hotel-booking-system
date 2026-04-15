@@ -45,6 +45,10 @@ public class AuthService {
             throw new ConflictException("Email already exists");
         }
 
+        if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+            throw new ConflictException("Phonenumber is claimed");
+        }
+        
         User user = new User();
         user.setUserName(request.getUserName());
         user.setEmail(request.getEmail());
