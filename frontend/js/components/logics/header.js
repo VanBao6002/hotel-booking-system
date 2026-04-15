@@ -1,4 +1,58 @@
+// global var
+
+const emailField = {
+    selector: "#email",
+    validate: isValidEmail,
+    message: "Không đúng định dạng email hoặc chưa nhập email"
+}
+
+const passwordField = {
+    selector: "#password",
+    validate: function(password) {
+        return password != "" ? true : false;
+    },
+    message: "Chưa nhập mật khẩu"
+}
+
+const fullnameField = {
+    selector: "#fullname",
+    validate: function(fullname) {
+        return fullname != "" ? true : false;
+    },
+    message: "Chưa nhập Họ và Tên"
+}
+
+const usernameField = {
+    selector: "#username",
+    validate: isValidUsername,
+    message: "Tên người dùng phải có độ dài từ 3 đến 16 ký tự, chỉ được phép chứa chữ cái, chữ số hoặc dấu gạch dưới, và không được bắt đầu bằng số hoặc dấu gạch dưới"
+}
+
+const phoneNumberField = {
+    selector: "#phone-number",
+    validate: isValidPhoneNumber,
+    message: "Số điện thoại không hợp lệ"
+}
+
+const passwordFieldSIgnUp = {
+    selector: "#password",
+    validate: isValidPassword,
+    message: "Mật khẩu mạnh, tối thiểu 8 ký tự, phải có chữ hoa, chữ thường, số và ký tự đặc biệt"
+}
+
+const confirmPasswordField = {
+    selector: "#confirm-password",
+    validate: function(confirmPassword) {
+        const password = document.querySelector("#form-sign-up #password");
+        return confirmPassword === password.value ? true : false;
+    },
+    message: "Mật khẩu không khớp"
+}
+
+
 // Su kien Dang nhap/ Dang ky
+
+import { userLogin } from "../../services/login.js";
 
 const getModal = () => { return document.querySelector(".modal"); }
 const getSignInForm = () => { return document.querySelector("#form-sign-in");}
@@ -61,9 +115,8 @@ export function hideAllForm() {
 }
 
 
-function validateForm(formID, rules) {
+function attachValidation(formID, rules) {
     const form = document.getElementById(formID);
-    let isvalid = true;
 
     rules.forEach(rule => {
         const filed = form.querySelector(rule.selector);
@@ -80,23 +133,37 @@ function validateForm(formID, rules) {
                 errorMessage.innerText = "";
             }
         });
-
     })
-
 }
 
-function scrollPage() {
-    const main = document.querySelector(".main");
-    const goTo = document.querySelectorAll(".header__navbar-link");
-    goTo[0].addEventListener("click", () => {
-        main.querySelector(".booking-search").scrollIntoView({behavior: "smooth", block: "center"});
+
+function submitForm(){
+    const submitButton = getModal().querySelectorAll(".confirm-btn");
+
+    let response = {};
+
+    // sign in
+
+    function handleClick(e) {
+        e.preventDefault();
+        const inputs = getSignInForm().querySelectorAll(".form-input");
+        for(let input of inputs) {
+            if(input.value === "") {
+                return;
+            }
+        }
+        
+        turnOffModal();
+        hideAllForm();
+    }
+
+    submitButton[0].addEventListener("click", handleClick);
+    // sign up
+    submitButton[1].addEventListener("click", (e) => {
+        e.preventDefault();
     });
-    goTo[1].addEventListener("click", () => {
-        main.querySelector(".advertising-banner").scrollIntoView({behavior: "smooth", block: "center"});
-    });
-    goTo[2].addEventListener("click", () => {
-        main.querySelector(".popular-destinations").scrollIntoView({behavior: "smooth", block: "center"});
-    });
+
+    console.log(getSignInForm().querySelectorAll(".form-input"));
 }
 
 
@@ -124,57 +191,7 @@ export function initHeader() {
     });
 
 
-    const emailField = {
-        selector: "#email",
-        validate: isValidEmail,
-        message: "Không đúng định dạng email hoặc chưa nhập email"
-    }
-
-    const passwordField = {
-        selector: "#password",
-        validate: function(password) {
-            return password != "" ? true : false;
-        },
-        message: "Chưa nhập mật khẩu"
-    }
-
-    const fullnameField = {
-        selector: "#fullname",
-        validate: function(fullname) {
-            return fullname != "" ? true : false;
-        },
-        message: "Chưa nhập Họ và Tên"
-    }
-
-    const usernameField = {
-        selector: "#username",
-        validate: isValidUsername,
-        message: "Tên người dùng phải có độ dài từ 3 đến 16 ký tự, chỉ được phép chứa chữ cái, chữ số hoặc dấu gạch dưới, và không được bắt đầu bằng số hoặc dấu gạch dưới"
-    }
-
-    const phoneNumberField = {
-        selector: "#phone-number",
-        validate: isValidPhoneNumber,
-        message: "Số điện thoại không hợp lệ"
-    }
-
-    const passwordFieldSIgnUp = {
-        selector: "#password",
-        validate: isValidPassword,
-        message: "Mật khẩu mạnh, tối thiểu 8 ký tự, phải có chữ hoa, chữ thường, số và ký tự đặc biệt"
-    }
-
-    const confirmPasswordField = {
-        selector: "#confirm-password",
-        validate: function(confirmPassword) {
-            const password = document.querySelector("#form-sign-up #password");
-            return confirmPassword === password.value ? true : false;
-        },
-        message: "Mật khẩu không khớp"
-    }
-
-    validateForm("form-sign-in",[emailField,passwordField]);
-    validateForm("form-sign-up",[fullnameField,usernameField,emailField,phoneNumberField,passwordFieldSIgnUp,confirmPasswordField]);
-
-    scrollPage();
+    attachValidation("form-sign-in",[emailField,passwordField]);
+    attachValidation("form-sign-up",[fullnameField,usernameField,emailField,phoneNumberField,passwordFieldSIgnUp,confirmPasswordField]);
+    submitForm();
 }

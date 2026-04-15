@@ -13,13 +13,13 @@ export function modalTemplate() {
                 <span class="auth-form__header-description">Nhập thông tin đăng nhập của bạn để truy cập vào tài khoản</span>
               </div>
               <div class="auth-form__form">
-                <div class="form-group ">
-                  <input id="email" type="text" class="form-input" placeholder="" required>
+                <div class="form-group">
+                  <input id="email" type="text" class="form-input" placeholder="">
                   <label for="email">Email</label>
                   <span class="form-error"></span>
                 </div>
                 <div class="form-group">
-                  <input id="password" type="password" class="form-input" placeholder="" required>
+                  <input id="password" type="password" class="form-input" placeholder="" >
                   <label for="password">Mật khẩu</label>
                   <span class="form-error"></span>
                 </div>
@@ -54,32 +54,32 @@ export function modalTemplate() {
               </div>
               <div class="auth-form__form">
                 <div class="form-group">
-                  <input id="fullname" type="text" class="form-input" placeholder="" required>
+                  <input id="fullname" type="text" class="form-input" placeholder="" >
                   <label for="fullname">Họ và tên</label>
                   <span class="form-error"></span>
                 </div>
                 <div class="form-group">
-                  <input id="username" type="text" class="form-input" placeholder="" required>
+                  <input id="username" type="text" class="form-input" placeholder="" >
                   <label for="username">Username</label>
                   <span class="form-error"></span>
                 </div>
                 <div class="form-group">
-                  <input id="email" type="text" class="form-input" placeholder="" required>
+                  <input id="email" type="text" class="form-input" placeholder="" >
                   <label for="email'">Email</label>
                   <span class="form-error"></span>
                 </div>
                 <div class="form-group">
-                  <input id="phone-number" type="text" class="form-input" placeholder="" required>
+                  <input id="phone-number" type="text" class="form-input" placeholder="" >
                   <label for="phone-number">Số điện thoại</label>
                   <span class="form-error"></span>
                 </div>
                 <div class="form-group">
-                  <input id="password" type="password" class="form-input" placeholder="" required>
+                  <input id="password" type="password" class="form-input" placeholder="" >
                   <label for="password">Mật khẩu</label>
                   <span class="form-error"></span>
                 </div>
                 <div class="form-group">
-                  <input id="confirm-password" type="password" class="form-input" placeholder="" required>
+                  <input id="confirm-password" type="password" class="form-input" placeholder="" >
                   <label for="confirm-password">xác nhận mật khẩu</label>
                   <span class="form-error"></span>
                 </div>

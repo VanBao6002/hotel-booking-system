@@ -41,17 +41,7 @@ export function headerTemplate() {
                 </div>
             </nav>
             <nav class="header__navbar header__navbar-page-transition">
-                <div class="header__navbar-list">
-                    <div class="header__navbar-link">
-                        <div class="header__navbar-item">Tìm kiếm</div>
-                    </div>
-                    <div class="header__navbar-link">
-                        <div class="header__navbar-item">Khuyến mãi</div>
-                    </div>
-                    <div class="header__navbar-link">
-                        <div class="header__navbar-item">Gợi ý</div>
-                    </div>
-                </div>           
+                <div class="header__navbar-list"></div>           
             </nav>
             </div>
         </div>
