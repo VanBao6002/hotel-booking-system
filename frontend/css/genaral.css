@@ -3,9 +3,10 @@
     --navyBlue-color: #0A2540; /*header,footer, primary-btn*/
     --gold-color: #C5A572; /*accent color*/
     --lightGray-color: #D9D9D9; /*border, second background*/
+    --yellow-color: #FFFF00;
     --text-gray-color: #888888;
     --error-color: #FF0000;
-
+    --header-height: 100px;
 }
 
 * {
@@ -17,6 +18,9 @@ html {
     line-height: 1.6rem;
     font-family:"Roboto", Arial, sans-serif ;
     box-sizing: border-box;
+}
+body {
+    background-color: var(--ivoryWhite-color);
 }
 
 
@@ -35,13 +39,26 @@ html {
 .grid__row {
     display: flex;
     flex-wrap: wrap;
-    margin-left: -12px;
-    margin-right: -12px;
+    margin: -12px;
 }
-.grid__column-3 {
+
+.grid__column-two-columns {
+    width: 16.67%;
+    padding: 12px;
+}
+
+.grid__column-three-columns {
     width: 33.33%;
-    padding-left: 12px;
-    padding-right: 12px;
+    padding: 12px;
+}
+
+.grid__column-nine-columns {
+    width: 66.67%;
+    padding: 12px;
+}
+.grid__column-ten-columns {
+    width: 83.33%;
+    padding: 12px;
 }
 
 
@@ -64,6 +81,10 @@ html {
 .btn:hover {
     filter: brightness(80%);
     cursor: pointer;
+}
+
+.head__title { /*danh cho the h2*/
+    font-size: 2.2rem;
 }
 /* Animation */
 
@@ -98,5 +119,13 @@ html {
     }
 }
 
+@keyframes rotate180deg {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(180deg);
+    }
+}
 
 

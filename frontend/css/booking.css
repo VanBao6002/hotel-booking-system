@@ -1,0 +1,322 @@
+.booking {
+    margin-top: calc(var(--header-height) + 24px);
+}
+.star {
+    color: yellow;
+}
+.booking__picture {
+    display: flex;
+    gap: 8px;
+    height: 332px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.booking__picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.booking__picture-main {
+    height: 100%;
+    width: 480px;
+}
+.booking__picture-main-img{
+    height: 100%;
+}
+.booking__picture-add {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    width: 720px;
+}
+.booking__picture-add-img {
+    height: 162px;
+    flex: 1 1 calc(33.33% - 8px);
+}
+
+.booing__info {
+    background-color: white;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 2px 5px rgba(3, 18, 26, 0.15);
+    padding: 20px;
+    
+}
+
+.booking__info-genaral-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+}
+.booking__info-genaral-name {
+    font-size: 2.2rem;
+    font-weight: bold;
+}   
+
+.booking__info-genaral-wrap {
+    display: flex;
+}
+.booking__info-genaral-price-text {
+    font-size: 1rem;
+    color: var(--text-gray-color);
+    text-align: end;
+}
+.booking__info-genaral-price-current {
+    font-size: 1.8rem;
+    text-align: end;
+    font-weight: bold;
+    color: #ff5e1f;
+}
+.booking__info-genaral-button {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: white;
+    background-color: #ff5e1f;
+    padding: 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+.booking__info-genaral-button:hover {
+    filter: brightness(80%);
+    cursor: pointer;
+}
+.booking__info-genaral-body {
+    display: flex;
+}
+.booking__info-genaral-location-head,
+.booking__info-genaral-service-head{
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.booking__info-genaral-location-body,
+.booking__info-genaral-service-body {
+    font-size: 1.4rem;
+}
+
+.booking__info-genaral-location,
+.booking__info-genaral-service {
+    /* border: 1px solid black; */
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(3, 18, 26, 0.15);
+    margin: 0 20px 20px 20px;
+    padding: 10px;
+    flex: 1;
+}
+.booking__info-genaral-service-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.booking__info-room-head,
+.booking__info-loaction-head,
+.booking__info-service-head,
+.booking__info-rate-head {
+    font-size: 2rem;
+    font-weight: 700;
+    padding: 20px 0 0 0;
+}
+.booking__info-room-body,
+.booking__info-rate-body {
+    padding: 20px;
+    margin: 20px;
+    /* border: 1px solid black; */
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(3, 18, 26, 0.15);
+}
+.booking__info-room-wrap {
+    margin-top: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(3, 18, 26, 0.15);
+}
+.booking__info-room-wrap:nth-child(1) {
+    margin-top: 0px;
+}
+.booking__info-room-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.6rem;
+    border-radius: 10px;
+}
+
+.booking__info-room-table th,
+.booking__info-room-table td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 8px;
+}
+
+.booking__info-room-table th {
+    background-color: #f2f2f2;
+}
+.room__price {
+    color: var(--text-gray-color);
+    text-decoration: line-through;
+}
+.room-current__price {
+    color: #ff5e1f;
+    font-weight: bold;
+}
+.room-detail__button {
+    background-color: #0a9af2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+.booking__button {
+    background-color: #ff5e1f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+.room-detail__button,
+.booking__button {
+    padding: 5px;
+    width: 90px;
+}
+.room-detail__button:hover,
+.booking__button:hover {
+    filter: brightness(80%);
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+.booking__info-rate-overall-wrap {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.booing__info-rate-avg {
+    display: flex;
+    align-items: center;
+}
+.booking__info-rate-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: space-between;
+}
+.rate-detail__box {
+    display: flex;
+    font-size: 1.6rem;
+}
+
+.rate-avg__box-border {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    border: 5px solid #0a9af2;
+    border-radius: 10px;
+    margin-right: 50px;
+}
+.rate-avg__box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 90%;
+    background-color: #45b3f7;
+    border-radius: 10px;
+}
+.rate-avg__text {
+    font-size: 1.2rem;
+    margin: 0;
+}
+.rate-avg__box span {
+    font-size: 3rem;
+    color: white;
+    font-weight: bold;
+}
+.rate__star {
+    color: yellow;
+}
+.rate__row {
+    margin-right: 20px;
+    margin-left: 20px;
+    width: 260px;
+    background-color: #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.rate__row-fill {
+    width: 100%;
+    height: 100%;
+    background-color: #0a9af2;
+    transform: scaleX(0.5);
+    transform-origin: left center;
+}
+
+.booking__info-rate-covervation-head {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.booking__info-rate-covervation-body {
+    margin-top: 20px;
+}
+.booking__info-rate-covervation-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.convervation__box {
+    display: flex;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(3, 18, 26, 0.15);
+    border-radius: 10px;
+}
+.convervation__user {
+    display: flex;
+    width: 300px;
+    justify-content: start;
+    align-items: center;
+}
+.convervation__user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 20px;
+}
+.convervation__user-avatar  img {
+    width: 100%;
+    height: 100%;
+}
+.convervation__user-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.convervation__chat {
+    width: 900px;
+}
+.convervation__chat-info {
+    display: flex;
+    font-size: 1.2rem;
+}
+
+.convervation__chat-rate {
+    padding: 5px;
+    border-radius: 20px;
+    background-color: #d1f0ff;
+}
+.convervation__chat-time {
+    padding: 5px;
+    font-weight: bold;
+    color: var(--text-gray-color);
+}
+.convervation__chat-content {
+    margin-top: 5px;
+    font-size: 1.2rem;
+}

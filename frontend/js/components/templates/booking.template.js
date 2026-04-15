@@ -1,31 +1,6 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Booking Hotel</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link rel="stylesheet" href="css/genaral.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/modal.css">
-    <link rel="stylesheet" href="css/booking-search.css">
-    <link rel="stylesheet" href="css/advertising-banner.css">
-    <link rel="stylesheet" href="css/popular-destinations.css">
-
-    <link rel="stylesheet" href="css/search-hotel.css">
-    <link rel="stylesheet" href="css/booking.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/font/fontawesome-free-7.2.0/css/all.min.css">
-
-
-  </head>
-  <body>
-    <div class="app" style="background-color: var(--ivoryWhite-color);"></div>
-    <!-- <main>
-      <div class="booking">
+export function bookingTemplate() {
+    return `
+        <div class="booking">
         <div class="grid">
           <div class="booking__picture-wrap">
             <div class="booking__picture">
@@ -389,7 +364,5 @@
 
         </div>
       </div>
-    </main> -->
-    <script type="module" src="./js/app.js"></script>
-  </body>
-</html>
+    `;
+}
