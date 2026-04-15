@@ -1,10 +1,15 @@
 package com.hotel.booking.config;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hotel.booking.exception.ApiErrorResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +30,12 @@ public class SecurityConfig {
     @Value("${app.cors.allowed-origins:http://localhost:3000}")
     private String allowedOrigins;
 
+    private final ObjectMapper objectMapper;
+
+    public SecurityConfig(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
@@ -42,8 +53,24 @@ public class SecurityConfig {
                                 "/api/v1/auth/forgot-password",
                                 "/api/v1/auth/reset-password")
                         .permitAll()
+                        .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated())
+                    .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) ->
+                            writeAuthError(
+                                response,
+                                request.getRequestURI(),
+                                HttpStatus.UNAUTHORIZED,
+                                "Unauthorized",
+                                "Authentication required"))
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                            writeAuthError(
+                                response,
+                                request.getRequestURI(),
+                                HttpStatus.FORBIDDEN,
+                                "Forbidden",
+                                "Access denied")))
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -70,5 +97,26 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    private void writeAuthError(
+            jakarta.servlet.http.HttpServletResponse response,
+            String path,
+            HttpStatus status,
+            String error,
+            String message) throws IOException {
+
+        response.setStatus(status.value());
+        response.setContentType("application/json");
+
+        ApiErrorResponse body = new ApiErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                error,
+                message,
+                path
+        );
+
+        objectMapper.writeValue(response.getOutputStream(), body);
     }
 }

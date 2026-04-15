@@ -1,30 +1,21 @@
 package com.hotel.booking.dto;
 
 public class ForgotPasswordResponse {
-    private String resetToken;
-    private long expiresIn;
+    private String message;
 
     public ForgotPasswordResponse() {
     }
 
-    public ForgotPasswordResponse(String resetToken, long expiresIn) {
-        this.resetToken = resetToken;
-        this.expiresIn = expiresIn;
+    public ForgotPasswordResponse(String message) {
+        this.message = message;
     }
 
-    public String getResetToken() {
-        return resetToken;
+    public String getMessage() {
+        return message;
     }
 
-    public void setResetToken(String resetToken) {
-        this.resetToken = resetToken;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public long getExpiresIn() {
-        return expiresIn;
-    }
-
-    public void setExpiresIn(long expiresIn) {
-        this.expiresIn = expiresIn;
-    }
 }

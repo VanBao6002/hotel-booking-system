@@ -1,7 +1,6 @@
 package com.hotel.booking.service;
 
 import java.time.LocalDateTime;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,7 @@ import com.hotel.booking.exception.ConflictException;
 import com.hotel.booking.exception.ResourceNotFoundException;
 import com.hotel.booking.exception.UnauthorizedException;
 import com.hotel.booking.mapper.UserMapper;
+import com.hotel.booking.model.Role;
 import com.hotel.booking.model.User;
 import com.hotel.booking.repository.UserRepository;
 
@@ -52,7 +52,7 @@ public class AuthService {
         user.setFullName(request.getFullName());
         user.setPhoneNumber(request.getPhoneNumber());
 
-        user.setRoleId(1); 
+        user.setRoleId(Role.USER);
         user.setIsActive(true);
         user.setFailedLoginAttempts(0);
 
@@ -109,11 +109,10 @@ public class AuthService {
     }
 
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + request.getEmail()));
+        userRepository.findByEmail(request.getEmail())
+            .ifPresent(jwtService::generateResetPasswordToken);
 
-        String resetToken = jwtService.generateResetPasswordToken(user);
-        return new ForgotPasswordResponse(resetToken, jwtService.getResetTokenExpiresInSeconds());
+        return new ForgotPasswordResponse("If the email exists, a reset link has been sent.");
     }
 
     public void resetPassword(ResetPasswordRequest request) {

@@ -3,6 +3,7 @@ package com.hotel.booking.exception;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,6 +19,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @Value("${app.errors.include-details:true}")
+    private boolean includeDetails;
+    
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
@@ -70,12 +75,30 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiErrorResponse> handleRuntime(RuntimeException ex, HttpServletRequest request) {
-        return buildError(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
+        return buildError(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            resolveMessage(ex, "Unexpected server error"),
+            request.getRequestURI()
+        );
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleFallback(Exception ex, HttpServletRequest request) {
-        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error", request.getRequestURI());
+        return buildError(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            resolveMessage(ex, "Unexpected server error"),
+            request.getRequestURI()
+        );
+    }
+
+    private String resolveMessage(Exception ex, String defaultMessage) {
+        if (!includeDetails) {
+            return defaultMessage;
+        }
+        if (ex.getMessage() == null || ex.getMessage().isBlank()) {
+            return defaultMessage;
+        }
+        return ex.getMessage();
     }
 
     private ResponseEntity<ApiErrorResponse> buildError(HttpStatus status, String message, String path) {
