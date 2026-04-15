@@ -15,7 +15,7 @@ const rules = [
     },
     {
         path: ["#search-hotel"],
-        roles: ["guest","staff", "manager"],
+        roles: ["guest", "customer","staff", "manager"],
         item: ["home"]
     },
     {

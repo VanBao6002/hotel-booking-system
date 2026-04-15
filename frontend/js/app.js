@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     app.innerHTML = `
         ${headerTemplate()}
         <div class="main"></div>
-        ${footerTemplate}
+        ${footerTemplate()}
         ${modalTemplate()}
     `;
     
