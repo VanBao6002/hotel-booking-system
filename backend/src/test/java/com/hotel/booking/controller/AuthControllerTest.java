@@ -3,6 +3,8 @@ package com.hotel.booking.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.ActiveProfiles;
+
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel.booking.dto.ForgotPasswordRequest;
@@ -264,5 +268,15 @@ public class AuthControllerTest {
         .content(body))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.message").value("If the email exists, a reset link has been sent."));
+    }
+
+    @Test
+    void testPreflightOptionsToProtectedEndpointIsAllowed() throws Exception {
+        mockMvc.perform(options("/api/v1/users")
+                .header("Origin", "http://localhost:3000")
+                .header("Access-Control-Request-Method", "GET")
+                .header("Access-Control-Request-Headers", "Authorization"))
+            .andExpect(status().is2xxSuccessful())
+            .andExpect(header().exists("Access-Control-Allow-Origin"));
     }
 }
