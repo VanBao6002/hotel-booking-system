@@ -39,3 +39,4 @@ pnpm-debug.log*
 Thumbs.db
 
 structure.txt
+.github/copilot-instructions.md
