@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS Room(
     area VARCHAR(30) NOT NULL,
     numberOfBed INT NOT NULL,
     description TEXT NOT NULL,
-    roomIMG TEXT NOT NULL,
+    roomIMG TEXT ,
     HotelBranchID INT,
     TypeRoomID INT ,
     LocationID INT ,
