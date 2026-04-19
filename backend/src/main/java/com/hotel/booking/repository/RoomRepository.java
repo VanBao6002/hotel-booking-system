@@ -1,80 +1,67 @@
 package com.hotel.booking.repository;
 
 import com.hotel.booking.dto.RoomDTO;
-import java.sql.*;
-import java.util.ArrayList;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
+@Repository
 public class RoomRepository {
-    private Connection connection;
+    private final JdbcTemplate jdbcTemplate;
 
-    public RoomRepository(Connection connection) {
-        this.connection = connection;
+    public RoomRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     // Lấy tất cả phòng
-    public List<RoomDTO> getAllRooms() throws SQLException {
-        List<RoomDTO> rooms = new ArrayList<>();
-        String sql = "SELECT * FROM Room";
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                RoomDTO room = new RoomDTO(
-                    rs.getInt("id"),
-                    rs.getString("area"),
-                    rs.getInt("numberOfBed"),
-                    rs.getString("description"),
-                    rs.getString("roomIMG"),
-                    rs.getInt("HotelBranchID"),
-                    rs.getInt("TypeRoomID"),
-                    rs.getInt("LocationID"),
-                    rs.getInt("RoomStatusID")
-                );
-                rooms.add(room);
-            }
-        }
-        return rooms;
+    public List<RoomDTO> getAllRooms() {
+        String sql = "SELECT * FROM room";
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+            new RoomDTO(
+                rs.getInt("id"),
+                rs.getString("area"),
+                rs.getInt("number_of_bed"),
+                rs.getString("description"),
+                rs.getString("room_img"),
+                rs.getInt("hotel_branch_id"),
+                rs.getInt("type_room_id"),
+                rs.getInt("location_id"),
+                rs.getInt("room_status_id")
+            )
+        );
     }
 
     // Lấy phòng theo ID
-    public RoomDTO getRoomById(int id) throws SQLException {
-        String sql = "SELECT * FROM Room WHERE id = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return new RoomDTO(
-                        rs.getInt("id"),
-                        rs.getString("area"),
-                        rs.getInt("numberOfBed"),
-                        rs.getString("description"),
-                        rs.getString("roomIMG"),
-                        rs.getInt("HotelBranchID"),
-                        rs.getInt("TypeRoomID"),
-                        rs.getInt("LocationID"),
-                        rs.getInt("RoomStatusID")
-                    );
-                }
-            }
-        }
-        return null;
+    public RoomDTO getRoomById(int id) {
+        String sql = "SELECT * FROM room WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+            new RoomDTO(
+                rs.getInt("id"),
+                rs.getString("area"),
+                rs.getInt("number_of_bed"),
+                rs.getString("description"),
+                rs.getString("room_img"),
+                rs.getInt("hotel_branch_id"),
+                rs.getInt("type_room_id"),
+                rs.getInt("location_id"),
+                rs.getInt("room_status_id")
+            )
+        );
     }
 
     // Thêm phòng mới
-    public void addRoom(RoomDTO room) throws SQLException {
-        String sql = "INSERT INTO Room(area, numberOfBed, description, roomIMG, HotelBranchID, TypeRoomID, LocationID, RoomStatusID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, room.getArea());
-            pstmt.setInt(2, room.getNumberOfBed());
-            pstmt.setString(3, room.getDescription());
-            pstmt.setString(4, room.getRoomIMG());
-            pstmt.setObject(5, room.getHotelBranchID());
-            pstmt.setObject(6, room.getTypeRoomID());
-            pstmt.setObject(7, room.getLocationID());
-            pstmt.setObject(8, room.getRoomStatusID());
-            pstmt.executeUpdate();
-        }
+    public void addRoom(RoomDTO room) {
+        String sql = "INSERT INTO room(area, number_of_bed, description, room_img, hotel_branch_id, type_room_id, location_id, room_status_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql,
+                room.getArea(),
+                room.getNumberOfBed(),
+                room.getDescription(),
+                room.getRoomIMG(),
+                room.getHotelBranchID(),
+                room.getTypeRoomID(),
+                room.getLocationID(),
+                room.getRoomStatusID()
+        );
     }
 }

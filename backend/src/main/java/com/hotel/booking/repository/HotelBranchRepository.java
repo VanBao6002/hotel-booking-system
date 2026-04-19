@@ -2,92 +2,67 @@ package com.hotel.booking.repository;
 
 import com.hotel.booking.dto.HotelBranchDTO;
 import com.hotel.booking.dto.RoomDTO;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class HotelBranchRepository {
-    private Connection connection;
+    private final JdbcTemplate jdbcTemplate;
 
-    public HotelBranchRepository(Connection connection) {
-        this.connection = connection;
+    public HotelBranchRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     // Lấy tất cả chi nhánh
-    public List<HotelBranchDTO> getAllBranches() throws SQLException {
-        List<HotelBranchDTO> branches = new ArrayList<>();
-        String sql = "SELECT * FROM HotelBranch";
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                HotelBranchDTO branch = new HotelBranchDTO(
-                    rs.getInt("id"),
-                    rs.getString("address"),
-                    rs.getString("phone_number"),
-                    null // chưa load danh sách phòng
-                );
-                branches.add(branch);
-            }
-        }
-        return branches;
+    public List<HotelBranchDTO> getAllBranches() {
+        String sql = "SELECT id, address, phone_number FROM hotelbranch";
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+            new HotelBranchDTO(
+                rs.getInt("id"),
+                rs.getString("address"),
+                rs.getString("phone_number"),
+                null
+            )
+        );
     }
 
     // Lấy chi nhánh theo ID (kèm danh sách phòng)
-    public HotelBranchDTO getBranchById(int id) throws SQLException {
-        String sqlBranch = "SELECT * FROM HotelBranch WHERE id = ?";
-        HotelBranchDTO branch = null;
+    public HotelBranchDTO getBranchById(int id) {
+        String sqlBranch = "SELECT id, address, phone_number FROM hotelbranch WHERE id = ?";
+        HotelBranchDTO branch = jdbcTemplate.queryForObject(sqlBranch, new Object[]{id}, (rs, rowNum) ->
+            new HotelBranchDTO(
+                rs.getInt("id"),
+                rs.getString("address"),
+                rs.getString("phone_number"),
+                List.of()
+            )
+        );
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sqlBranch)) {
-            pstmt.setInt(1, id);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    branch = new HotelBranchDTO(
-                        rs.getInt("id"),
-                        rs.getString("address"),
-                        rs.getString("phone_number"),
-                        new ArrayList<>()
-                    );
-                }
-            }
-        }
-
-        // Nếu tìm thấy chi nhánh thì load danh sách phòng
-        if (branch != null) {
-            String sqlRooms = "SELECT * FROM Room WHERE HotelBranchID = ?";
-            try (PreparedStatement pstmt = connection.prepareStatement(sqlRooms)) {
-                pstmt.setInt(1, id);
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    while (rs.next()) {
-                        RoomDTO room = new RoomDTO(
-                            rs.getInt("id"),
-                            rs.getString("area"),
-                            rs.getInt("numberOfBed"),
-                            rs.getString("description"),
-                            rs.getString("roomIMG"),
-                            rs.getInt("HotelBranchID"),
-                            rs.getInt("TypeRoomID"),
-                            rs.getInt("LocationID"),
-                            rs.getInt("RoomStatusID")
-                        );
-                        branch.getRooms().add(room);
-                    }
-                }
-            }
-        }
+        // load rooms
+        String sqlRooms = "SELECT * FROM room WHERE hotel_branch_id = ?";
+        List<RoomDTO> rooms = jdbcTemplate.query(sqlRooms, new Object[]{id}, (rs, rowNum) ->
+            new RoomDTO(
+                rs.getInt("id"),
+                rs.getString("area"),
+                rs.getInt("number_of_bed"),
+                rs.getString("description"),
+                rs.getString("room_img"),
+                rs.getInt("hotel_branch_id"),
+                rs.getInt("type_room_id"),
+                rs.getInt("location_id"),
+                rs.getInt("room_status_id")
+            )
+        );
+        branch.setRooms(rooms);
 
         return branch;
     }
 
     // Thêm chi nhánh mới
-    public void addBranch(HotelBranchDTO branch) throws SQLException {
-        String sql = "INSERT INTO HotelBranch(address, phone_number) VALUES (?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, branch.getAddress());
-            pstmt.setString(2, branch.getPhoneNumber());
-            pstmt.executeUpdate();
-        }
+    public void addBranch(HotelBranchDTO branch) {
+        String sql = "INSERT INTO hotelbranch(address, phone_number) VALUES (?, ?)";
+        jdbcTemplate.update(sql, branch.getAddress(), branch.getPhoneNumber());
     }
 }

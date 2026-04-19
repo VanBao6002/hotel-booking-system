@@ -5,11 +5,13 @@ import com.hotel.booking.dto.RoomDTO;
 import com.hotel.booking.repository.HotelBranchRepository;
 import com.hotel.booking.repository.BookingRepository;
 
-import java.sql.SQLException;
+// import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+@Service
 public class HotelBranchService {
     private final HotelBranchRepository branchRepo;
     private final BookingRepository bookingRepo;
@@ -19,46 +21,37 @@ public class HotelBranchService {
         this.bookingRepo = bookingRepo;
     }
 
-    /**
-     * Tìm chi nhánh có đủ phòng trống theo ngày check-in/check-out và số lượng phòng đơn/đôi yêu cầu
-     */
+    // Không cần throws SQLException nữa
+    public List<HotelBranchDTO> getAllBranches() {
+        return branchRepo.getAllBranches();
+    }
+
     public HotelBranchDTO searchAvailableBranch(int branchId,
                                                 LocalDate checkInDate,
                                                 LocalDate checkOutDate,
                                                 int requiredSingleRooms,
-                                                int requiredDoubleRooms) throws SQLException {
-        // Lấy chi nhánh từ DB
+                                                int requiredDoubleRooms) {
         HotelBranchDTO branch = branchRepo.getBranchById(branchId);
         if (branch == null) {
             throw new IllegalArgumentException("Không tìm thấy chi nhánh với ID: " + branchId);
         }
 
-        // Lọc danh sách phòng còn trống theo khoảng thời gian
         List<RoomDTO> availableRooms = branch.getRooms().stream()
-                .filter(room -> {
-                    try {
-                        return bookingRepo.isRoomAvailable(room.getId(), checkInDate, checkOutDate);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
+                .filter(room -> bookingRepo.isRoomAvailable(room.getId(), checkInDate, checkOutDate))
                 .collect(Collectors.toList());
 
-        // Đếm số lượng phòng đơn và phòng đôi
         long availableSingles = availableRooms.stream()
-                .filter(r -> r.getTypeRoomID() == 1) // giả sử TypeRoomID=1 là phòng đơn
+                .filter(r -> r.getTypeRoomID() == 1)
                 .count();
 
         long availableDoubles = availableRooms.stream()
-                .filter(r -> r.getTypeRoomID() == 2) // giả sử TypeRoomID=2 là phòng đôi
+                .filter(r -> r.getTypeRoomID() == 2)
                 .count();
 
-        // Kiểm tra có đủ phòng không
         if (availableSingles < requiredSingleRooms || availableDoubles < requiredDoubleRooms) {
             throw new IllegalArgumentException("Không đủ phòng đáp ứng yêu cầu!");
         }
 
-        // Gán danh sách phòng trống vào chi nhánh
         branch.setRooms(availableRooms);
         return branch;
     }

@@ -1,99 +1,71 @@
 package com.hotel.booking.repository;
 
 import com.hotel.booking.dto.BookingDTO;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
-import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class BookingRepository {
-    private Connection connection;
+    private final JdbcTemplate jdbcTemplate;
 
-    public BookingRepository(Connection connection) {
-        this.connection = connection;
+    public BookingRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     // Lấy tất cả booking
-    public List<BookingDTO> getAllBookings() throws SQLException {
-        List<BookingDTO> bookings = new ArrayList<>();
-        String sql = "SELECT * FROM Booking";
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                bookings.add(mapResultSetToBooking(rs));
-            }
-        }
-        return bookings;
+    public List<BookingDTO> getAllBookings() {
+        String sql = "SELECT * FROM booking";
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+            new BookingDTO(
+                rs.getInt("id"),
+                rs.getDate("check_in_date").toLocalDate(),
+                rs.getDate("check_out_date").toLocalDate(),
+                rs.getTimestamp("booked_at").toLocalDateTime(),
+                rs.getString("room_img"),
+                rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
+                rs.getObject("room_id") != null ? rs.getInt("room_id") : null
+            )
+        );
     }
 
     // Lấy booking theo RoomID
-    public List<BookingDTO> getBookingsByRoom(int roomId) throws SQLException {
-        List<BookingDTO> bookings = new ArrayList<>();
-        String sql = "SELECT * FROM Booking WHERE RoomID = ?";
-
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, roomId);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    bookings.add(mapResultSetToBooking(rs));
-                }
-            }
-        }
-        return bookings;
+    public List<BookingDTO> getBookingsByRoom(int roomId) {
+        String sql = "SELECT * FROM booking WHERE room_id = ?";
+        return jdbcTemplate.query(sql, new Object[]{roomId}, (rs, rowNum) ->
+            new BookingDTO(
+                rs.getInt("id"),
+                rs.getDate("check_in_date").toLocalDate(),
+                rs.getDate("check_out_date").toLocalDate(),
+                rs.getTimestamp("booked_at").toLocalDateTime(),
+                rs.getString("room_img"),
+                rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
+                rs.getObject("room_id") != null ? rs.getInt("room_id") : null
+            )
+        );
     }
 
-    // Kiểm tra phòng có trống trong khoảng thời gian yêu cầu không
-    public boolean isRoomAvailable(int roomId, LocalDate checkIn, LocalDate checkOut) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Booking " +
-                     "WHERE RoomID = ? AND ( " +
-                     "      (checkInDate <= ? AND checkOutDate >= ?) " + // giao nhau với ngày check-in
-                     "   OR (checkInDate <= ? AND checkOutDate >= ?) " + // giao nhau với ngày check-out
-                     "   OR (checkInDate >= ? AND checkOutDate <= ?) " +  // nằm hoàn toàn trong khoảng
-                     ")";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, roomId);
-            pstmt.setDate(2, Date.valueOf(checkIn));
-            pstmt.setDate(3, Date.valueOf(checkIn));
-            pstmt.setDate(4, Date.valueOf(checkOut));
-            pstmt.setDate(5, Date.valueOf(checkOut));
-            pstmt.setDate(6, Date.valueOf(checkIn));
-            pstmt.setDate(7, Date.valueOf(checkOut));
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) == 0; // nếu không có bản ghi trùng thì phòng trống
-                }
-            }
-        }
-        return true;
+    // Kiểm tra phòng có trống
+    public boolean isRoomAvailable(int roomId, LocalDate checkIn, LocalDate checkOut) {
+        String sql = "SELECT COUNT(*) FROM booking WHERE room_id = ? " +
+                     "AND (check_in_date < ? AND check_out_date > ?)";
+        Integer count = jdbcTemplate.queryForObject(sql,
+                new Object[]{roomId, checkOut, checkIn}, Integer.class);
+        return count == null || count == 0;
     }
 
     // Thêm booking mới
-    public void addBooking(BookingDTO booking) throws SQLException {
-        String sql = "INSERT INTO Booking(checkInDate, checkOutDate, roomIMG, HotelBranchID, RoomID) " +
+    public void addBooking(BookingDTO booking) {
+        String sql = "INSERT INTO booking(check_in_date, check_out_date, room_img, hotel_branch_id, room_id) " +
                      "VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setDate(1, Date.valueOf(booking.getCheckInDate()));
-            pstmt.setDate(2, Date.valueOf(booking.getCheckOutDate()));
-            pstmt.setString(3, booking.getRoomIMG());
-            pstmt.setObject(4, booking.getHotelBranchID());
-            pstmt.setObject(5, booking.getRoomID());
-            pstmt.executeUpdate();
-        }
-    }
-
-    // Hàm tiện ích ánh xạ ResultSet -> BookingDTO
-    private BookingDTO mapResultSetToBooking(ResultSet rs) throws SQLException {
-        return new BookingDTO(
-            rs.getInt("id"),
-            rs.getDate("checkInDate").toLocalDate(),
-            rs.getDate("checkOutDate").toLocalDate(),
-            rs.getTimestamp("bookedAt").toLocalDateTime(),
-            rs.getString("roomIMG"),
-            rs.getObject("HotelBranchID") != null ? rs.getInt("HotelBranchID") : null,
-            rs.getObject("RoomID") != null ? rs.getInt("RoomID") : null
+        jdbcTemplate.update(sql,
+                booking.getCheckInDate(),
+                booking.getCheckOutDate(),
+                booking.getRoomIMG(),
+                booking.getHotelBranchID(),
+                booking.getRoomID()
         );
     }
 }

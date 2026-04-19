@@ -5,29 +5,29 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Booking")
+@Table(name = "booking")
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "checkInDate", nullable = false)
+    @Column(name = "check_in_date", nullable = false)
     private LocalDate checkInDate;
 
-    @Column(name = "checkOutDate", nullable = false)
+    @Column(name = "check_out_date", nullable = false)
     private LocalDate checkOutDate;
 
-    @Column(name = "bookedAt", nullable = false)
+    @Column(name = "booked_at", nullable = false)
     private LocalDateTime bookedAt = LocalDateTime.now();
 
-    @Column(name = "roomIMG", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "room_img", columnDefinition = "TEXT", nullable = false)
     private String roomIMG;
 
-    @Column(name = "HotelBranchID")
+    @Column(name = "hotel_branch_id")
     private Integer hotelBranchId;
 
-    @Column(name = "RoomID")
+    @Column(name = "room_id")
     private Integer roomId;
 
     // Getters & Setters

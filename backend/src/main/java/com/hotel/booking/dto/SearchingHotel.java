@@ -1,38 +1,33 @@
 package com.hotel.booking.dto;
 
 import java.time.LocalDate;
-
-import org.springframework.cglib.core.Local;
-
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class SearchingHotel {
     @NotBlank(message = "Location cannot be blank")
-    private String location;
+    private Integer location;
 
-    @NotBlank(message = "Check in date cannot be blank")
+    @NotNull(message = "Check in date cannot be null")
     private LocalDate checkInDate;
 
-    @NotBlank(message = "Check out date cannot be blank")
+    @NotNull(message = "Check out date cannot be null")
     private LocalDate checkOutDate;
 
     private Integer doubleRoomQuantity;
-
-
     private Integer singleRoomQuantity;
 
-    public String getLocation() {
+    // Getters & Setters
+    public Integer getLocation() {
         return location;
     }
-
-    public void setLocation(String location) {
+    public void setLocation(Integer location) {
         this.location = location;
     }
 
     public LocalDate getCheckInDate() {
         return checkInDate;
     }
-
     public void setCheckInDate(LocalDate checkInDate) {
         this.checkInDate = checkInDate;
     }
@@ -40,7 +35,6 @@ public class SearchingHotel {
     public LocalDate getCheckOutDate() {
         return checkOutDate;
     }
-
     public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
@@ -48,15 +42,13 @@ public class SearchingHotel {
     public Integer getDoubleRoomQuantity() {
         return doubleRoomQuantity;
     }
-
-    public void  setDoubleRoomQuantity(Integer doubleRoomQuantity){
+    public void setDoubleRoomQuantity(Integer doubleRoomQuantity) {
         this.doubleRoomQuantity = doubleRoomQuantity;
     }
 
     public Integer getSingleRoomQuantity() {
         return singleRoomQuantity;
     }
-
     public void setSingleRoomQuantity(Integer singleRoomQuantity) {
         this.singleRoomQuantity = singleRoomQuantity;
     }
