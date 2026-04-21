@@ -10,13 +10,14 @@ public class RoomDTO {
     private Integer typeRoomID;
     private Integer locationID;
     private Integer roomStatusID;
+    private String typeCode ;
 
     // Constructor mặc định
     public RoomDTO() {}
 
     // Constructor đầy đủ
     public RoomDTO(int id, String area, int numberOfBed, String description, String roomIMG,
-                   Integer hotelBranchID, Integer typeRoomID, Integer locationID, Integer roomStatusID) {
+                   Integer hotelBranchID, Integer typeRoomID, Integer locationID, Integer roomStatusID,String typeCode) {
         this.id = id;
         this.area = area;
         this.numberOfBed = numberOfBed;
@@ -26,6 +27,7 @@ public class RoomDTO {
         this.typeRoomID = typeRoomID;
         this.locationID = locationID;
         this.roomStatusID = roomStatusID;
+        this.typeCode = typeCode;
     }
 
     // Getter và Setter
@@ -90,6 +92,12 @@ public class RoomDTO {
     }
     public void setRoomStatusID(Integer roomStatusID) {
         this.roomStatusID = roomStatusID;
+    }
+    public String getTypeCode() {
+         return typeCode; 
+    }
+    public void setTypeCode(String typeCode) {
+         this.typeCode = typeCode; 
     }
 }
 

@@ -15,7 +15,7 @@ Fields:
 - `error` (HTTP reason phrase)
 - `message` (error details)
 - `path` (request URI)
-
+V
 Example:
 
 ```json

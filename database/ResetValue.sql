@@ -2,38 +2,38 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Xóa bảng con trước (phụ thuộc nhiều khóa ngoại)
-TRUNCATE TABLE BookingService;
-TRUNCATE TABLE HistoryLogin;
-TRUNCATE TABLE Notification;
-TRUNCATE TABLE Message;
-TRUNCATE TABLE Review;
-TRUNCATE TABLE CheckIn;
-TRUNCATE TABLE CheckOut;
-TRUNCATE TABLE Receipt;
-TRUNCATE TABLE Maintenance;
-TRUNCATE TABLE Report;
-TRUNCATE TABLE Conversation;
-TRUNCATE TABLE RoomPrice;
+TRUNCATE TABLE bookingservice;
+TRUNCATE TABLE historylogin;
+TRUNCATE TABLE notification;
+TRUNCATE TABLE message;
+TRUNCATE TABLE review;
+TRUNCATE TABLE checkin;
+TRUNCATE TABLE checkout;
+TRUNCATE TABLE receipt;
+TRUNCATE TABLE maintenance;
+TRUNCATE TABLE report;
+TRUNCATE TABLE conversation;
+TRUNCATE TABLE roomprice;
 
 -- Xóa bảng trung gian
-TRUNCATE TABLE Booking;
-TRUNCATE TABLE Staff;
+TRUNCATE TABLE booking;
+TRUNCATE TABLE staff;
 
 -- Xóa bảng chính
-TRUNCATE TABLE Services;
-TRUNCATE TABLE Room;
-TRUNCATE TABLE HotelBranch;
-TRUNCATE TABLE Users;
+TRUNCATE TABLE services;
+TRUNCATE TABLE room;
+TRUNCATE TABLE hotelbranch;
+TRUNCATE TABLE users;
 
 -- Xóa bảng danh mục (lookup tables)
-TRUNCATE TABLE Roles;
-TRUNCATE TABLE Countries;
-TRUNCATE TABLE Genders;
-TRUNCATE TABLE Locations;
-TRUNCATE TABLE TypeRoom;
-TRUNCATE TABLE RoomStatus;
-TRUNCATE TABLE ReportType;
-TRUNCATE TABLE NotificationStatus;
+TRUNCATE TABLE roles;
+TRUNCATE TABLE countries;
+TRUNCATE TABLE genders;
+TRUNCATE TABLE locations;
+TRUNCATE TABLE typeroom;
+TRUNCATE TABLE roomstatus;
+TRUNCATE TABLE reporttype;
+TRUNCATE TABLE notificationstatus;
 
 -- Bật lại kiểm tra khóa ngoại
 SET FOREIGN_KEY_CHECKS = 1;

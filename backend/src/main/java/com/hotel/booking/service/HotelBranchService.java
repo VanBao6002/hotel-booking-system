@@ -7,6 +7,7 @@ import com.hotel.booking.repository.BookingRepository;
 
 // import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,33 +27,36 @@ public class HotelBranchService {
         return branchRepo.getAllBranches();
     }
 
-    public HotelBranchDTO searchAvailableBranch(int branchId,
-                                                LocalDate checkInDate,
-                                                LocalDate checkOutDate,
-                                                int requiredSingleRooms,
-                                                int requiredDoubleRooms) {
-        HotelBranchDTO branch = branchRepo.getBranchById(branchId);
-        if (branch == null) {
-            throw new IllegalArgumentException("Không tìm thấy chi nhánh với ID: " + branchId);
-        }
+public List<HotelBranchDTO> searchAvailableBranches(LocalDate checkInDate,
+                                                    LocalDate checkOutDate,
+                                                    int requiredSingleRooms,
+                                                    int requiredDoubleRooms) {
+    List<HotelBranchDTO> allBranches = branchRepo.getAllBranches();
+    List<HotelBranchDTO> result = new ArrayList<>();
+
+    for (HotelBranchDTO b : allBranches) {
+        // gọi lại getBranchById để lấy chi nhánh đầy đủ (có rooms)
+        HotelBranchDTO branch = branchRepo.getBranchById(b.getId());
 
         List<RoomDTO> availableRooms = branch.getRooms().stream()
                 .filter(room -> bookingRepo.isRoomAvailable(room.getId(), checkInDate, checkOutDate))
                 .collect(Collectors.toList());
 
         long availableSingles = availableRooms.stream()
-                .filter(r -> r.getTypeRoomID() == 1)
+                .filter(r -> "SINGLE".equals(r.getTypeCode()))
                 .count();
 
         long availableDoubles = availableRooms.stream()
-                .filter(r -> r.getTypeRoomID() == 2)
+                .filter(r -> "DOUBLE".equals(r.getTypeCode()))
                 .count();
 
-        if (availableSingles < requiredSingleRooms || availableDoubles < requiredDoubleRooms) {
-            throw new IllegalArgumentException("Không đủ phòng đáp ứng yêu cầu!");
+        if (availableSingles >= requiredSingleRooms && availableDoubles >= requiredDoubleRooms) {
+            branch.setRooms(availableRooms);
+            result.add(branch);
         }
-
-        branch.setRooms(availableRooms);
-        return branch;
     }
+    return result;
+}
+
+
 }

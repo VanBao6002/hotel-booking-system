@@ -41,19 +41,25 @@ public class HotelBranchRepository {
         );
 
         // load rooms
-        String sqlRooms = "SELECT * FROM room WHERE hotel_branch_id = ?";
+        String sqlRooms = "SELECT r.id, r.area, r.number_of_bed, r.description, r.room_img, " +
+                 "r.hotel_branch_id, r.type_room_id, r.location_id, r.room_status_id, " +
+                 "tr.code AS type_code " +
+                 "FROM room r " +
+                 "JOIN typeroom tr ON r.type_room_id = tr.id " +
+                 "WHERE r.hotel_branch_id = ?";
         List<RoomDTO> rooms = jdbcTemplate.query(sqlRooms, new Object[]{id}, (rs, rowNum) ->
             new RoomDTO(
-                rs.getInt("id"),
-                rs.getString("area"),
-                rs.getInt("number_of_bed"),
-                rs.getString("description"),
-                rs.getString("room_img"),
-                rs.getInt("hotel_branch_id"),
-                rs.getInt("type_room_id"),
-                rs.getInt("location_id"),
-                rs.getInt("room_status_id")
-            )
+            rs.getInt("id"),
+            rs.getString("area"),
+            rs.getInt("number_of_bed"),
+            rs.getString("description"),
+            rs.getString("room_img"),
+            rs.getInt("hotel_branch_id"),
+            rs.getInt("type_room_id"),
+            rs.getInt("location_id"),
+            rs.getInt("room_status_id"),
+            rs.getString("type_code") // thêm field này vào DTO
+        )
         );
         branch.setRooms(rooms);
 

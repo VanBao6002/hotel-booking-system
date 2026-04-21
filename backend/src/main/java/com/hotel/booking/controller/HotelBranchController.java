@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 // import java.sql.SQLException;
 // import java.time.LocalDate;
-import java.util.ArrayList;
+// import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,24 +21,12 @@ public class HotelBranchController {
     }
 @PostMapping("/hotel")
 public List<HotelBranchDTO> searchHotels(@RequestBody SearchingHotel request) {
-    List<HotelBranchDTO> result = new ArrayList<>();
-    List<HotelBranchDTO> allBranches = branchService.getAllBranches();
-
-    for (HotelBranchDTO branch : allBranches) {
-        try {
-            HotelBranchDTO availableBranch = branchService.searchAvailableBranch(
-                    branch.getId(),
-                    request.getCheckInDate(),
-                    request.getCheckOutDate(),
-                    request.getSingleRoomQuantity(),
-                    request.getDoubleRoomQuantity()
-            );
-            result.add(availableBranch);
-        } catch (IllegalArgumentException e) {
-            // bỏ qua chi nhánh không đủ phòng
-        }
-    }
-    return result;
+    return branchService.searchAvailableBranches(
+            request.getCheckInDate(),
+            request.getCheckOutDate(),
+            request.getSingleRoomQuantity(),
+            request.getDoubleRoomQuantity()
+    );
 }
 
 

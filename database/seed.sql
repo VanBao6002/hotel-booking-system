@@ -2,10 +2,13 @@ INSERT INTO roles (role_name) VALUES ('Admin'), ('Staff'), ('Customer');
 INSERT INTO countries (code, country_name) VALUES ('VN', 'Vietnam'), ('US', 'United States');
 INSERT INTO genders (gender_name) VALUES ('Male'), ('Female');
 INSERT INTO locations (location) VALUES ('Tầng 1'), ('Tầng 2');
-INSERT INTO typeroom (type) VALUES ('Single'), ('Double'), ('Suite');
 INSERT INTO roomstatus (status) VALUES ('Available'), ('Booked'), ('Maintenance');
 INSERT INTO reporttype (type) VALUES ('Daily'), ('Monthly');
 INSERT INTO notificationstatus (status) VALUES ('Unread'), ('Read');
+INSERT INTO typeroom (code, name, description) VALUES
+('SINGLE', 'Single Room', 'Phòng đơn dành cho 1 người, 1 giường đơn'),
+('DOUBLE', 'Double Room', 'Phòng đôi dành cho 2 người, 1 giường đôi hoặc 2 giường đơn'),
+('SUITE', 'Suite Room', 'Phòng cao cấp với nhiều tiện nghi hơn');
 
 
 

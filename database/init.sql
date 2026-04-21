@@ -1,4 +1,8 @@
 
+CREATE Table IF NOT EXISTS locations(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    location VARCHAR(50) NOT NULL UNIQUE
+);
 CREATE TABLE IF NOT EXISTS hotelbranch(
     id INT PRIMARY KEY AUTO_INCREMENT,
     address VARCHAR(100) NOT NULL UNIQUE,
@@ -16,16 +20,13 @@ CREATE TABLE IF NOT EXISTS countries (
     code VARCHAR(3) NOT NULL UNIQUE,
     country_name VARCHAR(100) NOT NULL UNIQUE
 );
-
-CREATE Table IF NOT EXISTS locations(
+CREATE TABLE IF NOT EXISTS typeroom (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    location VARCHAR(50) NOT NULL UNIQUE
+    code VARCHAR(20) NOT NULL UNIQUE,   -- mã định danh ngắn gọn
+    name VARCHAR(50) NOT NULL,          -- tên hiển thị
+    description TEXT                    -- mô tả chi tiết
 );
 
-CREATE Table IF NOT EXISTS typeroom(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    type VARCHAR(30) NOT NULL UNIQUE
-);
 
 CREATE TABLE IF NOT EXISTS genders (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -216,6 +217,10 @@ CREATE TABLE IF NOT EXISTS users (
     last_login_at DATETIME NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_users_gender FOREIGN KEY (gender_id) REFERENCES genders(id)
+        ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id)
         ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_users_gender FOREIGN KEY (gender_id) REFERENCES genders(id)
