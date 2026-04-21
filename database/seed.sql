@@ -2,7 +2,7 @@ INSERT INTO roles (role_name) VALUES ('Admin'), ('Staff'), ('Customer');
 INSERT INTO countries (code, country_name) VALUES ('VN', 'Vietnam'), ('US', 'United States');
 INSERT INTO genders (gender_name) VALUES ('Male'), ('Female');
 INSERT INTO locations (location) VALUES ('Tầng 1'), ('Tầng 2');
-INSERT INTO typeroom (type) VALUES ('Standard'), ('Deluxe'), ('Suite');
+INSERT INTO typeroom (type) VALUES ('Single'), ('Double'), ('Suite');
 INSERT INTO roomstatus (status) VALUES ('Available'), ('Booked'), ('Maintenance');
 INSERT INTO reporttype (type) VALUES ('Daily'), ('Monthly');
 INSERT INTO notificationstatus (status) VALUES ('Unread'), ('Read');
@@ -23,10 +23,19 @@ VALUES
 ('customer1', 'customer1@example.com', 'hash123', 3, 'Customer One', '2000-10-10', 2, '0909222222', 'HN', 1);
 
 INSERT INTO services (name, description, price) VALUES
-('Spa', 'Massage thư giãn toàn thân', 200000),
-('Gym', 'Phòng tập thể hình hiện đại', 150000),
-('Breakfast', 'Buffet sáng tại nhà hàng', 100000),
-('Airport Pickup', 'Xe đưa đón sân bay', 300000);
+('Breakfast Buffet', 'Daily breakfast buffet at the hotel restaurant', 100000),
+('Airport Pickup', 'Pickup service from airport to hotel', 300000),
+('Spa Package', 'Relaxing spa treatment for guests', 500000),
+('Room Cleaning', 'Daily room cleaning service', 50000),
+('Laundry Service', 'Laundry and ironing service', 80000);
+
+-- Dịch vụ chung: Buffet sáng cho khách sạn 1
+INSERT INTO hotel_services (hotel_id, service_id) VALUES 
+(1, 1);
+-- Dịch vụ riêng: Spa chỉ dành cho Suite
+INSERT INTO room_type_services (room_type_id, service_id) VALUES 
+(3, 3);
+
 
 INSERT INTO room (area, number_of_bed, description, room_img, hotel_branch_id, type_room_id, location_id, room_status_id)
 VALUES

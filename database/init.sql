@@ -1,9 +1,4 @@
-CREATE TABLE IF NOT EXISTS services(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL UNIQUE,
-    description TEXT ,
-    price BIGINT NOT NULL
-);
+
 CREATE TABLE IF NOT EXISTS hotelbranch(
     id INT PRIMARY KEY AUTO_INCREMENT,
     address VARCHAR(100) NOT NULL UNIQUE,
@@ -50,6 +45,27 @@ CREATE Table IF NOT EXISTS reporttype(
 CREATE Table IF NOT EXISTS notificationstatus(
     id INT PRIMARY KEY AUTO_INCREMENT,
     status VARCHAR(30) NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS services (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(30) NOT NULL UNIQUE,
+    description TEXT,
+    price BIGINT NOT NULL,
+    is_common BOOLEAN NOT NULL DEFAULT TRUE
+);
+CREATE TABLE IF NOT EXISTS room_type_services (
+    room_type_id INT NOT NULL,
+    service_id INT NOT NULL,
+    PRIMARY KEY (room_type_id, service_id),
+    FOREIGN KEY (room_type_id) REFERENCES typeroom(id),
+    FOREIGN KEY (service_id) REFERENCES services(id)
+);
+CREATE TABLE IF NOT EXISTS hotel_services (
+    hotel_id INT NOT NULL,
+    service_id INT NOT NULL,
+    PRIMARY KEY (hotel_id, service_id),
+    FOREIGN KEY (hotel_id) REFERENCES hotelbranch(id),
+    FOREIGN KEY (service_id) REFERENCES services(id)
 );
 CREATE TABLE IF NOT EXISTS room(
     id INT PRIMARY KEY AUTO_INCREMENT,

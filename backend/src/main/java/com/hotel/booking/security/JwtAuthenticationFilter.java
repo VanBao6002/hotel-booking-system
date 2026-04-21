@@ -72,7 +72,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || path.equals("/api/v1/auth/register")
                 || path.equals("/api/v1/auth/login")
                 || path.equals("/api/v1/auth/forgot-password")
-                || path.equals("/api/v1/auth/reset-password");
+                || path.equals("/api/v1/auth/reset-password")
+                || path.equals("/api/search/hotel");
     }
 
     private void writeUnauthorizedResponse(HttpServletRequest request, HttpServletResponse response, String message)
