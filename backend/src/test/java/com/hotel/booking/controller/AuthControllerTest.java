@@ -77,7 +77,7 @@ public class AuthControllerTest {
         normalUser.setFullName(validRegisterRequest.getFullName());
         normalUser.setPhoneNumber(validRegisterRequest.getPhoneNumber());
 
-        normalUser.setRoleId(Role.USER);
+        normalUser.setRole(Role.USER);
         normalUser.setIsActive(true);
         normalUser.setFailedLoginAttempts(0);
 
@@ -110,7 +110,7 @@ public class AuthControllerTest {
         adminUser.setFullName(validAdminRegisterRequest.getFullName());
         adminUser.setPhoneNumber(validAdminRegisterRequest.getPhoneNumber());
 
-        adminUser.setRoleId(Role.ADMIN);
+        adminUser.setRole(Role.ADMIN);
         adminUser.setIsActive(true);
         adminUser.setFailedLoginAttempts(0);
 
