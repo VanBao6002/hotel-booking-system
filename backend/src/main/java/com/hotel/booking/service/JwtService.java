@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.hotel.booking.exception.UnauthorizedException;
-import com.hotel.booking.model.Role;
 import com.hotel.booking.model.User;
 
 import io.jsonwebtoken.Claims;
@@ -33,6 +32,10 @@ public class JwtService {
 	 * Builds a signed access token for authenticated API calls.
 	 */
 	public String generateAccessToken(User user) {
+		if (user.getRole() == null) {
+			throw new IllegalStateException("User role must not be null");
+		}
+
 		Instant now = Instant.now();
 		Instant expiresAt = now.plusSeconds(accessTokenExpirationSeconds);
 
@@ -40,7 +43,7 @@ public class JwtService {
 			.subject(user.getUserName())
 			.claim("userId", user.getId())
 			.claim("email", user.getEmail())
-			.claim("role", mapRoleName(user.getRoleId()))
+			.claim("role", user.getRole().toAuthorityRole())
 			.issuedAt(Date.from(now))
 			.expiration(Date.from(expiresAt))
 			.signWith(getSigningKey())
@@ -48,7 +51,7 @@ public class JwtService {
 	}
 	
 	/** 
-	 * Validates an access token and returns its subject (username).
+	 * Validates an access token and returns its subject (ex: username).
 	 */
 	public String extractSubject(String token) {
 		return parseAccessClaims(token).getSubject();
@@ -81,10 +84,6 @@ public class JwtService {
 		} catch (Exception ex) {
 			throw new UnauthorizedException("Invalid or expired access token");
 		}
-	}
-
-	private String mapRoleName(Integer roleId) {
-		return Integer.valueOf(Role.ADMIN).equals(roleId) ? "ROLE_ADMIN" : "ROLE_USER";
 	}
 
 	/**

@@ -1,4 +1,4 @@
-INSERT INTO roles (role_name) VALUES ('Admin'), ('Staff'), ('Customer');
+INSERT INTO roles (id, role_name) VALUES(1, 'USER'),(2, 'ADMIN'),(3, 'STAFF');
 INSERT INTO countries (code, country_name) VALUES ('VN', 'Vietnam'), ('US', 'United States');
 INSERT INTO genders (gender_name) VALUES ('Male'), ('Female');
 INSERT INTO locations (location) VALUES ('Tầng 1'), ('Tầng 2');
@@ -15,9 +15,9 @@ INSERT INTO hotelbranch (address, phone_number) VALUES
 
 INSERT INTO users (user_name, email, password_hash, role_id, full_name, date_of_birth, gender_id, phone_number, current_address, country_id)
 VALUES
-('admin', 'admin@example.com', 'hash123', 1, 'Admin User', '1990-01-01', 1, '0909000000', 'HCM', 1),
-('staff1', 'staff1@example.com', 'hash123', 2, 'Staff One', '1995-05-05', 1, '0909111111', 'HCM', 1),
-('customer1', 'customer1@example.com', 'hash123', 3, 'Customer One', '2000-10-10', 2, '0909222222', 'HN', 1);
+('user', 'user@example.com', 'hash123', 1, 'Customer User', '1990-01-01', 1, '0909000000', 'HCM', 1),
+('admin', 'admin@example.com', 'hash123', 2, 'Admin User', '1995-05-05', 1, '0909111111', 'HCM', 1),
+('staff', 'staff@example.com', 'hash123', 3, 'Staff User', '2000-10-10', 2, '0909222222', 'HN', 1);
 
 INSERT INTO services (name, description, price) VALUES
 ('Spa', 'Massage thư giãn toàn thân', 200000),
