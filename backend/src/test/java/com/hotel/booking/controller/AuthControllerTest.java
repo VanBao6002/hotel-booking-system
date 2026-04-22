@@ -139,7 +139,8 @@ public class AuthControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.accessToken").exists())
         .andExpect(jsonPath("$.tokenType").value("Bearer"))
-        .andExpect(jsonPath("$.expiresIn").exists());
+        .andExpect(jsonPath("$.expiresIn").exists())
+        .andExpect(jsonPath("$.user.role").value("USER"));
     }
 
     @SuppressWarnings("null")
@@ -242,7 +243,8 @@ public class AuthControllerTest {
         
         mockMvc.perform(get("/api/v1/auth/me")
             .header("Authorization", "Bearer " + token))
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.role").value("ADMIN"));
     }
 
     @SuppressWarnings("null")
