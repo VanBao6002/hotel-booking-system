@@ -18,8 +18,10 @@ public final class UserMapper {
         dto.setUserName(user.getUserName());
         dto.setEmail(user.getEmail());
         dto.setFullName(user.getFullName());
-        dto.setIsActive(user.getIsActive());
-        dto.setCreatedAt(user.getCreatedAt());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setDateOfBirth(user.getDateOfBirth());
+        dto.setCurrentAddress(user.getCurrentAddress());
+        dto.setLockedUntil(user.getLockedUntil());
         return dto;
     }
 }  
