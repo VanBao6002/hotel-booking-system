@@ -4,9 +4,9 @@ import java.time.LocalDate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class SearchingHotel {
+public class SearchRequest {
     @NotBlank(message = "Location cannot be blank")
-    private Integer location;
+    private String location;
 
     @NotNull(message = "Check in date cannot be null")
     private LocalDate checkInDate;
@@ -18,10 +18,10 @@ public class SearchingHotel {
     private Integer singleRoomQuantity;
 
     // Getters & Setters
-    public Integer getLocation() {
+    public String getLocation() {
         return location;
     }
-    public void setLocation(Integer location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 

@@ -5,6 +5,7 @@ import com.hotel.booking.dto.RoomDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -16,59 +17,141 @@ public class HotelBranchRepository {
     }
 
     // Lấy tất cả chi nhánh
-    public List<HotelBranchDTO> getAllBranches() {
-        String sql = "SELECT id, address, phone_number FROM hotelbranch";
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-            new HotelBranchDTO(
-                rs.getInt("id"),
-                rs.getString("address"),
-                rs.getString("phone_number"),
-                null
-            )
-        );
+   // Lấy tất cả chi nhánh (kèm dịch vụ chung, chưa load rooms)
+public List<HotelBranchDTO> getAllHotelBranches() {
+    String sql = "SELECT hb.id, hb.address, hb.phone_number, l.name AS location_name " +
+                 "FROM hotelbranch hb " +
+                 "JOIN location l ON hb.location_id = l.id";
+
+    List<HotelBranchDTO> branches = jdbcTemplate.query(sql, (rs, rowNum) ->
+        new HotelBranchDTO(
+            rs.getInt("id"),
+            rs.getString("address"),
+            rs.getString("phone_number"),
+            rs.getString("location_name"), // lấy tên khu vực
+            new ArrayList<>(),              // rooms
+            new ArrayList<>()               // services
+        )
+    );
+
+    // Load dịch vụ chung cho từng chi nhánh
+    for (HotelBranchDTO branch : branches) {
+        String sqlBranchServices = "SELECT s.name " +
+                                   "FROM hotel_services hs " +
+                                   "JOIN services s ON hs.service_id = s.id " +
+                                   "WHERE hs.hotel_id = ?";
+        List<String> branchServices = jdbcTemplate.query(sqlBranchServices, new Object[]{branch.getId()},
+                (rs, rowNum) -> rs.getString("name"));
+        branch.setServices(branchServices);
     }
 
-    // Lấy chi nhánh theo ID (kèm danh sách phòng)
-    public HotelBranchDTO getBranchById(int id) {
-        String sqlBranch = "SELECT id, address, phone_number FROM hotelbranch WHERE id = ?";
-        HotelBranchDTO branch = jdbcTemplate.queryForObject(sqlBranch, new Object[]{id}, (rs, rowNum) ->
-            new HotelBranchDTO(
-                rs.getInt("id"),
-                rs.getString("address"),
-                rs.getString("phone_number"),
-                List.of()
-            )
-        );
+    return branches;
+}
+public List<HotelBranchDTO> getHotelBranchesByLocation(String locationName) {
+    String sql = "SELECT hb.id, hb.address, hb.phone_number, l.name AS location_name " +
+                 "FROM hotelbranch hb " +
+                 "JOIN location l ON hb.location_id = l.id " +
+                 "WHERE l.name LIKE ?";
 
-        // load rooms
-        String sqlRooms = "SELECT r.id, r.area, r.number_of_bed, r.description, r.room_img, " +
-                 "r.hotel_branch_id, r.type_room_id, r.location_id, r.room_status_id, " +
-                 "tr.code AS type_code " +
-                 "FROM room r " +
-                 "JOIN typeroom tr ON r.type_room_id = tr.id " +
-                 "WHERE r.hotel_branch_id = ?";
-        List<RoomDTO> rooms = jdbcTemplate.query(sqlRooms, new Object[]{id}, (rs, rowNum) ->
-            new RoomDTO(
+    List<HotelBranchDTO> branches = jdbcTemplate.query(sql, new Object[]{"%" + locationName + "%"}, (rs, rowNum) ->
+        new HotelBranchDTO(
             rs.getInt("id"),
+            rs.getString("address"),
+            rs.getString("phone_number"),
+            rs.getString("location_name"),
+            new ArrayList<>(),   // rooms
+            new ArrayList<>()    // services
+        )
+    );
+
+    // Load dịch vụ chung cho từng chi nhánh
+    for (HotelBranchDTO branch : branches) {
+        String sqlBranchServices = "SELECT s.name " +
+                                   "FROM hotel_services hs " +
+                                   "JOIN services s ON hs.service_id = s.id " +
+                                   "WHERE hs.hotel_id = ?";
+        List<String> branchServices = jdbcTemplate.query(sqlBranchServices, new Object[]{branch.getId()},
+                (rs, rowNum) -> rs.getString("name"));
+        branch.setServices(branchServices);
+    }
+
+    return branches;
+}
+
+
+// Lấy chi nhánh theo ID (kèm rooms và services)
+public HotelBranchDTO getHotelBranchById(int id) {
+    // Lấy thông tin chi nhánh kèm location
+    String sqlBranch = "SELECT hb.id, hb.address, hb.phone_number, l.name AS location_name " +
+                       "FROM hotelbranch hb " +
+                       "JOIN location l ON hb.location_id = l.id " +
+                       "WHERE hb.id = ?";
+    HotelBranchDTO branch = jdbcTemplate.queryForObject(sqlBranch, new Object[]{id}, (rs, rowNum) ->
+        new HotelBranchDTO(
+            rs.getInt("id"),
+            rs.getString("address"),
+            rs.getString("phone_number"),
+            rs.getString("location_name"), // lấy tên khu vực
+            new ArrayList<>(),              // rooms
+            new ArrayList<>()               // services
+        )
+    );
+
+    // Lấy danh sách phòng
+    String sqlRooms = "SELECT r.id, r.room_number, r.floor, r.area, r.number_of_bed, r.description, r.room_img, " +
+                      "hb.address AS hotel_branch_address, tr.code AS type_code, rs.status AS room_status " +
+                      "FROM room r " +
+                      "JOIN hotelbranch hb ON r.hotel_branch_id = hb.id " +
+                      "JOIN typeroom tr ON r.type_room_id = tr.id " +
+                      "JOIN roomstatus rs ON r.room_status_id = rs.id " +
+                      "WHERE r.hotel_branch_id = ?";
+
+    List<RoomDTO> rooms = jdbcTemplate.query(sqlRooms, new Object[]{id}, (rs, rowNum) ->
+        new RoomDTO(
+            rs.getInt("id"),
+            rs.getInt("room_number"),
+            rs.getInt("floor"),
             rs.getString("area"),
             rs.getInt("number_of_bed"),
             rs.getString("description"),
             rs.getString("room_img"),
-            rs.getInt("hotel_branch_id"),
-            rs.getInt("type_room_id"),
-            rs.getInt("location_id"),
-            rs.getInt("room_status_id"),
-            rs.getString("type_code") // thêm field này vào DTO
+            rs.getString("hotel_branch_address"),
+            rs.getString("type_code"),
+            rs.getString("room_status"),
+            new ArrayList<>() // services riêng của phòng
         )
-        );
-        branch.setRooms(rooms);
+    );
 
-        return branch;
+    // Load services cho từng phòng
+    for (RoomDTO room : rooms) {
+        String sqlServices = "SELECT s.name " +
+                             "FROM room_type_services rts " +
+                             "JOIN services s ON rts.service_id = s.id " +
+                             "JOIN typeroom tr ON rts.room_type_id = tr.id " +
+                             "WHERE tr.code = ?";
+        List<String> services = jdbcTemplate.query(sqlServices, new Object[]{room.getTypeCode()},
+                (rs, rowNum) -> rs.getString("name"));
+        room.setServices(services);
     }
+
+    branch.setRooms(rooms);
+
+    // Load dịch vụ chung của chi nhánh
+    String sqlBranchServices = "SELECT s.name " +
+                               "FROM hotel_services hs " +
+                               "JOIN services s ON hs.service_id = s.id " +
+                               "WHERE hs.hotel_id = ?";
+    List<String> branchServices = jdbcTemplate.query(sqlBranchServices, new Object[]{id},
+            (rs, rowNum) -> rs.getString("name"));
+    branch.setServices(branchServices);
+
+    return branch;
+}
+
 
     // Thêm chi nhánh mới
-    public void addBranch(HotelBranchDTO branch) {
-        String sql = "INSERT INTO hotelbranch(address, phone_number) VALUES (?, ?)";
-        jdbcTemplate.update(sql, branch.getAddress(), branch.getPhoneNumber());
-    }
+    // public void addBranch(HotelBranchDTO branch) {
+    //     String sql = "INSERT INTO hotelbranch(address, phone_number) VALUES (?, ?)";
+    //     jdbcTemplate.update(sql, branch.getAddress(), branch.getPhoneNumber());
+    // }
 }

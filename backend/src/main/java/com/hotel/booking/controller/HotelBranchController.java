@@ -1,14 +1,15 @@
 package com.hotel.booking.controller;
 
-import com.hotel.booking.dto.HotelBranchDTO;
-import com.hotel.booking.dto.SearchingHotel;
+// import com.hotel.booking.dto.HotelBranchDTO;
+import com.hotel.booking.dto.SearchResponse;
+import com.hotel.booking.dto.SearchRequest;
 import com.hotel.booking.service.HotelBranchService;
 import org.springframework.web.bind.annotation.*;
 
 // import java.sql.SQLException;
 // import java.time.LocalDate;
 // import java.util.ArrayList;
-import java.util.List;
+// import java.util.List;
 
 @RestController
 @RequestMapping("/api/search")
@@ -20,12 +21,13 @@ public class HotelBranchController {
         this.branchService = branchService;
     }
 @PostMapping("/hotel")
-public List<HotelBranchDTO> searchHotels(@RequestBody SearchingHotel request) {
-    return branchService.searchAvailableBranches(
+public SearchResponse searchAvailabelHotels(@RequestBody SearchRequest request) {
+    return branchService.searchAvailableHotelBranches(
             request.getCheckInDate(),
             request.getCheckOutDate(),
             request.getSingleRoomQuantity(),
-            request.getDoubleRoomQuantity()
+            request.getDoubleRoomQuantity(),
+            request.getLocation()
     );
 }
 

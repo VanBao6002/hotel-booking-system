@@ -1,15 +1,8 @@
 
-CREATE Table IF NOT EXISTS locations(
+CREATE TABLE IF NOT EXISTS location (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    location VARCHAR(50) NOT NULL UNIQUE
-);
-CREATE TABLE IF NOT EXISTS hotelbranch(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    address VARCHAR(100) NOT NULL UNIQUE,
-    phone_number VARCHAR(30) NOT NULL UNIQUE
-);
-
-
+    name VARCHAR(100) NOT NULL UNIQUE
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE TABLE IF NOT EXISTS roles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     role_name VARCHAR(30) NOT NULL UNIQUE
@@ -26,7 +19,6 @@ CREATE TABLE IF NOT EXISTS typeroom (
     name VARCHAR(50) NOT NULL,          -- tên hiển thị
     description TEXT                    -- mô tả chi tiết
 );
-
 
 CREATE TABLE IF NOT EXISTS genders (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -47,13 +39,20 @@ CREATE Table IF NOT EXISTS notificationstatus(
     id INT PRIMARY KEY AUTO_INCREMENT,
     status VARCHAR(30) NOT NULL UNIQUE
 );
+CREATE TABLE IF NOT EXISTS hotelbranch(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    address VARCHAR(100) NOT NULL UNIQUE,
+    phone_number VARCHAR(30) NOT NULL UNIQUE,
+    location_id INT,
+    CONSTRAINT fk_HotelBranch_locationId FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE SET NULL ON UPDATE CASCADE
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
 CREATE TABLE IF NOT EXISTS services (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL UNIQUE,
     description TEXT,
     price BIGINT NOT NULL,
     is_common BOOLEAN NOT NULL DEFAULT TRUE
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
 CREATE TABLE IF NOT EXISTS room_type_services (
     room_type_id INT NOT NULL,
     service_id INT NOT NULL,
@@ -70,19 +69,19 @@ CREATE TABLE IF NOT EXISTS hotel_services (
 );
 CREATE TABLE IF NOT EXISTS room(
     id INT PRIMARY KEY AUTO_INCREMENT,
+    room_number INT NOT NULL,
+    floor INT NOT NULL,
     area VARCHAR(30) NOT NULL,
     number_of_bed INT NOT NULL,
     description TEXT NOT NULL,
     room_img TEXT NOT NULL,
     hotel_branch_id INT,
     type_room_id INT ,
-    location_id INT ,
     room_status_id INT ,
     CONSTRAINT fk_room_HotelBranch_id FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_room_TypeRoom_id FOREIGN KEY (type_room_id) REFERENCES typeroom(id)  ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_room_Location_id FOREIGN KEY (location_id) REFERENCES locations(id)  ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_room_RoomStatus_id FOREIGN KEY (room_status_id) REFERENCES roomstatus(id)  ON DELETE SET NULL ON UPDATE CASCADE
-);
+)CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
 
 CREATE TABLE IF NOT EXISTS booking(
     id INT PRIMARY KEY AUTO_INCREMENT,

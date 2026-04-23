@@ -1,103 +1,67 @@
 package com.hotel.booking.dto;
+import java.util.List;
 
 public class RoomDTO {
     private int id;
+    private int roomNumber;
+    private int floor;
     private String area;
     private int numberOfBed;
     private String description;
     private String roomIMG;
-    private Integer hotelBranchID;
-    private Integer typeRoomID;
-    private Integer locationID;
-    private Integer roomStatusID;
-    private String typeCode ;
-
-    // Constructor mặc định
+    private String hotelBranchAddress; // thay cho hotelBranchId
+    private String typeCode;           // thay cho typeRoomId
+    private String roomStatus;         // thay cho roomStatusId
+    private List<String> services;   // thêm list service
     public RoomDTO() {}
 
-    // Constructor đầy đủ
-    public RoomDTO(int id, String area, int numberOfBed, String description, String roomIMG,
-                   Integer hotelBranchID, Integer typeRoomID, Integer locationID, Integer roomStatusID,String typeCode) {
+    public RoomDTO(int id, int roomNumber, int floor, String area, int numberOfBed,
+                   String description, String roomIMG, String hotelBranchAddress,
+                   String typeCode, String roomStatus,List<String> services) {
         this.id = id;
+        this.roomNumber = roomNumber;
+        this.floor = floor;
         this.area = area;
         this.numberOfBed = numberOfBed;
         this.description = description;
         this.roomIMG = roomIMG;
-        this.hotelBranchID = hotelBranchID;
-        this.typeRoomID = typeRoomID;
-        this.locationID = locationID;
-        this.roomStatusID = roomStatusID;
+        this.hotelBranchAddress = hotelBranchAddress;
         this.typeCode = typeCode;
+        this.roomStatus = roomStatus;
+        this.services = services;
     }
 
-    // Getter và Setter
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
+    // Getter & Setter
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public String getArea() {
-        return area;
-    }
-    public void setArea(String area) {
-        this.area = area;
-    }
+    public int getRoomNumber() { return roomNumber; }
+    public void setRoomNumber(int roomNumber) { this.roomNumber = roomNumber; }
 
-    public int getNumberOfBed() {
-        return numberOfBed;
-    }
-    public void setNumberOfBed(int numberOfBed) {
-        this.numberOfBed = numberOfBed;
-    }
+    public int getFloor() { return floor; }
+    public void setFloor(int floor) { this.floor = floor; }
 
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public String getArea() { return area; }
+    public void setArea(String area) { this.area = area; }
 
-    public String getRoomIMG() {
-        return roomIMG;
-    }
-    public void setRoomIMG(String roomIMG) {
-        this.roomIMG = roomIMG;
-    }
+    public int getNumberOfBed() { return numberOfBed; }
+    public void setNumberOfBed(int numberOfBed) { this.numberOfBed = numberOfBed; }
 
-    public Integer getHotelBranchID() {
-        return hotelBranchID;
-    }
-    public void setHotelBranchID(Integer hotelBranchID) {
-        this.hotelBranchID = hotelBranchID;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public Integer getTypeRoomID() {
-        return typeRoomID;
-    }
-    public void setTypeRoomID(Integer typeRoomID) {
-        this.typeRoomID = typeRoomID;
-    }
+    public String getRoomIMG() { return roomIMG; }
+    public void setRoomIMG(String roomIMG) { this.roomIMG = roomIMG; }
 
-    public Integer getLocationID() {
-        return locationID;
-    }
-    public void setLocationID(Integer locationID) {
-        this.locationID = locationID;
-    }
+    public String getHotelBranchAddress() { return hotelBranchAddress; }
+    public void setHotelBranchAddress(String hotelBranchAddress) { this.hotelBranchAddress = hotelBranchAddress; }
 
-    public Integer getRoomStatusID() {
-        return roomStatusID;
-    }
-    public void setRoomStatusID(Integer roomStatusID) {
-        this.roomStatusID = roomStatusID;
-    }
-    public String getTypeCode() {
-         return typeCode; 
-    }
-    public void setTypeCode(String typeCode) {
-         this.typeCode = typeCode; 
-    }
+    public String getTypeCode() { return typeCode; }
+    public void setTypeCode(String typeCode) { this.typeCode = typeCode; }
+
+    public String getRoomStatus() { return roomStatus; }
+    public void setRoomStatus(String roomStatus) { this.roomStatus = roomStatus; }
+    public List<String> getServices() { return services; }
+    public void setServices(List<String> services) { this.services = services; }
 }
 

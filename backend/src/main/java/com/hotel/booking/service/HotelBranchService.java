@@ -2,6 +2,7 @@ package com.hotel.booking.service;
 
 import com.hotel.booking.dto.HotelBranchDTO;
 import com.hotel.booking.dto.RoomDTO;
+import com.hotel.booking.dto.SearchResponse;
 import com.hotel.booking.repository.HotelBranchRepository;
 import com.hotel.booking.repository.BookingRepository;
 
@@ -23,20 +24,22 @@ public class HotelBranchService {
     }
 
     // Không cần throws SQLException nữa
-    public List<HotelBranchDTO> getAllBranches() {
-        return branchRepo.getAllBranches();
+    public List<HotelBranchDTO> getAllHotelBranches() {
+        return branchRepo.getAllHotelBranches();
     }
 
-public List<HotelBranchDTO> searchAvailableBranches(LocalDate checkInDate,
+public SearchResponse searchAvailableHotelBranches(LocalDate checkInDate,
                                                     LocalDate checkOutDate,
                                                     int requiredSingleRooms,
-                                                    int requiredDoubleRooms) {
-    List<HotelBranchDTO> allBranches = branchRepo.getAllBranches();
+                                                    int requiredDoubleRooms,
+                                                    String locationName) {
+    // Lấy chi nhánh theo location thay vì tất cả
+    List<HotelBranchDTO> allBranches = branchRepo.getHotelBranchesByLocation(locationName);
     List<HotelBranchDTO> result = new ArrayList<>();
 
     for (HotelBranchDTO b : allBranches) {
         // gọi lại getBranchById để lấy chi nhánh đầy đủ (có rooms)
-        HotelBranchDTO branch = branchRepo.getBranchById(b.getId());
+        HotelBranchDTO branch = branchRepo.getHotelBranchById(b.getId());
 
         List<RoomDTO> availableRooms = branch.getRooms().stream()
                 .filter(room -> bookingRepo.isRoomAvailable(room.getId(), checkInDate, checkOutDate))
@@ -55,8 +58,15 @@ public List<HotelBranchDTO> searchAvailableBranches(LocalDate checkInDate,
             result.add(branch);
         }
     }
-    return result;
+
+    // Nếu không có khách sạn nào thỏa mãn
+if (result.isEmpty()) {
+    return new SearchResponse(result, "Không có khách sạn nào thỏa mãn điều kiện tìm kiếm");
 }
+return new SearchResponse(result, "Tìm thấy " + result.size() + " khách sạn phù hợp");
 
 
+
+
+}
 }

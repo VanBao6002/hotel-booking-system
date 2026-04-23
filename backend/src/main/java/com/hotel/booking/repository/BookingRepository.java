@@ -32,7 +32,7 @@ public class BookingRepository {
     }
 
     // Lấy booking theo RoomID
-    public List<BookingDTO> getBookingsByRoom(int roomId) {
+    public List<BookingDTO> getBookingsByRoomID(int roomId) {
         String sql = "SELECT * FROM booking WHERE room_id = ?";
         return jdbcTemplate.query(sql, new Object[]{roomId}, (rs, rowNum) ->
             new BookingDTO(
