@@ -1,5 +1,7 @@
+SET NAMES utf8mb4;
+ALTER DATABASE hotel_booking CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS location (
+CREATE TABLE IF NOT EXISTS location(
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL UNIQUE
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -46,12 +48,32 @@ CREATE TABLE IF NOT EXISTS hotelbranch(
     location_id INT,
     CONSTRAINT fk_HotelBranch_locationId FOREIGN KEY (location_id) REFERENCES location(id) ON DELETE SET NULL ON UPDATE CASCADE
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
+CREATE TABLE hotelreview (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    hotel_branch_id INT NOT NULL,
+    user_id INT NOT NULL,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_review_hotel FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
+
+CREATE TABLE hotelratingsummary (
+    hotel_branch_id INT PRIMARY KEY,
+    one_star INT DEFAULT 0,
+    two_star INT DEFAULT 0,
+    three_star INT DEFAULT 0,
+    four_star INT DEFAULT 0,
+    five_star INT DEFAULT 0,
+    average_star DECIMAL(3,2) DEFAULT 0,
+    CONSTRAINT fk_summary_hotel FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id)
+);
+
+
 CREATE TABLE IF NOT EXISTS services (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL UNIQUE,
-    description TEXT,
-    price BIGINT NOT NULL,
-    is_common BOOLEAN NOT NULL DEFAULT TRUE
+    description TEXT
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
 CREATE TABLE IF NOT EXISTS room_type_services (
     room_type_id INT NOT NULL,
@@ -73,6 +95,7 @@ CREATE TABLE IF NOT EXISTS room(
     floor INT NOT NULL,
     area VARCHAR(30) NOT NULL,
     number_of_bed INT NOT NULL,
+    price BIGINT NOT NULL DEFAULT 0,
     description TEXT NOT NULL,
     room_img TEXT NOT NULL,
     hotel_branch_id INT,

@@ -7,6 +7,7 @@ public class RoomDTO {
     private int floor;
     private String area;
     private int numberOfBed;
+    private Long price; // dùng Long
     private String description;
     private String roomIMG;
     private String hotelBranchAddress; // thay cho hotelBranchId
@@ -15,7 +16,7 @@ public class RoomDTO {
     private List<String> services;   // thêm list service
     public RoomDTO() {}
 
-    public RoomDTO(int id, int roomNumber, int floor, String area, int numberOfBed,
+    public RoomDTO(int id, int roomNumber, int floor, String area, int numberOfBed, Long price,
                    String description, String roomIMG, String hotelBranchAddress,
                    String typeCode, String roomStatus,List<String> services) {
         this.id = id;
@@ -29,6 +30,7 @@ public class RoomDTO {
         this.typeCode = typeCode;
         this.roomStatus = roomStatus;
         this.services = services;
+        this.price = price;
     }
 
     // Getter & Setter
@@ -63,5 +65,12 @@ public class RoomDTO {
     public void setRoomStatus(String roomStatus) { this.roomStatus = roomStatus; }
     public List<String> getServices() { return services; }
     public void setServices(List<String> services) { this.services = services; }
+
+    public Long getPrice() {
+        return price;
+    }
+    public void setPrice(Long price) {
+        this.price = price;
+    }
 }
 

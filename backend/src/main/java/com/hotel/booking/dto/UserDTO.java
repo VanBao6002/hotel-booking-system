@@ -1,5 +1,6 @@
 package com.hotel.booking.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class UserDTO {
@@ -7,8 +8,11 @@ public class UserDTO {
     private String userName;
     private String email;
     private String fullName;
-    private Boolean isActive;
-    private LocalDateTime createdAt;
+    private String phoneNumber;
+    private LocalDate dateOfBbirth;
+    private String currentAddress;
+    private LocalDateTime lockedUntil;
+    private String role;
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -22,9 +26,18 @@ public class UserDTO {
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public Boolean getIsActive() { return isActive; }
-    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+    public String getPhoneNumber() {return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public LocalDate getDateOfBirth() {return dateOfBbirth; }
+    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBbirth = dateOfBirth; }
+
+    public String getCurrentAddress() {return currentAddress; }
+    public void setCurrentAddress(String currentAddress) { this.currentAddress = currentAddress; }
+
+    public LocalDateTime getLockedUntil() { return lockedUntil; }
+    public void setLockedUntil(LocalDateTime lockedUntil) { this.lockedUntil = lockedUntil; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }

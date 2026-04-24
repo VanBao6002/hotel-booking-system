@@ -7,17 +7,19 @@ public class HotelBranchDTO {
     private String address;
     private String phoneNumber;
     private String locationName;     // tên khu vực (join từ bảng location)
+    private Double averageStar;
     private List<String> services; // thêm list service chung
     private List<RoomDTO> rooms; // thêm danh sách phòng
     
 
     public HotelBranchDTO() {}
 
-    public HotelBranchDTO(int id, String address, String phoneNumber,String locationName, List<RoomDTO> rooms,List<String> services) {
+    public HotelBranchDTO(int id, String address, String phoneNumber,String locationName, Double averageStar, List<RoomDTO> rooms,List<String> services) {
         this.id = id;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.locationName = locationName;
+        this.averageStar = averageStar;
         this.rooms = rooms;
         this.services = new ArrayList<>();
     }
@@ -34,6 +36,13 @@ public class HotelBranchDTO {
 
     public String getLocationName() { return locationName; }
     public void setLocationName(String locationName) { this.locationName = locationName; }
+
+    public Double getAverageStar() {
+        return averageStar;
+    }
+    public void setAverageStar(Double averageStar) {
+        this.averageStar = averageStar;
+    }
 
     public List<RoomDTO> getRooms() { return rooms; }
     public void setRooms(List<RoomDTO> rooms) { this.rooms = rooms; }

@@ -13,13 +13,20 @@ public final class UserMapper {
             return null;
         }
 
+        if (user.getRole() == null) {
+            throw new IllegalStateException("User role must not be null");
+        }
+
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setUserName(user.getUserName());
         dto.setEmail(user.getEmail());
         dto.setFullName(user.getFullName());
-        dto.setIsActive(user.getIsActive());
-        dto.setCreatedAt(user.getCreatedAt());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setDateOfBirth(user.getDateOfBirth());
+        dto.setCurrentAddress(user.getCurrentAddress());
+        dto.setLockedUntil(user.getLockedUntil());
+        dto.setRole(user.getRole().toApiRole());
         return dto;
     }
 }  
