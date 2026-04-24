@@ -56,7 +56,7 @@ public class AuthService {
         user.setFullName(request.getFullName());
         user.setPhoneNumber(request.getPhoneNumber());
 
-        user.setRoleId(Role.USER);
+        user.setRole(Role.USER);
         user.setIsActive(true);
         user.setFailedLoginAttempts(0);
 
@@ -69,8 +69,7 @@ public class AuthService {
     }
     
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByUserNameOrEmail(request.getUserNameOrEmail(), request.getUserNameOrEmail())
-            .orElseThrow(this::invalidCredentialsException);
+        User user = userRepository.findByUserNameOrEmail(request.getUserNameOrEmail(), request.getUserNameOrEmail()).orElseThrow(this::invalidCredentialsException);
         
         if (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now())) {
             throw new UnauthorizedException("Account is locked. Please try again later");

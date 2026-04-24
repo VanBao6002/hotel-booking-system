@@ -3,7 +3,7 @@ spring:
     name: hotel-booking
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/hotel_booking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/hotel_booking?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&connectionCollation=utf8mb4_unicode_ci}
     username: ${SPRING_DATASOURCE_USERNAME:hotel_user}
     password: ${SPRING_DATASOURCE_PASSWORD:hotel_pass}
     driver-class-name: com.mysql.cj.jdbc.Driver

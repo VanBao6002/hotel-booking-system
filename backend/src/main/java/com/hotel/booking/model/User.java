@@ -20,8 +20,9 @@ public class User {
     @Column(name = "password_hash", length = 255, nullable = false)
     private String passwordHash;
 
+    @Convert(converter = RoleAttributeConverter.class)
     @Column(name = "role_id", nullable = false)
-    private Integer roleId;
+    private Role role;
 
     @Column(name = "full_name", length = 100)
     private String fullName;
@@ -91,12 +92,12 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getFullName() {

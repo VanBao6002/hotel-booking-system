@@ -17,7 +17,7 @@ public class RoomRepository {
 
     // Lấy tất cả phòng
 public List<RoomDTO> getAllRooms() {
-    String sql = "SELECT r.id, r.room_number, r.floor, r.area, r.number_of_bed, r.description, r.room_img, " +
+    String sql = "SELECT r.id, r.room_number, r.floor, r.area, r.number_of_bed,r.price, r.description, r.room_img, " +
                  "hb.address AS hotel_branch_address, tr.code AS type_code, rs.status AS room_status " +
                  "FROM room r " +
                  "JOIN hotelbranch hb ON r.hotel_branch_id = hb.id " +
@@ -31,6 +31,7 @@ public List<RoomDTO> getAllRooms() {
             rs.getInt("floor"),
             rs.getString("area"),
             rs.getInt("number_of_bed"),
+            rs.getLong("price"),
             rs.getString("description"),
             rs.getString("room_img"),
             rs.getString("hotel_branch_address"),
@@ -58,7 +59,7 @@ public List<RoomDTO> getAllRooms() {
 
     // Lấy phòng theo ID
    public RoomDTO getRoomById(int id) {
-    String sql = "SELECT r.id, r.room_number, r.floor, r.area, r.number_of_bed, r.description, r.room_img, " +
+    String sql = "SELECT r.id, r.room_number, r.floor, r.area, r.number_of_bed,r.price, r.description, r.room_img, " +
                  "hb.address AS hotel_branch_address, tr.code AS type_code, rs.status AS room_status " +
                  "FROM room r " +
                  "JOIN hotelbranch hb ON r.hotel_branch_id = hb.id " +
@@ -73,6 +74,7 @@ public List<RoomDTO> getAllRooms() {
             rs.getInt("floor"),
             rs.getString("area"),
             rs.getInt("number_of_bed"),
+            rs.getLong("price"),
             rs.getString("description"),
             rs.getString("room_img"),
             rs.getString("hotel_branch_address"),

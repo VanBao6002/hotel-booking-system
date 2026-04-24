@@ -202,7 +202,7 @@ class AuthServiceTest {
         user.setUserName("test-user");
         user.setEmail("user@example.com");
         user.setPasswordHash("encoded-password");
-        user.setRoleId(Role.USER);
+        user.setRole(Role.USER);
         user.setIsActive(true);
         user.setFailedLoginAttempts(0);
         user.setCreatedAt(LocalDateTime.now());

@@ -71,7 +71,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> getUser(@RequestHeader(value = "Authorization", required = false) String authorizationHeader
+    public ResponseEntity<UserDTO> getUser(@RequestHeader("Authorization") String authorizationHeader
     ){
         UserDTO user = authService.me(authorizationHeader);
         return ResponseEntity.ok(user);

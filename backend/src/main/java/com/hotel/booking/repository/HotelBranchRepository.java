@@ -19,18 +19,21 @@ public class HotelBranchRepository {
     // Lấy tất cả chi nhánh
    // Lấy tất cả chi nhánh (kèm dịch vụ chung, chưa load rooms)
 public List<HotelBranchDTO> getAllHotelBranches() {
-    String sql = "SELECT hb.id, hb.address, hb.phone_number, l.name AS location_name " +
+    String sql = "SELECT hb.id, hb.address, hb.phone_number, l.name AS location_name, " +
+                 "COALESCE(hrs.average_star, 0) AS average_star " +
                  "FROM hotelbranch hb " +
-                 "JOIN location l ON hb.location_id = l.id";
+                 "JOIN location l ON hb.location_id = l.id " +
+                 "LEFT JOIN hotelratingsummary hrs ON hb.id = hrs.hotel_branch_id";
 
     List<HotelBranchDTO> branches = jdbcTemplate.query(sql, (rs, rowNum) ->
         new HotelBranchDTO(
             rs.getInt("id"),
             rs.getString("address"),
             rs.getString("phone_number"),
-            rs.getString("location_name"), // lấy tên khu vực
+            rs.getString("location_name"), // tên khu vực
+            rs.getDouble("average_star"),
             new ArrayList<>(),              // rooms
-            new ArrayList<>()               // services
+            new ArrayList<>()          // services 
         )
     );
 
@@ -48,9 +51,11 @@ public List<HotelBranchDTO> getAllHotelBranches() {
     return branches;
 }
 public List<HotelBranchDTO> getHotelBranchesByLocation(String locationName) {
-    String sql = "SELECT hb.id, hb.address, hb.phone_number, l.name AS location_name " +
+    String sql = "SELECT hb.id, hb.address, hb.phone_number, l.name AS location_name, " +
+                 "COALESCE(hrs.average_star, 0) AS average_star " +
                  "FROM hotelbranch hb " +
                  "JOIN location l ON hb.location_id = l.id " +
+                 "LEFT JOIN hotelratingsummary hrs ON hb.id = hrs.hotel_branch_id " +
                  "WHERE l.name LIKE ?";
 
     List<HotelBranchDTO> branches = jdbcTemplate.query(sql, new Object[]{"%" + locationName + "%"}, (rs, rowNum) ->
@@ -59,6 +64,7 @@ public List<HotelBranchDTO> getHotelBranchesByLocation(String locationName) {
             rs.getString("address"),
             rs.getString("phone_number"),
             rs.getString("location_name"),
+            rs.getDouble("average_star"), 
             new ArrayList<>(),   // rooms
             new ArrayList<>()    // services
         )
@@ -81,10 +87,11 @@ public List<HotelBranchDTO> getHotelBranchesByLocation(String locationName) {
 
 // Lấy chi nhánh theo ID (kèm rooms và services)
 public HotelBranchDTO getHotelBranchById(int id) {
-    // Lấy thông tin chi nhánh kèm location
-    String sqlBranch = "SELECT hb.id, hb.address, hb.phone_number, l.name AS location_name " +
+    String sqlBranch = "SELECT hb.id, hb.address, hb.phone_number, l.name AS location_name, " +
+                       "COALESCE(hrs.average_star, 0) AS average_star " +
                        "FROM hotelbranch hb " +
                        "JOIN location l ON hb.location_id = l.id " +
+                       "LEFT JOIN hotelratingsummary hrs ON hb.id = hrs.hotel_branch_id " +
                        "WHERE hb.id = ?";
     HotelBranchDTO branch = jdbcTemplate.queryForObject(sqlBranch, new Object[]{id}, (rs, rowNum) ->
         new HotelBranchDTO(
@@ -92,13 +99,14 @@ public HotelBranchDTO getHotelBranchById(int id) {
             rs.getString("address"),
             rs.getString("phone_number"),
             rs.getString("location_name"), // lấy tên khu vực
+            rs.getDouble("average_star"),
             new ArrayList<>(),              // rooms
             new ArrayList<>()               // services
         )
     );
 
     // Lấy danh sách phòng
-    String sqlRooms = "SELECT r.id, r.room_number, r.floor, r.area, r.number_of_bed, r.description, r.room_img, " +
+    String sqlRooms = "SELECT r.id, r.room_number, r.floor, r.area, r.number_of_bed,r.price, r.description, r.room_img, " +
                       "hb.address AS hotel_branch_address, tr.code AS type_code, rs.status AS room_status " +
                       "FROM room r " +
                       "JOIN hotelbranch hb ON r.hotel_branch_id = hb.id " +
@@ -113,6 +121,7 @@ public HotelBranchDTO getHotelBranchById(int id) {
             rs.getInt("floor"),
             rs.getString("area"),
             rs.getInt("number_of_bed"),
+            rs.getLong("price"),
             rs.getString("description"),
             rs.getString("room_img"),
             rs.getString("hotel_branch_address"),
