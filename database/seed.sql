@@ -1,78 +1,124 @@
-INSERT INTO roles (name) VALUES
-('USER'),
-('ADMIN');
+INSERT INTO roles (role_name) VALUES ('Admin'), ('Staff'), ('Customer');
+INSERT INTO countries (code, country_name) VALUES ('VN', 'Vietnam'), ('US', 'United States');
+INSERT INTO genders (gender_name) VALUES ('Male'), ('Female');
+INSERT INTO roomstatus (status) VALUES ('Available'), ('Booked'), ('Maintenance');
+INSERT INTO reporttype (type) VALUES ('Daily'), ('Monthly');
+INSERT INTO notificationstatus (status) VALUES ('Unread'), ('Read');
+INSERT INTO location (name) VALUES
+('TP.HCM'),
+('Ha Noi'),
+('Da Nang'),
+('Hai Phong');
+INSERT INTO typeroom (code, name, description) VALUES
+('SINGLE', 'Single Room', 'Phòng đơn dành cho 1 người, 1 giường đơn'),
+('DOUBLE', 'Double Room', 'Phòng đôi dành cho 2 người, 1 giường đôi hoặc 2 giường đơn'),
+('SUITE', 'Suite Room', 'Phòng cao cấp với nhiều tiện nghi hơn');
 
-INSERT INTO genders (name) VALUES
-('MALE'),
-('FEMALE'),
-('OTHER');
 
-INSERT INTO countries (code, name) VALUES
-('US', 'United States'),
-('VN', 'Vietnam'),
-('JP', 'Japan');
 
-INSERT INTO users (
-	user_name,
-	email,
-	password_hash,
-	role_id,
-	full_name,
-	date_of_birth,
-	gender_id,
-	phone_number,
-	current_address,
-	country_id,
-	is_active,
-	failed_login_attempts,
-	locked_until,
-	last_login_at
-) VALUES
-(
-	'john_doe',
-	'john.doe@example.com',
-	'$2a$10$X5wFWHJp5.FzpKmFTLLhfOhOLvvlPY7.vQI8b4V0B4GXxqqXDR3K6',
-	1,
-	'John Doe',
-	'1995-04-10',
-	1,
-	'+1234567890',
-	'123 Main St, New York',
-	1,
-	TRUE,
-	0,
-	NULL,
-	NULL
-),
-(
-	'jane_smith',
-	'jane.smith@example.com',
-	'$2a$10$X5wFWHJp5.FzpKmFTLLhfOhOLvvlPY7.vQI8b4V0B4GXxqqXDR3K6',
-	1,
-	'Jane Smith',
-	'1997-08-21',
-	2,
-	'+1234567891',
-	'456 Ocean Ave, Miami',
-	1,
-	TRUE,
-	0,
-	NULL,
-	NULL
-),
-(
-	'admin_hotel',
-	'admin@hotel.com',
-	'$2a$10$X5wFWHJp5.FzpKmFTLLhfOhOLvvlPY7.vQI8b4V0B4GXxqqXDR3K6',
-	2,
-	'Admin User',
-	'1990-01-01',
-	3,
-	'+1234567892',
-	'789 Admin Blvd',
-	1,
-	TRUE,
-	0,
-	NULL,
-	NULL
-);
+INSERT INTO hotelbranch (address, phone_number, location_id) VALUES
+('123 Nguyễn Huệ, Quận 1, TP.HCM', '0909123456', 1),
+('45 Lý Thường Kiệt, Hà Nội', '0912345678', 2),
+('88 Trần Phú, Đà Nẵng', '0934567890', 3),
+('12 Pasteur, TP.HCM', '0945678901', 1),
+('22 Hoàng Diệu, Hải Phòng', '0956789012', 4);
+
+INSERT INTO users (user_name, email, password_hash, role_id, full_name, date_of_birth, gender_id, phone_number, current_address, country_id)
+VALUES
+('admin', 'admin@example.com', 'hash123', 1, 'Admin User', '1990-01-01', 1, '0909000000', 'HCM', 1),
+('staff1', 'staff1@example.com', 'hash123', 2, 'Staff One', '1995-05-05', 1, '0909111111', 'HCM', 1),
+('customer1', 'customer1@example.com', 'hash123', 3, 'Customer One', '2000-10-10', 2, '0909222222', 'HN', 1);
+
+INSERT INTO services (name, description, price) VALUES
+('Breakfast Buffet', 'Daily breakfast buffet at the hotel restaurant', 100000),
+('Airport Pickup', 'Pickup service from airport to hotel', 300000),
+('Spa Package', 'Relaxing spa treatment for guests', 500000),
+('Room Cleaning', 'Daily room cleaning service', 50000),
+('Laundry Service', 'Laundry and ironing service', 80000);
+
+-- Dịch vụ chung: Buffet sáng cho khách sạn 1
+INSERT INTO hotel_services (hotel_id, service_id) VALUES 
+(1, 4),
+(2, 5),
+(3, 4),
+(4, 5),
+(5, 4);
+-- Dịch vụ riêng: Spa chỉ dành cho Suite
+INSERT INTO room_type_services (room_type_id, service_id) VALUES 
+(1, 3),
+(1, 2),
+(1, 1),
+(2, 3),
+(2, 2),
+(2, 1);
+
+
+INSERT INTO room (area,room_number, number_of_bed, description, room_img, hotel_branch_id, type_room_id, floor, room_status_id)
+VALUES
+-- Chi nhánh 1 (TP.HCM)
+('25m2',101, 1, 'Phòng đơn view phố', 'room1.jpg', 1, 1, 1, 1),
+('35m2',201, 2, 'Phòng đôi view sông', 'room2.jpg', 1, 2, 2, 1),
+('30m2',102, 1, 'Phòng đơn tiêu chuẩn', 'room3.jpg', 1, 1, 1, 1),
+('45m2',103, 2, 'Phòng đôi cao cấp', 'room4.jpg', 1, 2, 1, 1),
+('45m2',104, 2, 'Phòng đôi cao cấp', 'room99.jpg', 1, 2, 1, 1),
+-- Chi nhánh 2 (Hà Nội)
+('28m2',202, 1, 'Phòng đơn view hồ', 'room5.jpg', 2, 1, 2, 1),
+('40m2',203, 2, 'Phòng đôi sang trọng', 'room6.jpg', 2, 2, 2, 1),
+('35m2',204, 1, 'Phòng đơn tiêu chuẩn', 'room7.jpg', 2, 1, 2, 1),
+-- Chi nhánh 3 (Đà Nẵng)
+('32m2',105, 1, 'Phòng đơn gần biển', 'room8.jpg', 3, 1, 1, 1),
+('45m2',205, 2, 'Phòng đôi hướng biển', 'room9.jpg', 3, 2, 2, 1),
+('50m2',106, 2, 'Phòng đôi VIP', 'room10.jpg', 3, 2, 1, 1),
+-- Chi nhánh 4 (TP.HCM)
+('27m2',107, 1, 'Phòng đơn giá rẻ', 'room11.jpg', 4, 1, 1, 1),
+('38m2',206, 2, 'Phòng đôi tiêu chuẩn', 'room12.jpg', 4, 2, 2, 1),
+-- Chi nhánh 5 (Hải Phòng)
+('29m2',108, 1, 'Phòng đơn view cảng', 'room13.jpg', 5, 1, 1, 1),
+('42m2',207, 2, 'Phòng đôi view biển', 'room14.jpg', 5, 2, 2, 1);
+
+
+INSERT INTO staff (UserID, HotelBranchID) VALUES (2, 1);
+
+-- TP.HCM chi nhánh 1
+INSERT INTO booking (check_in_date, check_out_date, room_img, hotel_branch_id, room_id)
+VALUES 
+('2026-04-20', '2026-04-22', 'room2.jpg', 1, 2),
+('2026-04-21', '2026-04-23', 'room4.jpg', 1, 4),
+-- Hà Nội chi nhánh 2
+('2026-04-19', '2026-04-21', 'room5.jpg', 2, 5),
+('2026-04-22', '2026-04-24', 'room6.jpg', 2, 6),
+-- Đà Nẵng chi nhánh 3
+('2026-04-20', '2026-04-22', 'room9.jpg', 3, 9),
+('2026-04-23', '2026-04-25', 'room10.jpg', 3, 10),
+-- TP.HCM chi nhánh 4
+('2026-04-19', '2026-04-20', 'room11.jpg', 4, 11),
+-- Hải Phòng chi nhánh 5
+('2026-04-21', '2026-04-22', 'room14.jpg', 5, 14);
+
+
+INSERT INTO bookingservice ( Type_roomID, ServiceID)
+VALUES ( 1, 1),
+       ( 1, 3);
+
+INSERT INTO notification (message, createAt, isBroadcast, UserID, NotificationStatusID)
+VALUES ('Chào mừng bạn đến khách sạn', NOW(), FALSE, 3, 1);
+
+INSERT INTO conversation (createAt, status, CustomerID, HotelBranchID)
+VALUES (NOW(), 'Open', 3, 1);
+
+INSERT INTO message (content, ConversationID, SenderID)
+VALUES ('Xin chào, tôi muốn hỏi về phòng.', 1, 3);
+
+INSERT INTO review (comment, rating, createAt, CustomerID, BookingID)
+VALUES ('Phòng sạch sẽ, dịch vụ tốt', 5, NOW(), 3, 1);
+
+INSERT INTO receipt (paymentMethod, amount, paymentDate, BookingID)
+VALUES ('Cash', 400000, '2026-04-05', 1);
+
+
+
+
+
+
+
+

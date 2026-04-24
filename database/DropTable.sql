@@ -1,0 +1,36 @@
+-- Tắt kiểm tra khóa ngoại để tránh lỗi khi drop
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS bookingservice;
+DROP TABLE IF EXISTS booking;
+DROP TABLE IF EXISTS services;
+DROP TABLE IF EXISTS roomprice;
+DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS roomstatus;
+DROP TABLE IF EXISTS typeroom;
+DROP TABLE IF EXISTS locations;
+DROP TABLE IF EXISTS hotelbranch;
+
+DROP TABLE IF EXISTS staff;
+DROP TABLE IF EXISTS historylogin;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS countries;
+DROP TABLE IF EXISTS genders;
+
+DROP TABLE IF EXISTS notification;
+DROP TABLE IF EXISTS notificationstatus;
+DROP TABLE IF EXISTS conversation;
+DROP TABLE IF EXISTS message;
+
+DROP TABLE IF EXISTS report;
+DROP TABLE IF EXISTS reporttype;
+DROP TABLE IF EXISTS maintenance;
+DROP TABLE IF EXISTS review;
+
+DROP TABLE IF EXISTS checkin;
+DROP TABLE IF EXISTS checkout;
+DROP TABLE IF EXISTS receipt;
+
+-- Bật lại kiểm tra khóa ngoại
+SET FOREIGN_KEY_CHECKS = 1;
