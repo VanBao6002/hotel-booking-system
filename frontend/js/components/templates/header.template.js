@@ -14,7 +14,7 @@ export function headerTemplate() {
                 </div>
 
                 <!-- Dang nhap: logged-in -->
-                <div class="header__navbar-user ">
+                <div class="header__navbar-user">
                     <div class="header__navbar-extras">
                         <span class="header__navbar-extras-booking">Đặt Chỗ của tôi</span>
                     </div>
@@ -29,6 +29,13 @@ export function headerTemplate() {
                             </div>
                             <div class="user__info-name">
                                 <span></span>
+                            </div>
+                            <div class="user__info-extra">
+                                <div class="user__info-extra-wrap">
+                                    <div class="extra__item-setting"><span>Cài đặt</span></div>
+                                    <div class="extra__item-sign-out"><span>Đăng xuất</span></div>
+                                    <div class="line"></div>
+                                </div>
                             </div>
                         </div>
 

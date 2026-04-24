@@ -24,6 +24,11 @@ const rules = [
         item: ["genaral","room","location","service","rate"]
     },
     {
+        path: ["#setting"],
+        roles: ["customer","staff","manager"],
+        item: ["profile","changePassword"]
+    },
+    {
         path: ["#error"],
         roles: ["guest","customer","staff","manager"],
         item: []
@@ -96,6 +101,20 @@ const rate = function navRate() {
         </div>
     `;
 }
+const profile = function navProfile() {
+    return `
+        <div class="header__navbar-link header__navbar-link-profile">
+            <div class="header__navbar-item">Cá nhân</div>
+        </div>
+    `;
+}
+const changePassword = function navChangePassword() {
+    return `
+        <div class="header__navbar-link header__navbar-link-change-password">
+            <div class="header__navbar-item">Đổi mật khẩu</div>
+        </div>
+    `;
+}
 const navComponents = {
   searchHotel,
   discount,
@@ -105,7 +124,9 @@ const navComponents = {
   room,
   location,
   service,
-  rate
+  rate,
+  profile,
+  changePassword
 };
 
 export function addRoute(path, handler) {
@@ -128,8 +149,8 @@ function renderRoute(path) {
                 }
             }
             else {
-                const main = document.querySelector(".main");
-                main.innerHTML = errorTemplate(); 
+                // const main = document.querySelector(".main");
+                // main.innerHTML = errorTemplate(); 
             }
         } 
     }
@@ -141,7 +162,7 @@ function renderRoute(path) {
 
 }
 
-function navigation(path) {
+export function navigation(path) {
     if(path === window.location.hash) {
         return;
     }
@@ -182,6 +203,15 @@ function attachNavEvents() {
     const searchHotelEl = document.querySelector(".header__navbar-link-search");
     const discountEl = document.querySelector(".header__navbar-link-discount");
     const guessEl = document.querySelector(".header__navbar-link-guess");
+    const genaralEl = document.querySelector(".header__navbar-link-genaral");
+    const roomEl = document.querySelector(".header__navbar-link-room");
+    const locationEl = document.querySelector(".header__navbar-link-location");
+    const serviceEl = document.querySelector(".header__navbar-link-service");
+    const rateEl = document.querySelector(".header__navbar-link-rate");
+    const profileEl = document.querySelector(".header__navbar-link-profile");
+    const changePasswordEl = document.querySelector(".header__navbar-link-change-password");
+
+
 
     if(homeEl) {
         homeEl.addEventListener("click", () => {
@@ -205,7 +235,41 @@ function attachNavEvents() {
             main.querySelector(".popular-destinations").scrollIntoView({behavior: "smooth", block: "center"});
         })
     }
-
+    if(genaralEl) {
+        genaralEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-genaral").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    if(roomEl) {
+        roomEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-room").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    if(locationEl) {
+        locationEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-location").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    if(serviceEl) {
+        serviceEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-service").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    if(rateEl) {
+        rateEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-rate").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    // if(profileEl) {
+    //     profileEl.addEventListener("click", () => {
+    //         main.querySelector(".booking__info-rate").scrollIntoView({behavior: "smooth", block: "center"});
+    //     })
+    // }
+    // if(changePasswordEl) {
+    //     changePasswordEl.addEventListener("click", () => {
+    //         main.querySelector(".booking__info-rate").scrollIntoView({behavior: "smooth", block: "center"});
+    //     })
+    // }
 
 }
 

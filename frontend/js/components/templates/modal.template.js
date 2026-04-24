@@ -84,7 +84,7 @@ export function modalTemplate() {
                   <span class="form-error"></span>
                 </div>
                 <button class="confirm-btn">
-                  <span class="confirm-btn-text">Đăng Ký</span>
+                  <span class="confirm-btn-text">Đăng Ký</span> 
                   <span class="confirm-btn-loading"></span>
                 </button>
               </div>
