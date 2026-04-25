@@ -115,6 +115,7 @@ function userExtra() {
     const userInfo = document.querySelector(".user__info");
     const userInfoExtra = userInfo.querySelector(".user__info-extra");
     const userSignOut = userInfo.querySelector(".extra__item-sign-out");
+    const userSetiing = userInfo.querySelector(".extra__item-setting");
 
     userInfo.addEventListener("click", (e) => {
         userInfoExtra.style.display = "block";
@@ -126,11 +127,16 @@ function userExtra() {
         }
     });
 
+    userSetiing.addEventListener("click", () => {
+        userInfoExtra.style.display = "none";
+        navigation("#setting");
+    })
+
     userSignOut.addEventListener("click", () => {
         document.querySelector(".header__navbar-user").classList.remove("logged-in");
         localStorage.setItem("role", "guest");
-        localStorage.setItem("token", "null");
-        localStorage.setItem("userData", "null");
+        localStorage.setItem("token", "");
+        localStorage.setItem("userData", "");
         navigation("#home");
     });
 }
@@ -210,7 +216,6 @@ function submitForm(){
     submitButton[0].addEventListener("click", (e)=> {
         e.preventDefault();
 
-        const confirmButton = getSignInForm().querySelector(".confirm-btn-text");
 
         const isValid = validateForm("form-sign-in",[emailField,passwordField]);
         if(!isValid) {
@@ -218,7 +223,6 @@ function submitForm(){
         }
         else {
             console.log("success");
-            confirmButton.style.display = "block";
             const form = getSignInForm();
 
             const userData = {
@@ -231,18 +235,17 @@ function submitForm(){
                     console.log("Success(login)");
                     localStorage.setItem("role", "customer");
                     localStorage.setItem("token", data.accessToken);
+                    localStorage.setItem("userData", JSON.stringify(data.user));
                     console.log(localStorage.getItem("role"));
                     console.log(localStorage.getItem("token"));
-                    document.querySelector(".user__info-name span").innerText = data.user.fullName;
                     document.querySelector(".header__navbar-user").classList.add("logged-in");
+                    document.querySelector(".user__info-name span").innerText = data.user.fullName;
                     showToast("Đăng nhập thành công");
-                    confirmButton.style.display = "none";
 
                 })
                 .catch(errorData => {
                     console.log("fail(login)");
                     showToast(`Đăng nhập thất bại: ${errorData.data.message}`,"error");
-                    confirmButton.style.display = "none";
                 })
             
                 turnOffModal();
@@ -254,7 +257,6 @@ function submitForm(){
     submitButton[1].addEventListener("click", (e) => {
         e.preventDefault();
         
-        const confirmButton = getSignUpForm().querySelector(".confirm-btn-text");
 
         const isValid = validateForm("form-sign-up",
             [fullnameField,
@@ -276,7 +278,7 @@ function submitForm(){
                 email: form.querySelector("#email").value,
                 fullName: form.querySelector("#fullname").value,
                 phoneNumber: form.querySelector("#phone-number").value
-            }
+            };
 
             userRegister(userData)
                 .then(data => {

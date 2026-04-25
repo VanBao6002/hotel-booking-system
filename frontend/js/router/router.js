@@ -1,4 +1,6 @@
 import { errorTemplate } from "../components/templates/error.template.js";
+import { profileTemplate } from "../components/templates/profile.template.js"
+import { changePasswordTemplate } from "../components/templates/change-password..template.js"
 const routers = {};
 let currentPath = null;
 
@@ -26,7 +28,7 @@ const rules = [
     {
         path: ["#setting"],
         roles: ["customer","staff","manager"],
-        item: ["profile","changePassword"]
+        item: ["profile","changePassword","home"]
     },
     {
         path: ["#error"],
@@ -149,8 +151,8 @@ function renderRoute(path) {
                 }
             }
             else {
-                // const main = document.querySelector(".main");
-                // main.innerHTML = errorTemplate(); 
+                const main = document.querySelector(".main");
+                main.innerHTML = errorTemplate(); 
             }
         } 
     }
@@ -260,16 +262,16 @@ function attachNavEvents() {
             main.querySelector(".booking__info-rate").scrollIntoView({behavior: "smooth", block: "center"});
         })
     }
-    // if(profileEl) {
-    //     profileEl.addEventListener("click", () => {
-    //         main.querySelector(".booking__info-rate").scrollIntoView({behavior: "smooth", block: "center"});
-    //     })
-    // }
-    // if(changePasswordEl) {
-    //     changePasswordEl.addEventListener("click", () => {
-    //         main.querySelector(".booking__info-rate").scrollIntoView({behavior: "smooth", block: "center"});
-    //     })
-    // }
+    if(profileEl) {
+        profileEl.addEventListener("click", () => {
+            main.querySelector(".setting").innerHTML = profileTemplate();
+        })
+    }
+    if(changePasswordEl) {
+        changePasswordEl.addEventListener("click", () => {
+            main.querySelector(".setting").innerHTML = changePasswordTemplate();
+        })
+    }
 
 }
 

@@ -99,12 +99,7 @@ export function bookingSearchTemplate() {
                     <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
                   </div>
-                  <div class="booking-search__last-view">
-                    <span class="booking-search__last-view-text">
-                      Khách sạn xem gần đây
-                      <i class="fa-solid fa-magnifying-glass"></i>
-                    </span>
-                  </div>
+                  
                 </div>
               </div>
             </div>

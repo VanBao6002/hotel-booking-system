@@ -19,7 +19,7 @@ export const userLogin = (userData) => {
         body: JSON.stringify(userData)
     })
     .then(data => {
-        console.log("Data nhan thanh cong(login)", data);
+        // console.log("Data nhan thanh cong(login)", data);
         return data;
     })
     .catch(error => {

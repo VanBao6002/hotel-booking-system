@@ -111,10 +111,6 @@ export function searchHoteltemplate() {
                         </div>
                         <div class="search-hotel-result__price">
                           <div class="search-hotel-result__price-wrap">
-                            <div class="search-hotel-result__price-discount-percent">
-                              <div>SALE 30%</div>
-                            </div>
-                            <span class="search-hotel-result__price-sale">500.000d</span>
                             <span class="search-hotel-result__price-current">320.000.000d</span>
                           </div>
                           <div class="btn choice-hotel">Chọn phòng</div>
@@ -143,10 +139,6 @@ export function searchHoteltemplate() {
                         </div>
                         <div class="search-hotel-result__price">
                           <div class="search-hotel-result__price-wrap">
-                            <div class="search-hotel-result__price-discount-percent">
-                              <div>SALE 30%</div>
-                            </div>
-                            <span class="search-hotel-result__price-sale">500.000d</span>
                             <span class="search-hotel-result__price-current">320.000.000d</span>
                           </div>
                           <div class="btn choice-hotel">Chọn phòng</div>
@@ -175,10 +167,6 @@ export function searchHoteltemplate() {
                         </div>
                         <div class="search-hotel-result__price">
                           <div class="search-hotel-result__price-wrap">
-                            <div class="search-hotel-result__price-discount-percent">
-                              <div>SALE 30%</div>
-                            </div>
-                            <span class="search-hotel-result__price-sale">500.000d</span>
                             <span class="search-hotel-result__price-current">320.000.000d</span>
                           </div>
                           <div class="btn choice-hotel">Chọn phòng</div>
@@ -207,10 +195,6 @@ export function searchHoteltemplate() {
                         </div>
                         <div class="search-hotel-result__price">
                           <div class="search-hotel-result__price-wrap">
-                            <div class="search-hotel-result__price-discount-percent">
-                              <div>SALE 30%</div>
-                            </div>
-                            <span class="search-hotel-result__price-sale">500.000d</span>
                             <span class="search-hotel-result__price-current">320.000.000d</span>
                           </div>
                           <div class="btn choice-hotel">Chọn phòng</div>

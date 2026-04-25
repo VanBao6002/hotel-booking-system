@@ -133,7 +133,6 @@ export function bookingTemplate() {
                         <td class="room-type">Vip</td>
                         <td class="room-quantity">2</td>
                         <td class="room-price">
-                          <div class="room__price">3.000.000 VND</div>
                           <div class="room-current__price">500.000 VND</div>
                         </td>
                         <td>x5</td>
@@ -145,7 +144,6 @@ export function bookingTemplate() {
                         <td>Vip</td>
                         <td>2</td>
                         <td>
-                          <div class="room__price"></div>
                           <div class="room-current__price">500.000 VND</div>
                         </td>
                         <td>x5</td>
@@ -180,7 +178,6 @@ export function bookingTemplate() {
                         <td class="room-type">Vip</td>
                         <td class="room-quantity">2</td>
                         <td class="room-price">
-                          <div class="room__price">3.000.000 VND</div>
                           <div class="room-current__price">500.000 VND</div>
                         </td>
                         <td>x5</td>

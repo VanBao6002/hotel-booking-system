@@ -31,12 +31,11 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("role", "guest");
     }
     if(!localStorage.getItem("token")) {
-        localStorage.setItem("token", "null");
+        localStorage.setItem("token", "");
     }
     if(!localStorage.getItem("userData")) {
-        localStorage.setItem("userData", "null");
+        localStorage.setItem("userData", "");
     }
-    localStorage.setItem("role", "customer");
     
         
         // <div class="main"></div>

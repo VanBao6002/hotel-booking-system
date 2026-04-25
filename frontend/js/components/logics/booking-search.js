@@ -1,5 +1,8 @@
 // global var
 
+import { navigation } from "../../router/router.js";
+import { searchHotel } from "../../services/hotel.js";
+
 var textLocation = "";
 
 var count = {
@@ -248,10 +251,39 @@ export function initBookingSearch() {
         }
     });
 
-    document.querySelector(".booking-search__submit").addEventListener("click", () => {
-        console.log(textLocation,startDate,endDate,count);
-    })
-    document.querySelector(".booking-search__last-view").addEventListener("click", () =>{
-        console.log(1);
+
+    const searchButton = document.querySelector(".booking-search__submit");
+    const locationInput = document.getElementById("hotel-location");
+
+    searchButton.addEventListener("click", () => {
+        if(locationInput.value !== "") {
+
+            const searchInfoData = {
+                location: textLocation,
+                checkInDate: `${startDate.year}-${startDate.month}-${startDate.day}`,
+                checkOutDate: `${endDate.year}-${endDate.month}-${endDate.day}`,
+                singleRoomQuantity: count.singleRoom,
+                doubleRoomQuantity: count.coupleRoom
+            };
+            console.log(searchInfoData);
+            // navigation("#search-hotel");
+
+            searchHotel(searchInfoData)
+                .then(data => {
+                    navigation("#search-hotel");
+                    console.log(data);
+                })
+                .catch(errorData => {
+                    console.log("fail(searchbooking)");
+                    // if(errorData.status) {
+                    //     showToast(`Đăng ký thất bại: ${errorData.data.message}`,"error");
+                    // }
+                    // else {
+                    //     showToast("Kết nối tới server thất bại","error");
+                    // }
+                })
+        }
     });
+
+
 }

@@ -7,15 +7,15 @@ export function changePasswordTemplate() {
             <div class="change-password__wrap">
               <div class="group-info">
                 <label for="fullname">Mật khẩu hiện tại</label>
-                <input type="password" name="fullname" id="fullname">
+                <input type="password" name="fullname" id="fullname" readonly>
               </div>
               <div class="group-info">
                 <label for="fullname">Mật khẩu mới</label>
-                <input type="password" name="username" id="username">
+                <input type="password" name="username" id="username" readonly>
               </div>
               <div class="group-info">
                 <label for="fullname">Xác nhận mật khẩu mới</label>
-                <input type="password" name="email" id="email">
+                <input type="password" name="email" id="email" readonly>
               </div>
               <div class="save-info__btn">
                 <span>Xác nhận</span>

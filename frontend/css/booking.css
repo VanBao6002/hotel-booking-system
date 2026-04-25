@@ -151,10 +151,6 @@
 .booking__info-room-table th {
     background-color: #f2f2f2;
 }
-.room__price {
-    color: var(--text-gray-color);
-    text-decoration: line-through;
-}
 .room-current__price {
     color: #ff5e1f;
     font-weight: bold;
