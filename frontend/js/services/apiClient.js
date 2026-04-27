@@ -1,11 +1,20 @@
 const BASE_URL = "http://localhost:8080";
 
+function buildHeaders(options = {}){
+    const token = localStorage.getItem("token");
+    const headers = {
+        "Content-Type": "application/json",
+        ...(options.header || {})
+    };
+    if(!options.skipAuth && token) {
+        options.Authorization = "Bearer" + token;
+    }
+    return headers;
+}
+
 function apiClient(endpoint, options = {}) {
     return fetch(`${BASE_URL}${endpoint}`, {
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
-        },
+        headers: buildHeaders(options),
         ...options
     })
     .then(response => {
