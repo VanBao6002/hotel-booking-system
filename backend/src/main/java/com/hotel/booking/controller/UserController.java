@@ -26,9 +26,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/by-username/{userName}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable String userName){
-        UserDTO user = userService.getUser(userName);
+    @GetMapping("/by-phone-number/{phoneNumber}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable String phoneNumber){
+        UserDTO user = userService.getUser(phoneNumber);
         return ResponseEntity.ok(user);
     }
 
@@ -38,12 +38,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PutMapping("/update-profile/{userName}")
+    @PutMapping("/update-profile/{phoneNumber}")
     public ResponseEntity<UserDTO> updateProfile(
-            @PathVariable String userName,
+            @PathVariable String phoneNumber,
             @RequestBody UpdateProfileRequest request) {
         
-        UserDTO updatedUser = userService.updateProfile(userName, request);
+        UserDTO updatedUser = userService.updateProfile(phoneNumber, request);
         return ResponseEntity.ok(updatedUser);
     }
 }
