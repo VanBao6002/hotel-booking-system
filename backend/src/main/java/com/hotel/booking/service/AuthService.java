@@ -37,11 +37,9 @@ public class AuthService {
     }
 
     public UserDTO register(RegisterRequest request) {
-        if (userRepository.existsByUserName(request.getUserName())) {
-            throw new ConflictException("Username already exists");
-        }
+        String email = normalizeOptionalEmail(request.getEmail());
 
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (email != null && userRepository.existsByEmail(email)) {
             throw new ConflictException("Email already exists");
         }
 
@@ -50,8 +48,7 @@ public class AuthService {
         }
         
         User user = new User();
-        user.setUserName(request.getUserName());
-        user.setEmail(request.getEmail());
+        user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setFullName(request.getFullName());
         user.setPhoneNumber(request.getPhoneNumber());
@@ -69,7 +66,7 @@ public class AuthService {
     }
     
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByUserNameOrEmail(request.getUserNameOrEmail(), request.getUserNameOrEmail()).orElseThrow(this::invalidCredentialsException);
+		User user = userRepository.findByPhoneNumberOrEmail(request.getPhoneNumberOrEmail(), request.getPhoneNumberOrEmail()).orElseThrow(this::invalidCredentialsException);
         
         if (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now())) {
             throw new UnauthorizedException("Account is locked. Please try again later");
@@ -93,10 +90,10 @@ public class AuthService {
     }
 
     public void changePassword(String authorizationHeader, ChangePasswordRequest request) {
-        String userName = extractUserNameFromAuthHeader(authorizationHeader);
+        Integer userId = extractUserIdFromAuthHeader(authorizationHeader);
 
-        User user = userRepository.findByUserName(userName)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userName));
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
             throw new UnauthorizedException("Current password is incorrect");
@@ -112,8 +109,12 @@ public class AuthService {
     }
 
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest request) {
-        userRepository.findByEmail(request.getEmail())
-            .ifPresent(jwtService::generateResetPasswordToken);
+        String email = normalizeOptionalEmail(request.getEmail());
+
+        if (email != null) {
+            userRepository.findByEmail(email)
+                .ifPresent(jwtService::generateResetPasswordToken);
+        }
 
         return new ForgotPasswordResponse("If the email exists, a reset link has been sent.");
     }
@@ -134,18 +135,22 @@ public class AuthService {
     }
 
     public void logout(String authorizationHeader) {
-        extractUserNameFromAuthHeader(authorizationHeader);
+        extractUserIdFromAuthHeader(authorizationHeader);
     }
 
     public UserDTO me(String authorizationHeader) {
-        String userName = extractUserNameFromAuthHeader(authorizationHeader);
-        User user = userRepository.findByUserName(userName).orElseThrow(() -> new ResourceNotFoundException("User not found: " + userName));
+		Integer userId = extractUserIdFromAuthHeader(authorizationHeader);
+		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return UserMapper.toDto(user);
     }
 
-    private String extractUserNameFromAuthHeader(String authorizationHeader) {
+    private Integer extractUserIdFromAuthHeader(String authorizationHeader) {
         String token = jwtService.extractBearerToken(authorizationHeader);
-        return jwtService.extractSubject(token);
+        try {
+            return Integer.valueOf(jwtService.extractSubject(token));
+        } catch (NumberFormatException ex) {
+            throw new UnauthorizedException("Invalid access token subject");
+        }
     }
 
     private void handleFailedLogin(User user) {
@@ -176,7 +181,16 @@ public class AuthService {
     }
 
     private UnauthorizedException invalidCredentialsException() {
-        return new UnauthorizedException("Username or password not match");
+        return new UnauthorizedException("Phone number or email or password not match");
+    }
+
+    private String normalizeOptionalEmail(String email) {
+        if (email == null) {
+            return null;
+        }
+
+        String normalizedEmail = email.trim();
+        return normalizedEmail.isEmpty() ? null : normalizedEmail;
     }
 
 }

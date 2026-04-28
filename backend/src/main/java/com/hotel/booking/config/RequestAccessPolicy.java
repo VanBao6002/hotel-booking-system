@@ -21,7 +21,6 @@ public final class RequestAccessPolicy {
     private RequestAccessPolicy() {
     }
 
-    @SuppressWarnings("null")
     public static boolean isPublicEndpoint(HttpServletRequest request) {
         String path = request.getRequestURI();
         for (String endpointPattern : PUBLIC_ENDPOINTS) {

@@ -91,14 +91,13 @@ CREATE TABLE IF NOT EXISTS bookingservice(
 
 CREATE TABLE IF NOT EXISTS users (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    user_name VARCHAR(50) UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role_id INT NOT NULL,
     full_name VARCHAR(100),
     date_of_birth DATE,
     gender_id INT,
-    phone_number VARCHAR(20),
+    phone_number VARCHAR(20) NOT NULL UNIQUE,
     current_address VARCHAR(255),
     country_id INT,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
