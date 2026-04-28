@@ -34,8 +34,10 @@ public class BookingRepository {
     // Lấy booking theo RoomID
     public List<BookingDTO> getBookingsByRoomID(int roomId) {
         String sql = "SELECT * FROM booking WHERE room_id = ?";
-        return jdbcTemplate.query(sql, new Object[]{roomId}, (rs, rowNum) ->
-            new BookingDTO(
+
+        return jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> new BookingDTO(
                 rs.getInt("id"),
                 rs.getDate("check_in_date").toLocalDate(),
                 rs.getDate("check_out_date").toLocalDate(),
@@ -43,18 +45,28 @@ public class BookingRepository {
                 rs.getString("room_img"),
                 rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
                 rs.getObject("room_id") != null ? rs.getInt("room_id") : null
-            )
+            ),
+            roomId // truyền trực tiếp varargs thay vì new Object[]{roomId}
         );
     }
+
 
     // Kiểm tra phòng có trống
     public boolean isRoomAvailable(int roomId, LocalDate checkIn, LocalDate checkOut) {
         String sql = "SELECT COUNT(*) FROM booking WHERE room_id = ? " +
-                     "AND (check_in_date < ? AND check_out_date > ?)";
-        Integer count = jdbcTemplate.queryForObject(sql,
-                new Object[]{roomId, checkOut, checkIn}, Integer.class);
+                    "AND (check_in_date < ? AND check_out_date > ?)";
+
+        Integer count = jdbcTemplate.queryForObject(
+            sql,
+            Integer.class,
+            roomId,   // truyền trực tiếp varargs
+            checkOut,
+            checkIn
+        );
+
         return count == null || count == 0;
     }
+
 
     // Thêm booking mới
     public void addBooking(BookingDTO booking) {
