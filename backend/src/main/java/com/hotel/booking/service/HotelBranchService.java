@@ -42,8 +42,20 @@ public SearchResponse searchAvailableHotelBranches(LocalDate checkInDate,
         HotelBranchDTO branch = branchRepo.getHotelBranchById(b.getId());
 
         List<RoomDTO> availableRooms = branch.getRooms().stream()
-                .filter(room -> bookingRepo.isRoomAvailable(room.getId(), checkInDate, checkOutDate))
-                .collect(Collectors.toList());
+        .filter(room -> {
+        // Nếu yêu cầu Single = 0 thì bỏ qua phòng Single
+            if (requiredSingleRooms == 0 && "SINGLE".equals(room.getTypeCode())) {
+                return false;
+            }
+        // Nếu yêu cầu Double = 0 thì bỏ qua phòng Double
+            if (requiredDoubleRooms == 0 && "DOUBLE".equals(room.getTypeCode())) {
+                return false;
+            }
+        // Còn lại thì kiểm tra phòng có trống không
+         return bookingRepo.isRoomAvailable(room.getId(), checkInDate, checkOutDate);
+        })
+    .collect(Collectors.toList());
+
 
         long availableSingles = availableRooms.stream()
                 .filter(r -> "SINGLE".equals(r.getTypeCode()))

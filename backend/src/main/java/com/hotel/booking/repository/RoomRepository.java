@@ -44,16 +44,22 @@ public List<RoomDTO> getAllRooms() {
     // load services cho từng room
     for (RoomDTO room : rooms) {
         String sqlServices = "SELECT s.name " +
-                             "FROM room_type_services rts " +
-                             "JOIN services s ON rts.service_id = s.id " +
-                             "JOIN typeroom tr ON rts.room_type_id = tr.id " +
-                             "WHERE tr.code = ?";
-        List<String> services = jdbcTemplate.query(sqlServices, new Object[]{room.getTypeCode()},
-                (rs, rowNum) -> rs.getString("name"));
+                            "FROM room_type_services rts " +
+                            "JOIN services s ON rts.service_id = s.id " +
+                            "JOIN typeroom tr ON rts.room_type_id = tr.id " +
+                            "WHERE tr.code = ?";
+
+        List<String> services = jdbcTemplate.query(
+            sqlServices,
+            (rs, rowNum) -> rs.getString("name"),
+            room.getTypeCode() // truyền trực tiếp varargs thay vì new Object[]{...}
+        );
+
         room.setServices(services);
     }
 
     return rooms;
+
 }
 
 
@@ -67,8 +73,9 @@ public List<RoomDTO> getAllRooms() {
                  "JOIN roomstatus rs ON r.room_status_id = rs.id " +
                  "WHERE r.id = ?";
 
-    RoomDTO room = jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
-        new RoomDTO(
+    RoomDTO room = jdbcTemplate.queryForObject(
+        sql,
+        (rs, rowNum) -> new RoomDTO(
             rs.getInt("id"),
             rs.getInt("room_number"),
             rs.getInt("floor"),
@@ -81,21 +88,28 @@ public List<RoomDTO> getAllRooms() {
             rs.getString("type_code"),
             rs.getString("room_status"),
             new ArrayList<>() // khởi tạo list rỗng
-        )
+        ),
+        id // truyền trực tiếp varargs thay vì new Object[]{id}
     );
+
 
     // Lấy danh sách dịch vụ theo loại phòng
     String sqlServices = "SELECT s.name " +
-                         "FROM room_type_services rts " +
-                         "JOIN services s ON rts.service_id = s.id " +
-                         "JOIN typeroom tr ON rts.room_type_id = tr.id " +
-                         "WHERE tr.code = ?";
-    List<String> services = jdbcTemplate.query(sqlServices, new Object[]{room.getTypeCode()},
-            (rs, rowNum) -> rs.getString("name"));
+                        "FROM room_type_services rts " +
+                        "JOIN services s ON rts.service_id = s.id " +
+                        "JOIN typeroom tr ON rts.room_type_id = tr.id " +
+                        "WHERE tr.code = ?";
+
+    List<String> services = jdbcTemplate.query(
+        sqlServices,
+        (rs, rowNum) -> rs.getString("name"),
+        room.getTypeCode() // truyền trực tiếp varargs thay vì new Object[]{...}
+    );
 
     room.setServices(services);
 
     return room;
+
 }
 
     // Thêm phòng mới
