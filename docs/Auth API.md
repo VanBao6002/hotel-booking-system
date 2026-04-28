@@ -314,13 +314,3 @@ Example:
 }
 ```
 
-## Interactive Documentation
-
-- Swagger UI: `http://localhost:8080/swagger-ui.html`
-- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
-
-If Swagger shows no endpoints, rebuild and restart backend:
-
-```bash
-docker compose up --build -d backend
-```
