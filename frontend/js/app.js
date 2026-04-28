@@ -36,6 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!localStorage.getItem("userData")) {
         localStorage.setItem("userData", "");
     }
+    if(!localStorage.getItem("hotelData")) {
+        localStorage.setItem("hotelData", "");
+    }
     
         
         // <div class="main"></div>

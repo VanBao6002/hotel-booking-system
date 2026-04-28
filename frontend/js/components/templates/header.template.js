@@ -1,14 +1,7 @@
+import { getUserInfo } from "../../utils/utils.js";
+
 export function headerTemplate() {
-    let signIn = "";
-    let fullName = "";
-    const data = localStorage.getItem("userData");
-    if(data) {
-        const userData = JSON.parse(data);
-        if(userData && userData.fullName) {
-            signIn = "logged-in";
-            fullName = userData.fullName;
-        }
-    }
+    const {signIn, fullName } = getUserInfo();
 
     return `
         <div class="header">

@@ -68,7 +68,7 @@ export function bookingSearchTemplate() {
                             <span>Phòng đơn</span>
                           </div>
                           <div class="booking-search__control">
-                            <div class="booking-search__control-btn-minus booking-search__control-btn--limit">
+                            <div class="booking-search__control-btn-minus ">
                               <i class="fa-solid fa-minus minus-btn"></i>
                             </div>
                             <span></span>

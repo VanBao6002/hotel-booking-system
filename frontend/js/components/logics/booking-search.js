@@ -151,7 +151,7 @@ function initGuestsRooms(element) {
     };
 
     const Min = {
-        singleRoom: 1,
+        singleRoom: 0,
         coupleRoom: 0
     };
 
@@ -256,7 +256,7 @@ export function initBookingSearch() {
     const locationInput = document.getElementById("hotel-location");
 
     searchButton.addEventListener("click", () => {
-        if(locationInput.value !== "") {
+        if(locationInput.value !== "" && (count.singleRoom !== 0 || count.coupleRoom !== 0)) {
 
             const searchInfoData = {
                 location: textLocation,
@@ -266,21 +266,15 @@ export function initBookingSearch() {
                 doubleRoomQuantity: count.coupleRoom
             };
             console.log(searchInfoData);
-            // navigation("#search-hotel");
 
             searchHotel(searchInfoData)
                 .then(data => {
                     navigation("#search-hotel");
                     console.log(data);
+                    localStorage.setItem("hotelData", JSON.stringify(data));
                 })
                 .catch(errorData => {
                     console.log("fail(searchbooking)");
-                    // if(errorData.status) {
-                    //     showToast(`Đăng ký thất bại: ${errorData.data.message}`,"error");
-                    // }
-                    // else {
-                    //     showToast("Kết nối tới server thất bại","error");
-                    // }
                 })
         }
     });
