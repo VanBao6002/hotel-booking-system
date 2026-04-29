@@ -26,10 +26,13 @@ public class BookingRepository {
                 rs.getTimestamp("booked_at").toLocalDateTime(),
                 rs.getString("room_img"),
                 rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
-                rs.getObject("room_id") != null ? rs.getInt("room_id") : null
+                rs.getObject("room_id") != null ? rs.getInt("room_id") : null,
+                rs.getObject("user_id") != null ? rs.getInt("user_id") : null,          // thêm user_id
+                rs.getLong("booking_price")                                           // thêm booking_price
             )
         );
     }
+
 
     // Lấy booking theo RoomID
     public List<BookingDTO> getBookingsByRoomID(int roomId) {
@@ -44,11 +47,14 @@ public class BookingRepository {
                 rs.getTimestamp("booked_at").toLocalDateTime(),
                 rs.getString("room_img"),
                 rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
-                rs.getObject("room_id") != null ? rs.getInt("room_id") : null
+                rs.getObject("room_id") != null ? rs.getInt("room_id") : null,
+                rs.getObject("user_id") != null ? rs.getInt("user_id") : null,   // thêm userId
+                rs.getLong("booking_price")                                     // thêm bookingPrice
             ),
             roomId // truyền trực tiếp varargs thay vì new Object[]{roomId}
         );
     }
+
 
 
     // Kiểm tra phòng có trống
@@ -70,14 +76,19 @@ public class BookingRepository {
 
     // Thêm booking mới
     public void addBooking(BookingDTO booking) {
-        String sql = "INSERT INTO booking(check_in_date, check_out_date, room_img, hotel_branch_id, room_id) " +
-                     "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO booking(check_in_date, check_out_date, room_img, " +
+                    "hotel_branch_id, room_id, user_id, booking_price) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
         jdbcTemplate.update(sql,
-                booking.getCheckInDate(),
-                booking.getCheckOutDate(),
-                booking.getRoomIMG(),
-                booking.getHotelBranchID(),
-                booking.getRoomID()
+            booking.getCheckInDate(),
+            booking.getCheckOutDate(),
+            booking.getRoomImg(),
+            booking.getHotelBranchId(),
+            booking.getRoomId(),
+            booking.getUserId(),       // thêm userId
+            booking.getBookingPrice()  // thêm bookingPrice
         );
     }
+
 }

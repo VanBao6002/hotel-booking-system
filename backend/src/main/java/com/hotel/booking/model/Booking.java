@@ -23,6 +23,12 @@ public class Booking {
 
     @Column(name = "room_img", columnDefinition = "TEXT", nullable = false)
     private String roomIMG;
+    
+    @Column(name = "booking_price", nullable = false)
+    private Long bookingPrice = 0L;   // thêm trường mới
+
+    @Column(name = "user_id")
+    private Integer userId;           // thêm trường mới
 
     @Column(name = "hotel_branch_id")
     private Integer hotelBranchId;
@@ -70,7 +76,19 @@ public class Booking {
     public void setRoomIMG(String roomIMG) {
         this.roomIMG = roomIMG;
     }
+    public Long getBookingPrice() {
+        return bookingPrice;
+    }
+    public void setBookingPrice(Long bookingPrice) {
+        this.bookingPrice = bookingPrice;
+    }
 
+    public Integer getUserId() {
+        return userId;
+    }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
     public Integer getHotelBranchId() {
         return hotelBranchId;
     }
