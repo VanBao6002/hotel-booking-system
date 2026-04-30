@@ -120,7 +120,6 @@ public class AuthControllerTest {
         validAdminLoginRequest.setPassword("TestPassword123");
 
         validForgotPasswordRequest = new ForgotPasswordRequest();
-        validForgotPasswordRequest.setEmail("Test_Admin@gmail.com");
         
     }
 
@@ -251,7 +250,6 @@ public class AuthControllerTest {
     @Test
     void testForgotPasswordWithUnknownEmail() throws Exception {
         ForgotPasswordRequest unknownEmailRequest = new ForgotPasswordRequest();
-        unknownEmailRequest.setEmail("unknown@example.com");
 
         String body = objectMapper.writeValueAsString(unknownEmailRequest);
         mockMvc.perform(post("/api/v1/auth/forgot-password")

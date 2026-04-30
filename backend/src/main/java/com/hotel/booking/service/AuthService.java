@@ -29,11 +29,13 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final OtpService otpService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, OtpService otpService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.otpService = otpService;
     }
 
     public UserDTO register(RegisterRequest request) {
@@ -109,8 +111,13 @@ public class AuthService {
     }
 
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest request) {
-        String email = normalizeOptionalEmail(request.getEmail());
+        String phoneNumber = normalizeOptionalPhoneNumber(request.getPhoneNumber());
+        if (otpService != null && phoneNumber != null) {
+            otpService.generateOtpForPhone(phoneNumber);
+            return new ForgotPasswordResponse("If the phone number exists, a reset OTP has been sent.");
+        }
 
+        String email = normalizeOptionalEmail(request.getEmail());
         if (email != null) {
             userRepository.findByEmail(email)
                 .ifPresent(jwtService::generateResetPasswordToken);
@@ -120,10 +127,23 @@ public class AuthService {
     }
 
     public void resetPassword(ResetPasswordRequest request) {
-        String email = jwtService.extractEmailFromResetToken(request.getResetToken());
+        String phoneNumber = normalizeOptionalPhoneNumber(request.getPhoneNumber());
+        String resetOtp = normalizeOptionalPhoneNumber(request.getResetOtp());
 
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        User user;
+        if (otpService != null && phoneNumber != null && resetOtp != null) {
+            boolean validOtp = otpService.verifyOtpAndConsume(phoneNumber, "RESET_PASSWORD", resetOtp);
+            if (!validOtp) {
+                throw new UnauthorizedException("Invalid or expired OTP");
+            }
+
+            user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        } else {
+            String email = jwtService.extractEmailFromResetToken(request.getResetToken());
+            user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        }
 
         if (passwordEncoder.matches(request.getNewPassword(), user.getPasswordHash())) {
             throw new ConflictException("New password must be different from current password");
@@ -191,6 +211,15 @@ public class AuthService {
 
         String normalizedEmail = email.trim();
         return normalizedEmail.isEmpty() ? null : normalizedEmail;
+    }
+
+    private String normalizeOptionalPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null) {
+            return null;
+        }
+
+        String normalizedPhoneNumber = phoneNumber.trim();
+        return normalizedPhoneNumber.isEmpty() ? null : normalizedPhoneNumber;
     }
 
 }

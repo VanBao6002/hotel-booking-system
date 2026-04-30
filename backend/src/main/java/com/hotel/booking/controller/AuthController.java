@@ -53,7 +53,7 @@ public class AuthController {
     public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         authService.resetPassword(request);
         return ResponseEntity.noContent().build();
-    }
+    } 
 
     @PutMapping("/change-password")
     public ResponseEntity<Void> changePassword(
