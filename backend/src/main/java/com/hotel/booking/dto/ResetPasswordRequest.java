@@ -8,8 +8,6 @@ public class ResetPasswordRequest {
     @Pattern(regexp = "^\\+?[0-9]{9,15}$", message = "Phone number should be valid")
     private String phoneNumber;
 
-    private String resetToken;
-
     private String resetOtp;
 
     @NotBlank(message = "New password cannot be blank")
@@ -21,14 +19,6 @@ public class ResetPasswordRequest {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public String getResetToken() {
-        return resetToken;
-    }
-
-    public void setResetToken(String resetToken) {
-        this.resetToken = resetToken;
     }
 
     public String getResetOtp() {

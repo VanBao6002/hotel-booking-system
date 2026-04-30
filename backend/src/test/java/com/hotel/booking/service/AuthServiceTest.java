@@ -127,7 +127,6 @@ class AuthServiceTest {
     @Test
     void forgotPasswordGeneratesTokenOnlyForExistingEmail() {
         ForgotPasswordRequest request = new ForgotPasswordRequest();
-        request.setEmail("user@example.com");
 
         User user = buildUser();
         user.setEmail("user@example.com");
@@ -136,7 +135,6 @@ class AuthServiceTest {
         authService.forgotPassword(request);
         verify(jwtService).generateResetPasswordToken(user);
 
-        request.setEmail("unknown@example.com");
         when(userRepository.findByEmail("unknown@example.com")).thenReturn(Optional.empty());
         authService.forgotPassword(request);
         verify(jwtService, times(1)).generateResetPasswordToken(any(User.class));
@@ -145,7 +143,6 @@ class AuthServiceTest {
     @Test
     void resetPasswordRejectsWhenNewPasswordEqualsCurrentPassword() {
         ResetPasswordRequest request = new ResetPasswordRequest();
-        request.setResetToken("reset-token");
         request.setNewPassword("new-password");
 
         User user = buildUser();
@@ -181,17 +178,6 @@ class AuthServiceTest {
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userCaptor.capture());
         assertEquals("new-hash", userCaptor.getValue().getPasswordHash());
-    }
-
-    @Test
-    void logoutValidatesAuthorizationHeaderAndToken() {
-        when(jwtService.extractBearerToken("Bearer token")).thenReturn("token");
-        when(jwtService.extractSubject("token")).thenReturn("1");
-
-        authService.logout("Bearer token");
-
-        verify(jwtService).extractBearerToken("Bearer token");
-        verify(jwtService).extractSubject("token");
     }
 
     private User buildUser() {

@@ -112,18 +112,8 @@ public class AuthService {
 
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest request) {
         String phoneNumber = normalizeOptionalPhoneNumber(request.getPhoneNumber());
-        if (otpService != null && phoneNumber != null) {
-            otpService.generateOtpForPhone(phoneNumber);
-            return new ForgotPasswordResponse("If the phone number exists, a reset OTP has been sent.");
-        }
-
-        String email = normalizeOptionalEmail(request.getEmail());
-        if (email != null) {
-            userRepository.findByEmail(email)
-                .ifPresent(jwtService::generateResetPasswordToken);
-        }
-
-        return new ForgotPasswordResponse("If the email exists, a reset link has been sent.");
+        otpService.generateOtpForPhone(phoneNumber);
+        return new ForgotPasswordResponse("If the phone number exists, a reset OTP has been sent.");
     }
 
     public void resetPassword(ResetPasswordRequest request) {
@@ -131,20 +121,14 @@ public class AuthService {
         String resetOtp = normalizeOptionalPhoneNumber(request.getResetOtp());
 
         User user;
-        if (otpService != null && phoneNumber != null && resetOtp != null) {
-            boolean validOtp = otpService.verifyOtpAndConsume(phoneNumber, "RESET_PASSWORD", resetOtp);
-            if (!validOtp) {
-                throw new UnauthorizedException("Invalid or expired OTP");
-            }
-
-            user = userRepository.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        } else {
-            String email = jwtService.extractEmailFromResetToken(request.getResetToken());
-            user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        boolean validOtp = otpService.verifyOtpAndConsume(phoneNumber, "RESET_PASSWORD", resetOtp);
+        if (!validOtp) {
+            throw new UnauthorizedException("Invalid or expired OTP");
         }
 
+        user = userRepository.findByPhoneNumber(phoneNumber)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
         if (passwordEncoder.matches(request.getNewPassword(), user.getPasswordHash())) {
             throw new ConflictException("New password must be different from current password");
         }
@@ -152,10 +136,6 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
-    }
-
-    public void logout(String authorizationHeader) {
-        extractUserIdFromAuthHeader(authorizationHeader);
     }
 
     public UserDTO me(String authorizationHeader) {

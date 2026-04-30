@@ -213,7 +213,7 @@ POST /api/v1/auth/forgot-password
 Content-Type: application/json
 
 {
-  "email": "john.doe@example.com"
+  "phoneNumber": "0905123456"
 }
 ```
 
@@ -238,24 +238,18 @@ POST /api/v1/auth/reset-password
 Content-Type: application/json
 
 {
-  "resetToken": "<reset-jwt-token>",
-  "newPassword": "newPassword456"
+  "phoneNumber": "0905123456,
+  "resetOtp": "123456",
+  "newPassword": "newPassword"
 }
 ```
 
 Success response: `204 No Content`
 
 ### Logout
-
-```http
-POST /api/v1/auth/logout
-Authorization: Bearer <jwt-token>
-```
-
 MVP note:
 
-- Stateless JWT logout can be handled client-side by deleting the token.
-- Optional phase 2: server-side token blacklist/revocation.
+- Client-side will drop the token (Stateless JWT logout) 
 
 ### Get Current User (Me)
 
@@ -293,10 +287,6 @@ Content-Type: application/json
 ```
 
 Success response: `204 No Content`
-
-## Auth APIs Not Implemented Yet
-
-- `POST /api/v1/auth/refresh-token`
 
 ## Error Response (Current)
 

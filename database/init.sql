@@ -254,7 +254,6 @@ CREATE TABLE IF NOT EXISTS users (
     CONSTRAINT fk_users_country FOREIGN KEY (country_id) REFERENCES countries(id)
         ON DELETE SET NULL ON UPDATE CASCADE
 );
-<<<<<<< HEAD
 
 CREATE TABLE IF NOT EXISTS password_otps (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -272,9 +271,6 @@ CREATE TABLE IF NOT EXISTS password_otps (
     INDEX idx_password_otps_user (user_id),
     INDEX idx_password_otps_expires (expires_at)
 );
-
-=======
->>>>>>> 91bbda4f8953ecd86056161967c367f5924a0603
 CREATE TABLE IF NOT EXISTS staff(
     id INT PRIMARY KEY AUTO_INCREMENT,
     UserID INT NOT NULL UNIQUE,

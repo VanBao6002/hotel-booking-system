@@ -64,12 +64,6 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authorizationHeader) {
-        authService.logout(authorizationHeader);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getUser(@RequestHeader("Authorization") String authorizationHeader
     ){
