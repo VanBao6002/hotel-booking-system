@@ -66,7 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             writeUnauthorizedResponse(request, response, ex.getMessage());
         }
     }
-
     private void writeUnauthorizedResponse(HttpServletRequest request, HttpServletResponse response, String message)
             throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
