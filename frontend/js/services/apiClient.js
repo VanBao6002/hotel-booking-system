@@ -4,10 +4,10 @@ function buildHeaders(options = {}){
     const token = localStorage.getItem("token");
     const headers = {
         "Content-Type": "application/json",
-        ...(options.header || {})
+        ...(options.headers || {})
     };
     if(!options.skipAuth && token) {
-        options.Authorization = "Bearer" + token;
+        headers.Authorization = `Bearer ${token}`;
     }
     return headers;
 }

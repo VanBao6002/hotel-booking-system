@@ -7,32 +7,37 @@ let currentPath = null;
 const rules = [
     {
         path: ["#home"],
-        roles: ["guest","customer"],
+        roles: ["guest", "USER", "STAFF", "ADMIN"],
         item: ["searchHotel", "discount", "guess"]
     },
     {
         path: ["#home-manager"],
-        roles: ["staff","manager"],
+        roles: ["STAFF", "ADMIN"],
+        item: []
+    },
+    {
+        path: ["#users-management"],
+        roles: ["ADMIN"],
         item: []
     },
     {
         path: ["#search-hotel"],
-        roles: ["guest", "customer","staff", "manager"],
+        roles: ["guest", "USER", "STAFF", "ADMIN"],
         item: ["home"]
     },
     {
         path: ["#booking"],
-        roles: ["customer"],
+        roles: ["USER"],
         item: ["genaral","room","location","service","rate"]
     },
     {
         path: ["#setting"],
-        roles: ["customer","staff","manager"],
+        roles: ["USER", "STAFF", "ADMIN"],
         item: ["profile","changePassword","home"]
     },
     {
         path: ["#error"],
-        roles: ["guest","customer","staff","manager"],
+        roles: ["guest", "USER", "STAFF", "ADMIN"],
         item: []
     }
 ]
@@ -293,6 +298,10 @@ export function initRouter() {
     if(!window.location.hash) {
         window.location.hash = "#home";
     }
+
+    // if (!window.location.hash || window.location.hash === "" || window.location.hash === "#home") {
+    //     window.location.hash = "#users-management";
+    // }
 
     currentPath = window.location.hash;
     renderRoute(currentPath || "#home");

@@ -3,7 +3,8 @@ import { initBookingSearch } from "./components/logics/booking-search.js";
 import { initAdvertisingBanner } from "./components/logics/advertising-banner.js";
 import { initPopularDestinations } from "./components/logics/popular-destinations.js";
 import { initSearchHotel } from "./components/logics/search-hotel.js";
-
+import { initUsersManagement } from "./components/logics/users-management.js";
+import { initHomeManager } from "./components/logics/home-manager.js";
 
 import { addRoute, initRouter } from "./router/router.js";
 
@@ -12,6 +13,7 @@ import { homeTemplate } from "./components/templates/home.template.js";
 import { homeManagerTemplate } from "./components/templates/home-manager.template.js";
 import { searchHoteltemplate } from "./components/templates/search-hotel.template.js";
 import { bookingTemplate } from "./components/templates/booking.template.js";
+import { usersManagementTemplate } from "./components/templates/users-management.template.js";
 import { footerTemplate } from "./components/templates/footer.template.js";
 import { profileTemplate } from "./components/templates/profile.template.js";
 import { changePasswordTemplate } from "./components/templates/change-password..template.js";
@@ -39,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!localStorage.getItem("hotelData")) {
         localStorage.setItem("hotelData", "");
     }
-    
+    // localStorage.setItem("role", "ADMIN");
         
         // <div class="main"></div>
         // ${footerTemplate()}
@@ -65,7 +67,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     addRoute("#home-manager", () => {
+    const main = document.querySelector(".main");
+    if (main) {
         main.innerHTML = homeManagerTemplate();
+        initHomeManager(); 
+    }
+    });
+
+    addRoute("#users-management", () => {
+        main.innerHTML = usersManagementTemplate();
+        initUsersManagement();
     });
     
     addRoute("#search-hotel", () => {

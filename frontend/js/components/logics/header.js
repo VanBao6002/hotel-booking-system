@@ -233,7 +233,8 @@ function submitForm(){
             userLogin(userData)
                 .then(data => {
                     console.log("Success(login)");
-                    localStorage.setItem("role", "customer");
+                    const role = (data?.user?.role || "USER").toString().toUpperCase();
+                    localStorage.setItem("role", role);
                     localStorage.setItem("token", data.accessToken);
                     localStorage.setItem("userData", JSON.stringify(data.user));
                     console.log(localStorage.getItem("role"));
@@ -241,6 +242,7 @@ function submitForm(){
                     document.querySelector(".header__navbar-user").classList.add("logged-in");
                     document.querySelector(".user__info-name span").innerText = data.user.fullName;
                     showToast("Đăng nhập thành công");
+                    navigation(role === "ADMIN" || role === "STAFF" ? "#home-manager" : "#home");
 
                 })
                 .catch(errorData => {
