@@ -1,6 +1,8 @@
 package com.hotel.booking.repository;
 
 import com.hotel.booking.dto.BookingDTO;
+import com.hotel.booking.dto.BookingRequest;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -58,7 +60,7 @@ public class BookingRepository {
 
 
     // Kiểm tra phòng có trống
-    public boolean isRoomAvailable(int roomId, LocalDate checkIn, LocalDate checkOut) {
+    public boolean isRoomBooked(int roomId, LocalDate checkIn, LocalDate checkOut) {
         String sql = "SELECT COUNT(*) FROM booking WHERE room_id = ? " +
                     "AND (check_in_date < ? AND check_out_date > ?)";
 
@@ -75,19 +77,18 @@ public class BookingRepository {
 
 
     // Thêm booking mới
-    public void addBooking(BookingDTO booking) {
+    public int addBooking(BookingRequest request) {
         String sql = "INSERT INTO booking(check_in_date, check_out_date, room_img, " +
-                    "hotel_branch_id, room_id, user_id, booking_price) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                     "hotel_branch_id, room_id, user_id, booking_price) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        jdbcTemplate.update(sql,
-            booking.getCheckInDate(),
-            booking.getCheckOutDate(),
-            booking.getRoomImg(),
-            booking.getHotelBranchId(),
-            booking.getRoomId(),
-            booking.getUserId(),       // thêm userId
-            booking.getBookingPrice()  // thêm bookingPrice
+        return jdbcTemplate.update(sql,
+            request.getCheckInDate(),
+            request.getCheckOutDate(),
+            request.getRoomImg(),
+            request.getHotelBranchId(),
+            request.getRoomId(),
+            request.getUserId(),
+            request.getBookingPrice()
         );
     }
 
