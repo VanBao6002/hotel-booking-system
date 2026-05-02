@@ -91,5 +91,21 @@ public class BookingRepository {
             request.getBookingPrice()
         );
     }
+        ///// show bookings
+    public List<BookingDTO> getBookingsByUserId(int userId) {
+        String sql = "SELECT * FROM booking WHERE user_id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new BookingDTO(
+                rs.getInt("id"),
+                rs.getDate("check_in_date").toLocalDate(),
+                rs.getDate("check_out_date").toLocalDate(),
+                rs.getTimestamp("booked_at").toLocalDateTime(),
+                rs.getString("room_img"),
+                rs.getInt("hotel_branch_id"),
+                rs.getInt("room_id"),
+                rs.getInt("user_id"),
+                rs.getLong("booking_price")
+        ), userId); // truyền trực tiếp varargs
+    }
+
 
 }

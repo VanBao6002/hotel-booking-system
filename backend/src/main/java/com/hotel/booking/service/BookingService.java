@@ -3,12 +3,13 @@ package com.hotel.booking.service;
 
 import com.hotel.booking.dto.BookingRequest;
 import com.hotel.booking.dto.ApiResponse;
+import com.hotel.booking.dto.BookingDTO;
 import com.hotel.booking.repository.BookingRepository;
 
 // // import java.sql.SQLException;
 // import java.time.LocalDate;
 // import java.util.ArrayList;
-// import java.util.List;
+import java.util.List;
 // import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -43,5 +44,8 @@ public class BookingService {
         } catch (Exception e) {
             return new ApiResponse(false, "Error: " + e.getMessage());
         }
+    }
+    public List<BookingDTO> getUserBookings(int userId) {
+        return bookingRepository.getBookingsByUserId(userId);
     }
 }
