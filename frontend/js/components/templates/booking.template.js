@@ -1,6 +1,6 @@
 export function bookingTemplate() {
     return `
-        <div class="booking">
+      <div class="booking">
         <div class="grid">
           <div class="booking__picture-wrap">
             <div class="booking__picture">
@@ -52,13 +52,12 @@ export function bookingTemplate() {
                 </div>
               </div>
               <div class="booking__info-genaral-body">
-                <div class="booking__info-genaral-location">
-                  <div class="booking__info-genaral-location-head">
-                    <span>
-                      Địa chỉ
-                    </span>
+                <div class="booking__info-genaral-contact">
+                  <div class="booking__info-genaral-contact-head">
+                    <span>Thông tin liên hệ</span>
                   </div>
-                  <div class="booking__info-genaral-location-body">
+                  <div class="booking__info-genaral-contact-body">
+                    <span>Dia chi khach san</span>
                     <span>Dia chi khach san</span>
                   </div>
                 </div>
@@ -70,39 +69,27 @@ export function bookingTemplate() {
                     <div class="booking__info-genaral-service-list">
                       <div class="booking__info-genaral-service-item">
                         <i class="fa-solid fa-wifi"></i>
-                        <span>
-                          Wifi
-                        </span>
+                        <span>Wifi</span>
                       </div>
                       <div class="booking__info-genaral-service-item">
                         <i class="fa-solid fa-utensils"></i>
-                        <span>
-                          Nhà hàng
-                        </span>
+                        <span>Nhà hàng</span>
                       </div>
                       <div class="booking__info-genaral-service-item">
                         <i class="fa-solid fa-wind"></i>
-                        <span>
-                          Máy lạnh
-                        </span>
+                        <span>Máy lạnh</span>
                       </div>
                       <div class="booking__info-genaral-service-item">
                         <i class="fa-solid fa-elevator"></i>
-                        <span>
-                          Thang máy
-                        </span>
+                        <span>Thang máy</span>
                       </div>
                       <div class="booking__info-genaral-service-item">
                         <i class="fa-solid fa-phone-volume"></i>
-                        <span>
-                          Lễ tân 24/24
-                        </span>
+                        <span>Lễ tân 24/24</span>
                       </div>
                       <div class="booking__info-genaral-service-item">
                         <i class="fa-solid fa-square-parking"></i>
-                        <span>
-                          Chỗ đậu xe
-                        </span>
+                        <span>Chỗ đậu xe</span>
                       </div>
                     </div>
                   </div>
@@ -115,105 +102,37 @@ export function bookingTemplate() {
                 <span>Những phòng còn trống tại Ten Khach San</span>
               </div>
               <div class="booking__info-room-body">
-                <div class="booking__info-room-wrap">
-                  <table class="booking__info-room-table">
-                    <thead>
-                      <tr>
-                        <th>Mã phòng</th>
-                        <th>Thể loại phòng</th>
-                        <th>Khách</th>
-                        <th>Giá/phòng/đêm</th>
-                        <th>Phòng</th>
-                        <th>Chi tiết</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="room-id">R000</td>
-                        <td class="room-type">Vip</td>
-                        <td class="room-quantity">2</td>
-                        <td class="room-price">
-                          <div class="room-current__price">500.000 VND</div>
-                        </td>
-                        <td>x5</td>
-                        <td class="detail-button"><button class="room-detail__button">Xem</button></td>
-                      </tr>
 
-                      <tr>
-                        <td>R000</td>
-                        <td>Vip</td>
-                        <td>2</td>
-                        <td>
-                          <div class="room-current__price">500.000 VND</div>
-                        </td>
-                        <td>x5</td>
-                        <td><button class="room-detail__button">Xem</button></td>
-                      </tr>
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <td colspan="3">Chi phi thanh toan</td>
-                        <td>tien</td>
-                        <td>Tong phong</td>
-                        <td><button class="booking__button">Đặt phòng</button></td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-                <div class="booking__info-room-wrap">
-                  <table class="booking__info-room-table">
-                    <thead>
-                      <tr>
-                        <th>Mã phòng</th>
-                        <th>Thể loại phòng</th>
-                        <th>Khách</th>
-                        <th>Giá/phòng/đêm</th>
-                        <th>Phòng</th>
-                        <th>Chi tiết</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td class="room-id">R000</td>
-                        <td class="room-type">Vip</td>
-                        <td class="room-quantity">2</td>
-                        <td class="room-price">
-                          <div class="room-current__price">500.000 VND</div>
-                        </td>
-                        <td>x5</td>
-                        <td class="detail-button"><button class="room-detail__button">Xem</button></td>
-                      </tr>
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <td colspan="3">Chi phi thanh toan</td>
-                        <td>tien</td>
-                        <td>Tong phong</td>
-                        <td><button class="booking__button">Đặt phòng</button></td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
               </div>
             </section>
-            <section class="booking__info-location">
-              <div class="booking__info-loaction-head">
-                <span>Những địa điểm nổi bật quanh Ten Khach San</span>
+            <section class="booking__info-confirm">
+              <div class="booking__info-confirm-head">
+                <span>Xác nhận đặt phòng</span>
               </div>
-              <div class="booking__info-loaction-body">
-
+              <div class="booking__info-confirm-body">
+                <table class="booking__info-room-table">
+                <tr>
+                    <th>Phòng đơn</th>
+                    <th>Phòng đôi</th>
+                    <th>Tổng tiền</th>
+                    <th>Xác nhận</th>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>0</td>
+                    <td><div class="room-total-price">0 VND</div></td>
+                    <td class="choice-button"><button class="room-choice__button">Xác nhận</button></td>
+                </tr>
+                </table>
               </div>
             </section>
             <section class="booking__info-service">
               <div class="booking__info-service-head">
-                <span>Tất cả tiện ích tại Ten Khach San</span>
+                <span>Tất cả tiện ích</span>
               </div>
               <div class="booking__info-service-body">
-                
               </div>
             </section>
-
-
 
             <section class="booking__info-rate">
               <div class="booking__info-rate-head">

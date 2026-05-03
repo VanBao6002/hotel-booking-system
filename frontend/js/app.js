@@ -17,6 +17,7 @@ import { profileTemplate } from "./components/templates/profile.template.js";
 import { changePasswordTemplate } from "./components/templates/change-password..template.js";
 import { toastTemplate } from "./components/templates/toast.template.js";
 import { modalTemplate } from "./components/templates/modal.template.js";
+import { initBooking } from "./components/logics/booking.js";
 
 
 
@@ -38,6 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if(!localStorage.getItem("hotelData")) {
         localStorage.setItem("hotelData", "");
+    }
+    if(!localStorage.getItem("choicedHotelId")) {
+        localStorage.setItem("choicedHotelId", "");
     }
     
         
@@ -75,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     addRoute("#booking", () => {
         main.innerHTML = bookingTemplate();
+        initBooking();
     });
 
     addRoute("#setting", () => {
