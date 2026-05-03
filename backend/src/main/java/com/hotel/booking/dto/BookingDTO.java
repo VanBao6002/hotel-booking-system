@@ -8,24 +8,29 @@ public class BookingDTO {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private LocalDateTime bookedAt;
-    private String roomIMG;
-    private Integer hotelBranchID;
-    private Integer roomID;
+    private String roomImg;
+    private Long bookingPrice;       // thêm trường mới
+    private Integer userId;          // thêm trường mới
+    private Integer hotelBranchId;
+    private Integer roomId;
 
     // Constructor mặc định
     public BookingDTO() {}
 
     // Constructor đầy đủ
     public BookingDTO(int id, LocalDate checkInDate, LocalDate checkOutDate,
-                      LocalDateTime bookedAt, String roomIMG,
-                      Integer hotelBranchID, Integer roomID) {
+                      LocalDateTime bookedAt, String roomImg,
+                      Integer hotelBranchId, Integer roomId,
+                      Integer userId, Long bookingPrice) {
         this.id = id;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.bookedAt = bookedAt;
-        this.roomIMG = roomIMG;
-        this.hotelBranchID = hotelBranchID;
-        this.roomID = roomID;
+        this.roomImg = roomImg;
+        this.hotelBranchId = hotelBranchId;
+        this.roomId = roomId;
+        this.userId = userId;
+        this.bookingPrice = bookingPrice;
     }
 
     // Getter & Setter
@@ -41,12 +46,18 @@ public class BookingDTO {
     public LocalDateTime getBookedAt() { return bookedAt; }
     public void setBookedAt(LocalDateTime bookedAt) { this.bookedAt = bookedAt; }
 
-    public String getRoomIMG() { return roomIMG; }
-    public void setRoomIMG(String roomIMG) { this.roomIMG = roomIMG; }
+    public String getRoomImg() { return roomImg; }
+    public void setRoomImg(String roomImg) { this.roomImg = roomImg; }
 
-    public Integer getHotelBranchID() { return hotelBranchID; }
-    public void setHotelBranchID(Integer hotelBranchID) { this.hotelBranchID = hotelBranchID; }
+    public Long getBookingPrice() { return bookingPrice; }
+    public void setBookingPrice(Long bookingPrice) { this.bookingPrice = bookingPrice; }
 
-    public Integer getRoomID() { return roomID; }
-    public void setRoomID(Integer roomID) { this.roomID = roomID; }
+    public Integer getUserId() { return userId; }
+    public void setUserId(Integer userId) { this.userId = userId; }
+
+    public Integer getHotelBranchId() { return hotelBranchId; }
+    public void setHotelBranchId(Integer hotelBranchId) { this.hotelBranchId = hotelBranchId; }
+
+    public Integer getRoomId() { return roomId; }
+    public void setRoomId(Integer roomId) { this.roomId = roomId; }
 }

@@ -25,13 +25,19 @@ INSERT INTO hotelbranch (address, phone_number, location_id) VALUES
 ('12 Pasteur, TP.HCM', '0945678901', 1),
 ('22 Hoàng Diệu, Hải Phòng', '0956789012', 4);
 
+INSERT INTO hotelreview (hotel_branch_id, user_id, rating, comment, created_at)
+VALUES
+(1, 5, 4, 'Phòng sạch sẽ, nhân viên thân thiện', '2024-01-15'),
+(1, 7, 5, 'Khách sạn tuyệt vời, sẽ quay lại', '2024-02-20'),
+(1, 8, 3, 'Ổn nhưng hơi ồn ào', '2024-03-05'),
+(2, 10, 2, 'Dịch vụ chưa tốt, phòng hơi cũ', '2024-04-10'),
+(2, 11, 5, 'Vị trí đẹp, giá hợp lý', '2024-05-01');
+
 INSERT INTO hotelratingsummary (hotel_branch_id, one_star, two_star, three_star, four_star, five_star, average_star)
 VALUES
-(1, 2, 3, 5, 10, 20, 4.08),
-(2, 1, 2, 4, 8, 15, 4.11),
-(3, 0, 1, 3, 6, 12, 4.35),
-(4, 3, 2, 6, 9, 10, 3.65),
-(5, 1, 1, 2, 5, 8, 4.00);
+(1, 0, 0, 1, 1, 1, 4.00),  
+(2, 0, 1, 0, 0, 1, 3.50);  
+
 
 
 INSERT INTO users (user_name, email, password_hash, role_id, full_name, date_of_birth, gender_id, phone_number, current_address, country_id)
@@ -91,20 +97,24 @@ VALUES
 INSERT INTO staff (UserID, HotelBranchID) VALUES (2, 1);
 
 -- TP.HCM chi nhánh 1
-INSERT INTO booking (check_in_date, check_out_date, room_img, hotel_branch_id, room_id)
+INSERT INTO booking (
+    check_in_date, check_out_date, room_img,
+    hotel_branch_id, room_id, user_id, booking_price
+)
 VALUES 
-('2026-04-20', '2026-04-22', 'room2.jpg', 1, 2),
-('2026-04-21', '2026-04-23', 'room4.jpg', 1, 4),
+('2026-04-20', '2026-04-22', 'room2.jpg', 1, 2, 1, 500000),
+('2026-04-21', '2026-04-23', 'room4.jpg', 1, 4, 2, 700000),
 -- Hà Nội chi nhánh 2
-('2026-04-19', '2026-04-21', 'room5.jpg', 2, 5),
-('2026-04-22', '2026-04-24', 'room6.jpg', 2, 6),
+('2026-04-19', '2026-04-21', 'room5.jpg', 2, 5, 3, 600000),
+('2026-04-22', '2026-04-24', 'room6.jpg', 2, 6, 1, 800000),
 -- Đà Nẵng chi nhánh 3
-('2026-04-20', '2026-04-22', 'room9.jpg', 3, 9),
-('2026-04-23', '2026-04-25', 'room10.jpg', 3, 10),
+('2026-04-20', '2026-04-22', 'room9.jpg', 3, 9, 2, 550000),
+('2026-04-23', '2026-04-25', 'room10.jpg', 3, 10, 3, 750000),
 -- TP.HCM chi nhánh 4
-('2026-04-19', '2026-04-20', 'room11.jpg', 4, 11),
+('2026-04-19', '2026-04-20', 'room11.jpg', 4, 11, 1, 400000),
 -- Hải Phòng chi nhánh 5
-('2026-04-21', '2026-04-22', 'room14.jpg', 5, 14);
+('2026-04-21', '2026-04-22', 'room14.jpg', 5, 14, 2, 650000);
+
 
 
 INSERT INTO bookingservice ( Type_roomID, ServiceID)
