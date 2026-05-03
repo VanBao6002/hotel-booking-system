@@ -25,13 +25,19 @@ INSERT INTO hotelbranch (address, phone_number, location_id) VALUES
 ('12 Pasteur, TP.HCM', '0945678901', 1),
 ('22 Hoàng Diệu, Hải Phòng', '0956789012', 4);
 
+INSERT INTO hotelreview (hotel_branch_id, user_id, rating, comment, created_at)
+VALUES
+(1, 5, 4, 'Phòng sạch sẽ, nhân viên thân thiện', '2024-01-15'),
+(1, 7, 5, 'Khách sạn tuyệt vời, sẽ quay lại', '2024-02-20'),
+(1, 8, 3, 'Ổn nhưng hơi ồn ào', '2024-03-05'),
+(2, 10, 2, 'Dịch vụ chưa tốt, phòng hơi cũ', '2024-04-10'),
+(2, 11, 5, 'Vị trí đẹp, giá hợp lý', '2024-05-01');
+
 INSERT INTO hotelratingsummary (hotel_branch_id, one_star, two_star, three_star, four_star, five_star, average_star)
 VALUES
-(1, 2, 3, 5, 10, 20, 4.08),
-(2, 1, 2, 4, 8, 15, 4.11),
-(3, 0, 1, 3, 6, 12, 4.35),
-(4, 3, 2, 6, 9, 10, 3.65),
-(5, 1, 1, 2, 5, 8, 4.00);
+(1, 0, 0, 1, 1, 1, 4.00),  
+(2, 0, 1, 0, 0, 1, 3.50);  
+
 
 
 INSERT INTO users (user_name, email, password_hash, role_id, full_name, date_of_birth, gender_id, phone_number, current_address, country_id)

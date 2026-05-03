@@ -54,7 +54,7 @@ CREATE TABLE hotelreview (
     user_id INT NOT NULL,
     rating INT CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at DATE DEFAULT (CURRENT_DATE),
     CONSTRAINT fk_review_hotel FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
 
