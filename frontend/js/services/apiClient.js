@@ -7,7 +7,7 @@ function buildHeaders(options = {}){
         ...(options.header || {})
     };
     if(!options.skipAuth && token) {
-        options.Authorization = "Bearer" + token;
+        headers.Authorization = "Bearer" + token;
     }
     return headers;
 }

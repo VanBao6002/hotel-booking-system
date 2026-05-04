@@ -7,3 +7,10 @@ export const searchHotel = (searchInfoData) => {
         skipAuth: true
     });
 };
+
+export const getReviewsHotel = (hotelId) => {
+    return apiClient(`/api/reviews/hotel/${hotelId}`, {
+        method: "GET",
+        skipAuth: true,
+    })
+}

@@ -271,13 +271,19 @@
     border-radius: 10px;
     overflow: hidden;
 }
-.rate__row-fill {
+
+.rate__row-fill-one-star,
+.rate__row-fill-two-star,
+.rate__row-fill-three-star,
+.rate__row-fill-four-star,
+.rate__row-fill-five-star {
     width: 100%;
     height: 100%;
     background-color: #0a9af2;
-    transform: scaleX(0.5);
+    /* transform: scaleX(0.5); */
     transform-origin: left center;
 }
+
 
 .booking__info-rate-covervation-head {
     font-size: 1.6rem;

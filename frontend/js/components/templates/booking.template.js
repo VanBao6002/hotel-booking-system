@@ -153,37 +153,37 @@ export function bookingTemplate() {
                     </div>
                     <div class="booking__info-rate-detail">
                       <div class="rate-detail__box">
-                        <div class="rate__row"><div class="rate__row-fill"></div></div>
+                        <div class="rate__row"><div class="rate__row-fill-one-star"></div></div>
                         <div class="rate__star">
                           <i class="fa-solid fa-star"></i>
                         </div>
                       </div>
                       <div class="rate-detail__box">
-                        <div class="rate__row"><div class="rate__row-fill"></div></div>
+                        <div class="rate__row"><div class="rate__row-fill-two-star"></div></div>
                         <div class="rate__star">
                           <i class="fa-solid fa-star"></i>
                           <i class="fa-solid fa-star"></i>
                         </div>
                       </div>
                       <div class="rate-detail__box">
-                        <div class="rate__row"><div class="rate__row-fill"></div></div>
+                        <div class="rate__row"><div class="rate__row-fill-three-star"></div></div>
                         <div class="rate__star">
-                          <i class="fa-solid fa-star"></i>
-                          <i class="fa-solid fa-star"></i>
-                          <i class="fa-solid fa-star"></i>
-                        </div>
-                      </div>
-                      <div class="rate-detail__box">
-                        <div class="rate__row"><div class="rate__row-fill"></div></div>
-                        <div class="rate__star">
-                          <i class="fa-solid fa-star"></i>
                           <i class="fa-solid fa-star"></i>
                           <i class="fa-solid fa-star"></i>
                           <i class="fa-solid fa-star"></i>
                         </div>
                       </div>
                       <div class="rate-detail__box">
-                        <div class="rate__row"><div class="rate__row-fill"></div></div>
+                        <div class="rate__row"><div class="rate__row-fill-four-star"></div></div>
+                        <div class="rate__star">
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-star"></i>
+                          <i class="fa-solid fa-star"></i>
+                        </div>
+                      </div>
+                      <div class="rate-detail__box">
+                        <div class="rate__row"><div class="rate__row-fill-five-star"></div></div>
                         <div class="rate__star">
                           <i class="fa-solid fa-star"></i>
                           <i class="fa-solid fa-star"></i>

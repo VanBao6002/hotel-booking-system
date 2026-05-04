@@ -1,3 +1,4 @@
+import { getReviewsHotel } from "../../services/hotel.js";
 import { HotelService } from "../../utils/utils.js";
 
 let isShowRoomDetailInit = false;
@@ -296,6 +297,41 @@ function syncChoiceButton(roomId, isActive) {
     }
 }
 
+function renderReviews() {
+    const hotelId = Number(localStorage.getItem("choicedHotelId"));
+    const rateAvg = document.querySelector(".rate-avg__box span");
+    const rateAvgText = document.querySelector(".rate-avg__text span");
+    
+    const oneStar = document.querySelector(".rate__row-fill-one-star");
+    const twoStar = document.querySelector(".rate__row-fill-two-star");
+    const threeStar = document.querySelector(".rate__row-fill-three-star");
+    const fourStar = document.querySelector(".rate__row-fill-four-star");
+    const fiveStar = document.querySelector(".rate__row-fill-five-star");
+
+    getReviewsHotel(hotelId)
+        .then(reviewData => {
+
+            let html = "";
+
+
+            rateAvg.innerText = reviewData.averageStar;
+            rateAvgText.innerText = reviewData.reviews.length;
+
+            oneStar.style.transform = `scaleX(${reviewData.oneStarPercent/100})`;
+            twoStar.style.transform = `scaleX(${reviewData.twoStarPercent/100})`;
+            threeStar.style.transform = `scaleX(${reviewData.threeStarPercent/100})`;
+            fourStar.style.transform =  `scaleX(${reviewData.fourStarPercent/100})`;
+            fiveStar.style.transform =  `scaleX(${reviewData.fiveStarPercent/100})`;
+
+            // reviewData.reviews.forEach(review => {
+
+            // })
+
+
+        })
+}
+
+
 function renderBooking() {
     const hotelId = Number(localStorage.getItem("choicedHotelId"));
     const hotel = HotelService.getHotel(hotelId);
@@ -308,9 +344,9 @@ function renderBooking() {
     document.querySelector(".booking__info-service-body").innerHTML = renderService(hotel.services);
     renderConfirm();
     showRoomDetail();
+    renderReviews();
 
 }
-
 
 
 
