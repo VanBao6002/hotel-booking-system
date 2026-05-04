@@ -1,5 +1,9 @@
 .footer {
     margin-top: 70px;
+    /* position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0; */
     font-size: 1.6rem;
     color: white;
     background-color: var(--navyBlue-color);

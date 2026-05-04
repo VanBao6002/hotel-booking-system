@@ -1,4 +1,6 @@
 import { errorTemplate } from "../components/templates/error.template.js";
+import { profileTemplate } from "../components/templates/profile.template.js"
+import { changePasswordTemplate } from "../components/templates/change-password..template.js"
 const routers = {};
 let currentPath = null;
 
@@ -21,7 +23,12 @@ const rules = [
     {
         path: ["#booking"],
         roles: ["customer"],
-        item: ["genaral","room","location","service","rate"]
+        item: ["genaral","room","confirm","service","rate"]
+    },
+    {
+        path: ["#setting"],
+        roles: ["customer","staff","manager"],
+        item: ["profile","changePassword","home"]
     },
     {
         path: ["#error"],
@@ -75,10 +82,10 @@ const room = function navRoom() {
         </div>
     `;
 }
-const location = function navLocation() {
+const confirm = function navConfirm() {
     return `
-        <div class="header__navbar-link header__navbar-link-location">
-            <div class="header__navbar-item">Địa điểm</div>
+        <div class="header__navbar-link header__navbar-link-confirm">
+            <div class="header__navbar-item">Xác nhận</div>
         </div>
     `;
 }
@@ -96,6 +103,20 @@ const rate = function navRate() {
         </div>
     `;
 }
+const profile = function navProfile() {
+    return `
+        <div class="header__navbar-link header__navbar-link-profile">
+            <div class="header__navbar-item">Cá nhân</div>
+        </div>
+    `;
+}
+const changePassword = function navChangePassword() {
+    return `
+        <div class="header__navbar-link header__navbar-link-change-password">
+            <div class="header__navbar-item">Đổi mật khẩu</div>
+        </div>
+    `;
+}
 const navComponents = {
   searchHotel,
   discount,
@@ -103,9 +124,11 @@ const navComponents = {
   home,
   genaral,
   room,
-  location,
+  confirm,
   service,
-  rate
+  rate,
+  profile,
+  changePassword
 };
 
 export function addRoute(path, handler) {
@@ -141,7 +164,7 @@ function renderRoute(path) {
 
 }
 
-function navigation(path) {
+export function navigation(path) {
     if(path === window.location.hash) {
         return;
     }
@@ -182,6 +205,15 @@ function attachNavEvents() {
     const searchHotelEl = document.querySelector(".header__navbar-link-search");
     const discountEl = document.querySelector(".header__navbar-link-discount");
     const guessEl = document.querySelector(".header__navbar-link-guess");
+    const genaralEl = document.querySelector(".header__navbar-link-genaral");
+    const roomEl = document.querySelector(".header__navbar-link-room");
+    const confirmEl = document.querySelector(".header__navbar-link-confirm");
+    const serviceEl = document.querySelector(".header__navbar-link-service");
+    const rateEl = document.querySelector(".header__navbar-link-rate");
+    const profileEl = document.querySelector(".header__navbar-link-profile");
+    const changePasswordEl = document.querySelector(".header__navbar-link-change-password");
+
+
 
     if(homeEl) {
         homeEl.addEventListener("click", () => {
@@ -205,7 +237,41 @@ function attachNavEvents() {
             main.querySelector(".popular-destinations").scrollIntoView({behavior: "smooth", block: "center"});
         })
     }
-
+    if(genaralEl) {
+        genaralEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-genaral").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    if(roomEl) {
+        roomEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-room").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    if(confirmEl) {
+        confirmEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-confirm").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    if(serviceEl) {
+        serviceEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-service").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    if(rateEl) {
+        rateEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-rate").scrollIntoView({behavior: "smooth", block: "center"});
+        })
+    }
+    if(profileEl) {
+        profileEl.addEventListener("click", () => {
+            main.querySelector(".setting").innerHTML = profileTemplate();
+        })
+    }
+    if(changePasswordEl) {
+        changePasswordEl.addEventListener("click", () => {
+            main.querySelector(".setting").innerHTML = changePasswordTemplate();
+        })
+    }
 
 }
 

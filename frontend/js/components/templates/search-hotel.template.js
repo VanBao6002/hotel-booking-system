@@ -21,38 +21,33 @@ export function searchHoteltemplate() {
                         </div>
                         <div class="search-hotel-filter__box">
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-one-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-one-star" value="1">
                             <label for="search-hotel-filter__choice-one-star">
-                              1 
-                              <i class="fa-solid fa-star"></i>
+                              1<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-two-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-two-star" value="2">
                             <label for="search-hotel-filter__choice-two-star">
-                              2 
-                              <i class="fa-solid fa-star"></i>
+                              2<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-three-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-three-star" value="2">
                             <label for="search-hotel-filter__choice-three-star">
-                              3 
-                              <i class="fa-solid fa-star"></i>
+                              3<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-four-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-four-star" value="4">
                             <label for="search-hotel-filter__choice-four-star">
-                              4 
-                              <i class="fa-solid fa-star"></i>
+                              4<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-five-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-five-star" value="5">
                             <label for="search-hotel-filter__choice-five-star">
-                              5 
-                              <i class="fa-solid fa-star"></i>
+                              5<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                         </div>
@@ -87,136 +82,7 @@ export function searchHoteltemplate() {
                     <div class="box-filter search-hotel-result__head">
                       <span>Khách sạn phù hợp</span>
                     </div>
-                    <div class="search-hotel-result__body">
-                      <div class="search-hotel-result__wrap">
-                        <div class="search-hotel-result__picture">
-                          <div class="search-hotel-result__picture-img">
-                            <img src="assets/images/example-room.jpg" alt="room">
-                          </div>
-                        </div>
-                        <div class="search-hotel-result__info">
-                          <div class="search-hotel-result__hotel">
-                            <div class="search-hotel-result__hotel-name">
-                              <span>Hotel Name Example</span>
-                            </div>
-                            <div class="search-hotel-result__hotel-rate">
-                              <span>5</span>
-                              <i class="fa-solid fa-star"></i>
-                            </div>
-                          </div>
-                          <div class="search-hotel-result__location">
-                            <i class="fa-solid fa-location-dot"></i>
-                            <span>Address Example</span>
-                          </div>
-                        </div>
-                        <div class="search-hotel-result__price">
-                          <div class="search-hotel-result__price-wrap">
-                            <div class="search-hotel-result__price-discount-percent">
-                              <div>SALE 30%</div>
-                            </div>
-                            <span class="search-hotel-result__price-sale">500.000d</span>
-                            <span class="search-hotel-result__price-current">320.000.000d</span>
-                          </div>
-                          <div class="btn choice-hotel">Chọn phòng</div>
-                        </div>
-                      </div>
-                      <div class="search-hotel-result__wrap">
-                        <div class="search-hotel-result__picture">
-                          <div class="search-hotel-result__picture-img">
-                            <img src="assets/images/example-room.jpg" alt="room">
-                          </div>
-                        </div>
-                        <div class="search-hotel-result__info">
-                          <div class="search-hotel-result__hotel">
-                            <div class="search-hotel-result__hotel-name">
-                              <span>Hotel Name Example</span>
-                            </div>
-                            <div class="search-hotel-result__hotel-rate">
-                              <span>5</span>
-                              <i class="fa-solid fa-star"></i>
-                            </div>
-                          </div>
-                          <div class="search-hotel-result__location">
-                            <i class="fa-solid fa-location-dot"></i>
-                            <span>Address Example</span>
-                          </div>
-                        </div>
-                        <div class="search-hotel-result__price">
-                          <div class="search-hotel-result__price-wrap">
-                            <div class="search-hotel-result__price-discount-percent">
-                              <div>SALE 30%</div>
-                            </div>
-                            <span class="search-hotel-result__price-sale">500.000d</span>
-                            <span class="search-hotel-result__price-current">320.000.000d</span>
-                          </div>
-                          <div class="btn choice-hotel">Chọn phòng</div>
-                        </div>
-                      </div>
-                      <div class="search-hotel-result__wrap">
-                        <div class="search-hotel-result__picture">
-                          <div class="search-hotel-result__picture-img">
-                            <img src="assets/images/example-room.jpg" alt="room">
-                          </div>
-                        </div>
-                        <div class="search-hotel-result__info">
-                          <div class="search-hotel-result__hotel">
-                            <div class="search-hotel-result__hotel-name">
-                              <span>Hotel Name Example</span>
-                            </div>
-                            <div class="search-hotel-result__hotel-rate">
-                              <span>5</span>
-                              <i class="fa-solid fa-star"></i>
-                            </div>
-                          </div>
-                          <div class="search-hotel-result__location">
-                            <i class="fa-solid fa-location-dot"></i>
-                            <span>Address Example</span>
-                          </div>
-                        </div>
-                        <div class="search-hotel-result__price">
-                          <div class="search-hotel-result__price-wrap">
-                            <div class="search-hotel-result__price-discount-percent">
-                              <div>SALE 30%</div>
-                            </div>
-                            <span class="search-hotel-result__price-sale">500.000d</span>
-                            <span class="search-hotel-result__price-current">320.000.000d</span>
-                          </div>
-                          <div class="btn choice-hotel">Chọn phòng</div>
-                        </div>
-                      </div>
-                      <div class="search-hotel-result__wrap">
-                        <div class="search-hotel-result__picture">
-                          <div class="search-hotel-result__picture-img">
-                            <img src="assets/images/example-room.jpg" alt="room">
-                          </div>
-                        </div>
-                        <div class="search-hotel-result__info">
-                          <div class="search-hotel-result__hotel">
-                            <div class="search-hotel-result__hotel-name">
-                              <span>Hotel Name Example</span>
-                            </div>
-                            <div class="search-hotel-result__hotel-rate">
-                              <span>5</span>
-                              <i class="fa-solid fa-star"></i>
-                            </div>
-                          </div>
-                          <div class="search-hotel-result__location">
-                            <i class="fa-solid fa-location-dot"></i>
-                            <span>Address Example</span>
-                          </div>
-                        </div>
-                        <div class="search-hotel-result__price">
-                          <div class="search-hotel-result__price-wrap">
-                            <div class="search-hotel-result__price-discount-percent">
-                              <div>SALE 30%</div>
-                            </div>
-                            <span class="search-hotel-result__price-sale">500.000d</span>
-                            <span class="search-hotel-result__price-current">320.000.000d</span>
-                          </div>
-                          <div class="btn choice-hotel">Chọn phòng</div>
-                        </div>
-                      </div>
-                    </div>
+                    <div class="search-hotel-result__body"></div>
                   </div>
                 </div>
               </div>

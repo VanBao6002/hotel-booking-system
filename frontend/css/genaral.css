@@ -23,7 +23,6 @@ body {
     background-color: var(--ivoryWhite-color);
 }
 
-
 /* reponsive */
 
 .grid {
@@ -60,7 +59,10 @@ body {
     width: 83.33%;
     padding: 12px;
 }
-
+.grid__column-six-columns {
+    width: 50%;
+    padding: 12px;
+}
 
 
 .btn {
@@ -119,6 +121,19 @@ body {
     }
 }
 
+@keyframes slideRight {
+    0% {
+        transform: scaleX(0);
+        transform-origin: right;
+        opacity: 0;
+    }
+    100% {
+        transform: scaleX(1);
+        transform-origin: right;
+        opacity: 1;
+    }
+}
+
 @keyframes rotate180deg {
     0% {
         transform: rotate(0);
@@ -128,4 +143,12 @@ body {
     }
 }
 
+@keyframes spinner {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 

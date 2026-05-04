@@ -13,44 +13,46 @@ import { homeManagerTemplate } from "./components/templates/home-manager.templat
 import { searchHoteltemplate } from "./components/templates/search-hotel.template.js";
 import { bookingTemplate } from "./components/templates/booking.template.js";
 import { footerTemplate } from "./components/templates/footer.template.js";
+import { profileTemplate } from "./components/templates/profile.template.js";
+import { changePasswordTemplate } from "./components/templates/change-password..template.js";
+import { toastTemplate } from "./components/templates/toast.template.js";
 import { modalTemplate } from "./components/templates/modal.template.js";
+import { initBooking } from "./components/logics/booking.js";
 
 
 
-const user = [
-    {
-        userName: "Customer",
-        email: "customer@gmail.com",
-        password: "Customer123",
-        role: "customer"
-    },
-    {
-        userName: "Staff",
-        email: "staff@gmail.com",
-        password: "Staff123",
-        role: "staff"
-    },
-    {
-        userName: "Manager",
-        email: "manager@gmail.com",
-        password: "Manager123",
-        role: "manager"
-    }
-]
 
 
 
 document.addEventListener("DOMContentLoaded", () => {
     
     const app = document.querySelector(".app");
-    localStorage.setItem("role", "customer");
+    
+    if(!localStorage.getItem("role")) {
+        localStorage.setItem("role", "guest");
+    }
+    if(!localStorage.getItem("token")) {
+        localStorage.setItem("token", "");
+    }
+    if(!localStorage.getItem("userData")) {
+        localStorage.setItem("userData", "");
+    }
+    if(!localStorage.getItem("hotelData")) {
+        localStorage.setItem("hotelData", "");
+    }
+    if(!localStorage.getItem("choicedHotelId")) {
+        localStorage.setItem("choicedHotelId", "");
+    }
+    
         
         // <div class="main"></div>
         // ${footerTemplate()}
         // ${modalTemplate()}
     app.innerHTML = `
         ${headerTemplate()}
+        
         <div class="main"></div>
+        ${toastTemplate()}
         ${footerTemplate()}
         ${modalTemplate()}
     `;
@@ -77,6 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     addRoute("#booking", () => {
         main.innerHTML = bookingTemplate();
+        initBooking();
+    });
+
+    addRoute("#setting", () => {
+        main.innerHTML = profileTemplate();
     });
 
 

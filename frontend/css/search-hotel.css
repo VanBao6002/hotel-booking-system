@@ -159,28 +159,8 @@
     height: 74px;
 }
 
-.search-hotel-result__price-discount-percent {
-    font-size: 1.6rem;
-    text-align: end;
-}
-.search-hotel-result__price-discount-percent div {
-    margin: 0;
-    background-color: #ff5e1f;
-    color: white;
-    display: inline-block;
-    padding: 2px 5px;
-    border-radius: 10px;
-}
-.search-hotel-result__price-sale {
-    margin-top: 5px;
-    font-size: 2rem;
-    line-height: 2rem;
-    color: var(--text-gray-color);
-    text-align: end;
-    text-decoration: line-through;
-}
 .search-hotel-result__price-current {
-    margin-top: 5px;
+    margin: auto;
     font-size: 2.4rem;
     line-height: 2.4rem;
     color: #ff5e1f;

@@ -1,5 +1,8 @@
 // global var
 
+import { navigation } from "../../router/router.js";
+import { searchHotel } from "../../services/hotel.js";
+
 var textLocation = "";
 
 var count = {
@@ -148,7 +151,7 @@ function initGuestsRooms(element) {
     };
 
     const Min = {
-        singleRoom: 1,
+        singleRoom: 0,
         coupleRoom: 0
     };
 
@@ -248,10 +251,33 @@ export function initBookingSearch() {
         }
     });
 
-    document.querySelector(".booking-search__submit").addEventListener("click", () => {
-        console.log(textLocation,startDate,endDate,count);
-    })
-    document.querySelector(".booking-search__last-view").addEventListener("click", () =>{
-        console.log(1);
+
+    const searchButton = document.querySelector(".booking-search__submit");
+    const locationInput = document.getElementById("hotel-location");
+
+    searchButton.addEventListener("click", () => {
+        if(locationInput.value !== "" && (count.singleRoom !== 0 || count.coupleRoom !== 0)) {
+
+            const searchInfoData = {
+                location: textLocation,
+                checkInDate: `${startDate.year}-${startDate.month}-${startDate.day}`,
+                checkOutDate: `${endDate.year}-${endDate.month}-${endDate.day}`,
+                singleRoomQuantity: count.singleRoom,
+                doubleRoomQuantity: count.coupleRoom
+            };
+            console.log(searchInfoData);
+
+            searchHotel(searchInfoData)
+                .then(data => {
+                    navigation("#search-hotel");
+                    console.log(data);
+                    localStorage.setItem("hotelData", JSON.stringify(data));
+                })
+                .catch(errorData => {
+                    console.log("fail(searchbooking)");
+                })
+        }
     });
+
+
 }
