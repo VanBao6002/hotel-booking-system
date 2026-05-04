@@ -323,7 +323,7 @@
     height: 100%;
 }
 .convervation__user-name {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     font-weight: bold;
 }
 .convervation__chat {
@@ -346,5 +346,5 @@
 }
 .convervation__chat-content {
     margin-top: 5px;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
 }

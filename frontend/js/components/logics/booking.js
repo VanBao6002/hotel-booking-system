@@ -301,6 +301,7 @@ function renderReviews() {
     const hotelId = Number(localStorage.getItem("choicedHotelId"));
     const rateAvg = document.querySelector(".rate-avg__box span");
     const rateAvgText = document.querySelector(".rate-avg__text span");
+    const convervationBox = document.querySelector(".booking__info-rate-covervation-wrap");
     
     const oneStar = document.querySelector(".rate__row-fill-one-star");
     const twoStar = document.querySelector(".rate__row-fill-two-star");
@@ -313,7 +314,6 @@ function renderReviews() {
 
             let html = "";
 
-
             rateAvg.innerText = reviewData.averageStar;
             rateAvgText.innerText = reviewData.reviews.length;
 
@@ -323,10 +323,35 @@ function renderReviews() {
             fourStar.style.transform =  `scaleX(${reviewData.fourStarPercent/100})`;
             fiveStar.style.transform =  `scaleX(${reviewData.fiveStarPercent/100})`;
 
-            // reviewData.reviews.forEach(review => {
+            reviewData.reviews.forEach(review => {
+                html += `
+                    <div class="convervation__box">
+                        <div class="convervation__user">
+                            <div class="convervation__user-avatar">
+                                <img src="assets/images/default-avt.png" alt="">
+                            </div>
+                            <div class="convervation__user-name">
+                                <span>${review.userName}</span>
+                            </div>
+                        </div>
+                        <div class="convervation__chat">
+                            <div class="convervation__chat-info">
+                                <div class="convervation__chat-rate">
+                                    <span>${review.rating}</span> <i class="fa-solid fa-star star"></i>
+                                </div>
+                                <div class="convervation__chat-time">
+                                    ${review.createdAt}
+                                </div>
+                            </div>
+                            <div class="convervation__chat-content">
+                                <span>${review.comment}</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            })
 
-            // })
-
+            convervationBox.innerHTML = html;
 
         })
 }

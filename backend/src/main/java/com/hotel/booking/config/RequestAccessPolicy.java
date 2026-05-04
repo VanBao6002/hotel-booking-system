@@ -1,7 +1,8 @@
 package com.hotel.booking.config;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.util.AntPathMatcher;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public final class RequestAccessPolicy {
 
