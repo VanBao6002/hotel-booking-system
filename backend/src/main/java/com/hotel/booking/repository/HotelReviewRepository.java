@@ -18,16 +18,24 @@ public class HotelReviewRepository {
 
     // Lấy tất cả review theo hotel_branch_id
     public List<HotelReviewDTO> getReviewsByHotelBranchId(int hotelBranchId) {
-        String sql = "SELECT * FROM hotelreview WHERE hotel_branch_id = ? ORDER BY created_at DESC";
+        String sql = "SELECT r.id, r.hotel_branch_id, r.user_id, u.user_name, " +
+                    "r.rating, r.comment, r.created_at " +
+                    "FROM hotelreview r " +
+                    "JOIN users u ON r.user_id = u.id " +
+                    "WHERE r.hotel_branch_id = ? " +
+                    "ORDER BY r.created_at DESC";
+
         return jdbcTemplate.query(sql, (rs, rowNum) -> new HotelReviewDTO(
                 rs.getInt("id"),
                 rs.getInt("hotel_branch_id"),
                 rs.getInt("user_id"),
+                rs.getString("user_name"),   // map thêm tên user
                 rs.getInt("rating"),
                 rs.getString("comment"),
                 rs.getDate("created_at").toLocalDate()
         ), hotelBranchId);
     }
+
 
 
     // Lấy summary (tỉ lệ phần trăm sao + average) + list review
