@@ -1,6 +1,6 @@
 import { errorTemplate } from "../components/templates/error.template.js";
 import { profileTemplate } from "../components/templates/profile.template.js"
-import { changePasswordTemplate } from "../components/templates/change-password..template.js"
+import { changePasswordTemplate } from "../components/templates/change-password.template.js"
 const routers = {};
 let currentPath = null;
 
@@ -298,10 +298,6 @@ export function initRouter() {
     if(!window.location.hash) {
         window.location.hash = "#home";
     }
-
-    // if (!window.location.hash || window.location.hash === "" || window.location.hash === "#home") {
-    //     window.location.hash = "#users-management";
-    // }
 
     currentPath = window.location.hash;
     renderRoute(currentPath || "#home");

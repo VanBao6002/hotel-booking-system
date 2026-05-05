@@ -14,9 +14,11 @@ import { homeManagerTemplate } from "./components/templates/home-manager.templat
 import { searchHoteltemplate } from "./components/templates/search-hotel.template.js";
 import { bookingTemplate } from "./components/templates/booking.template.js";
 import { usersManagementTemplate } from "./components/templates/users-management.template.js";
+import { hotelsManagementTemplate } from "./components/templates/hotels-management.template.js";
+import { financeManagementTemplate } from "./components/templates/finance-management.template.js";
 import { footerTemplate } from "./components/templates/footer.template.js";
 import { profileTemplate } from "./components/templates/profile.template.js";
-import { changePasswordTemplate } from "./components/templates/change-password..template.js";
+import { changePasswordTemplate } from "./components/templates/change-password.template.js";
 import { toastTemplate } from "./components/templates/toast.template.js";
 import { modalTemplate } from "./components/templates/modal.template.js";
 
@@ -41,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!localStorage.getItem("hotelData")) {
         localStorage.setItem("hotelData", "");
     }
-    // localStorage.setItem("role", "ADMIN");
+    localStorage.setItem("role", "ADMIN");
         
         // <div class="main"></div>
         // ${footerTemplate()}
