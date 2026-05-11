@@ -1,8 +1,10 @@
 package com.hotel.booking.controller;
 
 import com.hotel.booking.dto.HotelReviewDTO;
+import com.hotel.booking.dto.HotelReviewRequest;
 import com.hotel.booking.dto.HotelReviewResponse;
 import com.hotel.booking.service.HotelReviewService;
+import com.hotel.booking.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,15 +35,20 @@ public class HotelReviewController {
     }
 
     // // Thêm review mới
-    // @PostMapping("/hotel/{hotelBranchId}")
-    // public ResponseEntity<String> addReview(@PathVariable int hotelBranchId,
-    //                                         @RequestBody HotelReviewDTO review) {
-    //     review.setHotelBranchId(hotelBranchId);
-    //     int rows = reviewService.addReview(review);
-    //     if (rows > 0) {
-    //         return ResponseEntity.ok("Review added successfully");
-    //     } else {
-    //         return ResponseEntity.badRequest().body("Failed to add review");
-    //     }
-    // }
+    public ResponseEntity<ApiResponse> addReview(@PathVariable int hotelBranchId,
+                                                 @RequestBody HotelReviewRequest request) {
+        HotelReviewDTO dto = new HotelReviewDTO();
+        dto.setHotelBranchId(hotelBranchId); // lấy từ path
+        dto.setUserId(request.getUserId());
+        dto.setRating(request.getRating());
+        dto.setComment(request.getComment());
+        dto.setCreatedAt(request.getCreatedAt());
+
+        int rows = reviewService.addReview(dto);
+        if (rows > 0) {
+            return ResponseEntity.ok(new ApiResponse(true, "Review added successfully"));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to add review"));
+        }
+    }
 }

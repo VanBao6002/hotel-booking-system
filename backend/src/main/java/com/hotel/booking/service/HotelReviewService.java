@@ -11,9 +11,12 @@ import java.util.List;
 public class HotelReviewService {
 
     private final HotelReviewRepository reviewRepository;
+    private final HotelSummaryService summaryService;
 
-    public HotelReviewService(HotelReviewRepository reviewRepository) {
+    public HotelReviewService(HotelReviewRepository reviewRepository,
+                              HotelSummaryService summaryService) {
         this.reviewRepository = reviewRepository;
+        this.summaryService = summaryService;
     }
 
     // Lấy danh sách review theo hotel_branch_id
@@ -26,8 +29,12 @@ public class HotelReviewService {
         return reviewRepository.getHotelReviewSummary(hotelBranchId);
     }
 
-    // // Thêm review mới
-    // public int addReview(HotelReviewDTO review) {
-    //     return reviewRepository.addReview(review);
-    // }
+    // Thêm review mới
+    public int addReview(HotelReviewDTO review) {
+        int rows = reviewRepository.addReview(review);
+        if (rows > 0) {
+            summaryService.updateHotelRatingSummary(review.getHotelBranchId());
+        }
+        return rows;
+    }
 }
