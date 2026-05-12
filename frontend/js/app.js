@@ -18,6 +18,8 @@ import { changePasswordTemplate } from "./components/templates/change-password..
 import { toastTemplate } from "./components/templates/toast.template.js";
 import { modalTemplate } from "./components/templates/modal.template.js";
 import { initBooking } from "./components/logics/booking.js";
+import { bookingHistoryTemplate } from "./components/templates/booking-history.template.js";
+import { initBookingHistory } from "./components/logics/booking-history.js";
 
 
 
@@ -85,6 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
     addRoute("#setting", () => {
         main.innerHTML = profileTemplate();
     });
+
+    addRoute("#booking-history", () => {
+        main.innerHTML = bookingHistoryTemplate();
+        initBookingHistory();
+    })
 
 
 

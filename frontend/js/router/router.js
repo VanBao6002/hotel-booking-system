@@ -31,6 +31,11 @@ const rules = [
         item: ["profile","changePassword","home"]
     },
     {
+        path: ["#booking-history"],
+        roles: ["customer"],
+        item: ["home"]
+    },
+    {
         path: ["#error"],
         roles: ["guest","customer","staff","manager"],
         item: []

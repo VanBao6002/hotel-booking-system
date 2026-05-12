@@ -145,7 +145,7 @@ export function hideAllForm() {
     getSignInForm().style.display = "none";
     getSignUpForm().style.display = "none";
     document.querySelector(".show-room").classList.remove("show");
-    
+    document.querySelector(".show__notification").classList.remove("show");
 }
 
 

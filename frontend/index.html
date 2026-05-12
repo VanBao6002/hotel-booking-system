@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="css/search-hotel.css">
     <link rel="stylesheet" href="css/booking.css">
+    <link rel="stylesheet" href="css/booking-history.css">
 
     <link rel="stylesheet" href="css/profile.css">
     <link rel="stylesheet" href="css/change-password.css">
@@ -390,70 +391,67 @@
 
         </div>
       </div>
-    </main> -->
+      <div class="booking-history">
+        <div class="grid">
+          <div class="booking-history__head">
+            <div class="booking-history-title">
+              <span>Lịch sử đặt phòng</span>
+            </div>
+          </div>
+          <div class="booking-history__body">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Mã đặt phòng</th>
+                  <th>Khách sạn</th>
+                  <th>Phòng đã đặt</th>
+                  <th>Ngày nhận phòng</th>
+                  <th>Ngày trả phòng</th>
+                  <th>Tổng tiền</th>
+                  <th>Thời gian đặt phòng</th>
+                  <th>Đánh giá</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>PH001</td>
+                  <td>Khách sạn ABC</td>
+                  <td>Phòng đơn</td>
+                  <td>12/4/2026</td>
+                  <td>13/4/2026</td>
+                  <td>400.000 VND</td> 
+                  <td>12/4/2026 10:00 AM</td>
+                  <td>da danh gia</td>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>   -->
     
     <!-- <div class="modal active">
         <div class="modal__overlay"></div>
         <div class="modal__body">
-          <div class="show-room">
-            <div class="show-room_head">
-              <div class="show-room__id">Phong xxx</div>
-              <div class="show-room__exit"><i class="fa-solid fa-xmark"></i></div>
-            </div>
-            <div class="show-room__detail">
-              
-              <div class="show-room__detail-picture">
-                <div class="show-room__detail-img"></div>
+          <div class="show__notification ">
+            <div class="show__notification-wrap">
+              <div class="show__notification-head">
+                <div class="show__notification-icon">
+                  <i class="success__icon fa-solid fa-circle-check"></i>
+                  <i class="warning__icon fa-solid fa-circle-exclamation"></i>
+                  <i class="error__icon fa-solid fa-circle-xmark"></i>
+                </div>
+                <div class="show__notification-title">
+                  <span>Xac nhan dat phong</span>
+                </div>
               </div>
-
-              <div class="show-room__detail-info">
-                <div class="show-room__detail-info-wrap">
-                  <div class="show-room__detail-genaral">
-                    <div class="show-room__detail-genaral-head">
-                      <span>Thông tin phòng</span>
-                    </div>
-                    <div class="show-room__detail-genaral-body">
-                      <ul>
-                        <li>Dien tich: 42m2</li>
-                        <li>Khach: 2</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="show-room-detail-line"></div>
-                  <div class="show-room__detail-services">
-                    <div class="show-room__detail-services-head">
-                      <span>Dịch vụ phòng</span>
-                    </div>
-                    <div class="show-room__detail-services-body">
-                      <ul>
-                        <li>dv 1</li>
-                        <li>dv 1</li>
-                        <li>dv 1</li>
-                        <li>dv 1</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="show-room-detail-line"></div>
-                  <div class="show-room__detail-description">
-                    <div class="show-room__detail-description-head">
-                      <span>Về phòng này</span>
-                    </div>
-                    <div class="show-room__detail-description-body">
-                      <ul>
-                        <li>hahdb hadb abhd habhdb habhdbh jfjd nj djn jndj  </li>
-                      </ul>
-                    </div>
-                  </div>
+              <div class="show__notification-body">
+                <div class="show__notification-text">
+                  Ban dat bao gom 1 phong don va 1 phong da voi tong so tien can thanh toan la 400.000 VND. Hay xac nhan neu nhung thong tin tren la dung.
                 </div>
-                <div class="choice-room">
-                  <div class="choice-room__price">
-                    <div>200.000 VND</div>
-                    <div> /phòng/đêm</div>
-                  </div>
-                  <div class="choice-room__button">
-                    <div>Thêm lựa chọn phòng</div>
-                  </div>
-                </div>
+              </div>
+              <div class="show__notification-footer">
+                <div class="confirm-btn show__notification-previous-button">Tro lai</div>
+                <div class="confirm-btn show__notification-next-button">Thanh toan</div>
               </div>
             </div>
           </div>

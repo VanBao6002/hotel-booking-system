@@ -310,3 +310,93 @@
     filter: brightness(80%);
 }
 
+.show__notification {
+    display: none;
+}
+.show__notification.show {
+    display: block;
+}
+.show__notification.success {
+    color: var(--success-color);
+}
+.show__notification.warning {
+    color: var(--warning-color);
+}
+.show__notification.error {
+    color: var(--error-color);
+}
+.show__notification-wrap {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 400px;
+}
+.show__notification-head {
+    margin: 20px;
+}
+.show__notification-icon {
+    font-size: 8rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.show__notification-title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--navyBlue-color);
+}
+.show__notification-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto auto 20px auto;
+}
+.show__notification-text {
+    max-width: 300px;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 2rem;
+    color: #6c6c6c;
+}
+.show__notification-footer {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+.show__notification-previous-button,
+.show__notification-next-button {
+    color: white;
+    font-size: 1.6rem;
+    font-weight: bold;
+    line-height: 4.3rem;
+    min-width: 160px;
+    text-align: center;
+}
+.show__notification-next-button,
+.show__notification-previous-button {
+    display: none;
+}
+.show__notification-icon i{
+    display: none;
+}
+.show__notification.success .success__icon {
+    display: inline-block;
+}
+
+.show__notification.warning .warning__icon {
+    display: inline-block;
+}
+
+.show__notification.error .error__icon {
+    display: inline-block;
+}
+.show__notification.success .show__notification-next-button {
+    background-color: var(--success-color);
+}
+.show__notification.warning .show__notification-next-button {
+    background-color: var(--warning-color);
+}
+.show__notification.error .show__notification-next-button {
+    background-color: var(--error-color);
+}

@@ -147,6 +147,29 @@ export function modalTemplate() {
             </div>
           </div>
 
+          <div class="show__notification">
+            <div class="show__notification-wrap">
+              <div class="show__notification-head">
+                <div class="show__notification-icon">
+                  <i class="success__icon fa-solid fa-circle-check"></i>
+                  <i class="warning__icon fa-solid fa-circle-exclamation"></i>
+                  <i class="error__icon fa-solid fa-circle-xmark"></i>
+                </div>
+                <div class="show__notification-title">
+                  <span></span>
+                </div>
+              </div>
+              <div class="show__notification-body">
+                <div class="show__notification-text">
+
+                </div>
+              </div>
+              <div class="show__notification-footer">
+                <div class="confirm-btn show__notification-previous-button">Trở lại</div>
+                <div class="confirm-btn show__notification-next-button"></div>
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>
