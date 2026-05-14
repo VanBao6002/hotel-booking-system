@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     
     const main = document.querySelector(".main");
+    main.style.minHeight = `calc(100vh - ${document.querySelector(".header").offsetHeight}px - ${document.querySelector(".footer").offsetHeight}px + 80px)`;
 
     
     addRoute("#home", () => {

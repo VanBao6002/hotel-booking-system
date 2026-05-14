@@ -207,6 +207,12 @@ function showToast(message, type = "success") {
         toastBody.innerText = "";
     },3000);
 }
+function showBookingHistory() {
+    const bookingHistory = document.querySelector(".header__navbar-extras-booking");
+    bookingHistory.addEventListener("click", () => {
+        navigation("#booking-history");
+    });
+}
 
 
 function submitForm(){
@@ -331,4 +337,5 @@ export function initHeader() {
     attachValidation("form-sign-in",[emailField,passwordField]);
     attachValidation("form-sign-up",[fullnameField,usernameField,emailField,phoneNumberField,passwordFieldSIgnUp,confirmPasswordField]);
     submitForm();
+    showBookingHistory();
 }
