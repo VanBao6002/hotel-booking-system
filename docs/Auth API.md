@@ -30,23 +30,24 @@ Current security behavior:
   - `PUT /api/v1/auth/change-password`
   - `POST /api/v1/auth/logout`
   - `GET /api/v1/users`
-  - `GET /api/v1/users/by-username/{userName}`
+  - `GET /api/v1/users/by-phone-number/{phoneNumber}`
+  - `PUT /api/v1/users/update-profile/{phoneNumber}`
 
 If token is missing/invalid on protected routes, API returns `401 Unauthorized`.
 
 ## User APIs
 
-### Get User by Username
+### Get User by Phone Number
 
 ```http
-GET /api/v1/users/by-username/{userName}
+GET /api/v1/users/by-phone-number/{phoneNumber}
 Authorization: Bearer <jwt-token>
 ```
 
 Example:
 
 ```http
-GET /api/v1/users/by-username/john_doe
+GET /api/v1/users/by-phone-number/0123456789
 Authorization: Bearer <jwt-token>
 ```
 
@@ -55,18 +56,20 @@ Success response (`200 OK`):
 ```json
 {
   "id": 1,
-  "userName": "john_doe",
   "email": "john.doe@example.com",
   "fullName": "John Doe",
-  "isActive": true,
-  "createdAt": "2026-03-24T14:25:32"
+  "phoneNumber": "0123456789",
+  "dateOfBirth": "1996-08-21",
+  "currentAddress": "Bangkok",
+  "lockedUntil": null,
+  "role": "USER"
 }
 ```
 
 Notes:
 
-- If username exists, API returns user DTO (without password hash).
-- If username does not exist, API returns `404 Not Found` with standardized error body.
+- If phone number exists, API returns user DTO (without password hash).
+- If phone number does not exist, API returns `404 Not Found` with standardized error body.
 
 ### Get All Users
 
@@ -81,14 +84,40 @@ Success response (`200 OK`):
 [
   {
     "id": 1,
-    "userName": "john_doe",
     "email": "john.doe@example.com",
     "fullName": "John Doe",
-    "isActive": true,
-    "createdAt": "2026-03-24T14:25:32"
+    "phoneNumber": "0123456789",
+    "dateOfBirth": "1996-08-21",
+    "currentAddress": "Bangkok",
+    "lockedUntil": null,
+    "role": "USER"
   }
 ]
 ```
+
+### Update Profile by Current Phone Number
+
+```http
+PUT /api/v1/users/update-profile/{phoneNumber}
+Authorization: Bearer <jwt-token>
+Content-Type: application/json
+
+{
+  "fullName": "John Doe",
+  "email": "john.doe@example.com",
+  "dateOfBirth": "1996-08-21",
+  "genderId": 1,
+  "phoneNumber": "0987654321",
+  "currentAddress": "Bangkok",
+  "countryId": 66
+}
+```
+
+Notes:
+
+- The path parameter identifies the current user record.
+- The `phoneNumber` in the request body is the new value to store.
+- Email remains optional; blank email is treated as missing.
 
 ## Planned (Not Implemented Yet)
 
@@ -111,7 +140,6 @@ POST /api/v1/auth/register
 Content-Type: application/json
 
 {
-  "userName": "john_doe",
   "password": "password123",
   "email": "john.doe@example.com",
   "fullName": "John Doe",
@@ -124,13 +152,20 @@ Success response (`200 OK`):
 ```json
 {
   "id": 7,
-  "userName": "john_doe",
   "email": "john.doe@example.com",
   "fullName": "John Doe",
-  "isActive": true,
-  "createdAt": "2026-03-30T08:00:00"
+  "phoneNumber": "0123456789",
+  "dateOfBirth": null,
+  "currentAddress": null,
+  "lockedUntil": null,
+  "role": "USER"
 }
 ```
+
+Notes:
+
+- `email` is optional.
+- `phoneNumber` is required and must be unique.
 
 ### Login
 
@@ -139,7 +174,7 @@ POST /api/v1/auth/login
 Content-Type: application/json
 
 {
-  "userNameOrEmail": "john_doe",
+  "phoneNumberOrEmail": "0123456789",
   "password": "password123"
 }
 ```
@@ -153,9 +188,13 @@ Example success response:
   "expiresIn": 3600,
   "user": {
     "id": 1,
-    "userName": "john_doe",
     "email": "john.doe@example.com",
-    "fullName": "John Doe"
+    "fullName": "John Doe",
+    "phoneNumber": "0123456789",
+    "dateOfBirth": "1996-08-21",
+    "currentAddress": "Bangkok",
+    "lockedUntil": null,
+    "role": "USER"
   }
 }
 ```
@@ -165,6 +204,7 @@ Notes:
 - `accessToken` is a JWT.
 - `tokenType` is always `Bearer`.
 - `expiresIn` is configured by `jwt.access-token-expiration-seconds`.
+- Login accepts either `phoneNumber` or `email` in the `phoneNumberOrEmail` field.
 
 ### Forgot Password
 
@@ -173,7 +213,7 @@ POST /api/v1/auth/forgot-password
 Content-Type: application/json
 
 {
-  "email": "john.doe@example.com"
+  "phoneNumber": "0905123456"
 }
 ```
 
@@ -181,15 +221,15 @@ Example success response (`200 OK`):
 
 ```json
 {
-  "resetToken": "<reset-jwt-token>",
-  "expiresIn": 900
+  "message": "If the email exists, a reset link has been sent."
 }
 ```
 
 MVP note:
 
-- For local development, reset token is returned in API response.
-- In production, this token should be delivered by email and not returned directly.
+- The API does not return a reset token in the response.
+- If `email` is missing or blank, the backend still returns the same message.
+- If the email exists, the reset token is generated internally for the reset flow.
 
 ### Reset Password
 
@@ -198,24 +238,18 @@ POST /api/v1/auth/reset-password
 Content-Type: application/json
 
 {
-  "resetToken": "<reset-jwt-token>",
-  "newPassword": "newPassword456"
+  "phoneNumber": "0905123456,
+  "resetOtp": "123456",
+  "newPassword": "newPassword"
 }
 ```
 
 Success response: `204 No Content`
 
 ### Logout
-
-```http
-POST /api/v1/auth/logout
-Authorization: Bearer <jwt-token>
-```
-
 MVP note:
 
-- Stateless JWT logout can be handled client-side by deleting the token.
-- Optional phase 2: server-side token blacklist/revocation.
+- Client-side will drop the token (Stateless JWT logout) 
 
 ### Get Current User (Me)
 
@@ -229,11 +263,13 @@ Success response (`200 OK`):
 ```json
 {
   "id": 1,
-  "userName": "john_doe",
   "email": "john.doe@example.com",
   "fullName": "John Doe",
-  "isActive": true,
-  "createdAt": "2026-03-24T14:25:32"
+  "phoneNumber": "0123456789",
+  "dateOfBirth": "1996-08-21",
+  "currentAddress": "Bangkok",
+  "lockedUntil": null,
+  "role": "USER"
 }
 ```
 
@@ -252,10 +288,6 @@ Content-Type: application/json
 
 Success response: `204 No Content`
 
-## Auth APIs Not Implemented Yet
-
-- `POST /api/v1/auth/refresh-token`
-
 ## Error Response (Current)
 
 Error format is standardized by global exception handling.
@@ -267,18 +299,8 @@ Example:
   "timestamp": "2026-03-30T08:12:19.711383444",
   "status": 401,
   "error": "Unauthorized",
-  "message": "Username or password not match",
+  "message": "Phone number or email or password not match",
   "path": "/api/v1/auth/login"
 }
 ```
 
-## Interactive Documentation
-
-- Swagger UI: `http://localhost:8080/swagger-ui.html`
-- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
-
-If Swagger shows no endpoints, rebuild and restart backend:
-
-```bash
-docker compose up --build -d backend
-```

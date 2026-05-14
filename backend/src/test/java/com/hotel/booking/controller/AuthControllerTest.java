@@ -64,14 +64,12 @@ public class AuthControllerTest {
         userRepository.deleteAll();
         // normal user
         validRegisterRequest = new RegisterRequest();
-        validRegisterRequest.setUserName("testUser");
         validRegisterRequest.setPassword("TestPassword123");
         validRegisterRequest.setFullName("Tester");
         validRegisterRequest.setEmail("Test@gmail.com");
         validRegisterRequest.setPhoneNumber("12345678");
 
         User normalUser = new User();
-        normalUser.setUserName(validRegisterRequest.getUserName());
         normalUser.setEmail(validRegisterRequest.getEmail());
         normalUser.setPasswordHash(passwordEncoder.encode(validRegisterRequest.getPassword()));
         normalUser.setFullName(validRegisterRequest.getFullName());
@@ -88,23 +86,21 @@ public class AuthControllerTest {
         userRepository.save(normalUser);
 
         validLoginRequest = new LoginRequest();
-        validLoginRequest.setUserNameOrEmail("testUser");
+        validLoginRequest.setPhoneNumberOrEmail(validRegisterRequest.getPhoneNumber());
         validLoginRequest.setPassword("TestPassword123");
 
         invalidLoginRequest = new LoginRequest();
-        invalidLoginRequest.setUserNameOrEmail("testUser");
+        invalidLoginRequest.setPhoneNumberOrEmail(validRegisterRequest.getPhoneNumber());
         invalidLoginRequest.setPassword("12345678");
         
         // admin user
         validAdminRegisterRequest = new RegisterRequest();
-        validAdminRegisterRequest.setUserName("testAdmin");
         validAdminRegisterRequest.setPassword("TestPassword123");
         validAdminRegisterRequest.setFullName("Test_Admin");
         validAdminRegisterRequest.setEmail("Test_Admin@gmail.com");
         validAdminRegisterRequest.setPhoneNumber("1231231231");
 
         User adminUser = new User();
-        adminUser.setUserName(validAdminRegisterRequest.getUserName());
         adminUser.setEmail(validAdminRegisterRequest.getEmail());
         adminUser.setPasswordHash(passwordEncoder.encode(validAdminRegisterRequest.getPassword()));
         adminUser.setFullName(validAdminRegisterRequest.getFullName());
@@ -120,15 +116,13 @@ public class AuthControllerTest {
         userRepository.save(adminUser);
 
         validAdminLoginRequest = new LoginRequest();
-        validAdminLoginRequest.setUserNameOrEmail("testAdmin");
+        validAdminLoginRequest.setPhoneNumberOrEmail(validAdminRegisterRequest.getPhoneNumber());
         validAdminLoginRequest.setPassword("TestPassword123");
 
         validForgotPasswordRequest = new ForgotPasswordRequest();
-        validForgotPasswordRequest.setEmail("Test_Admin@gmail.com");
         
     }
 
-    @SuppressWarnings("null")
     @Test
     void testLoginWithValidCredentials() throws Exception {
         String requestBody = objectMapper.writeValueAsString(validLoginRequest);
@@ -143,7 +137,6 @@ public class AuthControllerTest {
         .andExpect(jsonPath("$.user.role").value("USER"));
     }
 
-    @SuppressWarnings("null")
     @Test
     void testLoginWithInvalidCredentials() throws Exception {
         String requestBody = objectMapper.writeValueAsString(invalidLoginRequest);
@@ -154,11 +147,10 @@ public class AuthControllerTest {
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.status").value(401))
         .andExpect(jsonPath("$.error").value("Unauthorized"))
-        .andExpect(jsonPath("$.message").value("Username or password not match"))
+        .andExpect(jsonPath("$.message").value("Phone number or email or password not match"))
         .andExpect(jsonPath("$.path").value("/api/v1/auth/login"));
     }
 
-    @SuppressWarnings("null")
     @Test
     void testNormalUserCannotAccessUsersList() throws Exception {
         // Login as normal user
@@ -180,7 +172,6 @@ public class AuthControllerTest {
         .andExpect(status().isForbidden());
     }
     
-    @SuppressWarnings("null")
     @Test
     void testAdminCanAccessUsersList() throws Exception {
         // Login as admin user
@@ -225,7 +216,6 @@ public class AuthControllerTest {
         .andExpect(jsonPath("$.status").value(401));
     }
 
-    @SuppressWarnings("null")
     @Test 
     void testValidAuthMe() throws Exception {
         // Login as admin user
@@ -247,7 +237,6 @@ public class AuthControllerTest {
         .andExpect(jsonPath("$.role").value("ADMIN"));
     }
 
-    @SuppressWarnings("null")
     @Test
     void testForgotPasswordWithValidEmail() throws Exception {
         String body = objectMapper.writeValueAsString(validForgotPasswordRequest);
@@ -258,11 +247,9 @@ public class AuthControllerTest {
         .andExpect(jsonPath("$.message").value("If the email exists, a reset link has been sent."));       
     }
 
-    @SuppressWarnings("null")
     @Test
     void testForgotPasswordWithUnknownEmail() throws Exception {
         ForgotPasswordRequest unknownEmailRequest = new ForgotPasswordRequest();
-        unknownEmailRequest.setEmail("unknown@example.com");
 
         String body = objectMapper.writeValueAsString(unknownEmailRequest);
         mockMvc.perform(post("/api/v1/auth/forgot-password")

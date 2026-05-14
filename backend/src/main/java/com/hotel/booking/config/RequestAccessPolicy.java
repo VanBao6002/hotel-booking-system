@@ -19,13 +19,13 @@ public final class RequestAccessPolicy {
         "/api/v1/auth/reset-password",
         "/api/search/hotel",
         "/api/bookings/**",
-        "/api/reviews/**"
+        "/api/reviews/**",
+        "/internal/debug/last-otp"
     };
 
     private RequestAccessPolicy() {
     }
 
-    @SuppressWarnings("null")
     public static boolean isPublicEndpoint(HttpServletRequest request) {
         String path = request.getRequestURI();
         for (String endpointPattern : PUBLIC_ENDPOINTS) {
