@@ -36,9 +36,9 @@ VALUES
 
 INSERT INTO users (user_name, email, password_hash, role_id, full_name, date_of_birth, gender_id, phone_number, current_address, country_id)
 VALUES
-('user', 'user@example.com', 'hash123', 1, 'Customer User', '1990-01-01', 1, '0909000000', 'HCM', 1),
-('admin', 'admin@example.com', 'hash123', 2, 'Admin User', '1995-05-05', 1, '0909111111', 'HCM', 1),
-('staff', 'staff@example.com', 'hash123', 3, 'Staff User', '2000-10-10', 2, '0909222222', 'HN', 1);
+('user', 'user@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Customer User', '1990-01-01', 1, '0909000000', 'HCM', 1),
+('admin', 'admin@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 2, 'Admin User', '1995-05-05', 1, '0909111111', 'HCM', 1),
+('staff', 'staff@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 3, 'Staff User', '2000-10-10', 2, '0909222222', 'HN', 1);
 
 INSERT INTO services (name, description) VALUES
 ('Breakfast Buffet', 'Daily breakfast buffet at the hotel restaurant'),
@@ -125,7 +125,6 @@ VALUES ('Phòng sạch sẽ, dịch vụ tốt', 5, NOW(), 3, 1);
 
 INSERT INTO receipt (paymentMethod, amount, paymentDate, BookingID)
 VALUES ('Cash', 400000, '2026-04-05', 1);
-
 
 
 

@@ -43,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!localStorage.getItem("hotelData")) {
         localStorage.setItem("hotelData", "");
     }
-    localStorage.setItem("role", "ADMIN");
         
         // <div class="main"></div>
         // ${footerTemplate()}
@@ -101,4 +100,3 @@ document.addEventListener("DOMContentLoaded", () => {
     initRouter();
     
 })
-

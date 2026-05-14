@@ -14,28 +14,27 @@ function buildHeaders(options = {}){
 
 function apiClient(endpoint, options = {}) {
     return fetch(`${BASE_URL}${endpoint}`, {
-        headers: buildHeaders(options),
-        ...options
+        ...options,
+        headers: buildHeaders(options)
     })
-    .then(response => {
+    .then(async response => {
+        const contentType = response.headers.get("content-type") || "";
+        const parseBody = async () => {
+            if (response.status === 204) return null;
+            if (contentType.includes("application/json")) return response.json();
+            const text = await response.text();
+            return text ? { message: text } : null;
+        };
+
         if(!response.ok) {
-            return response.json()
-                .then(errorData => {
-                    throw {
-                        status: response.status,
-                        statusText: response.statusText,
-                        data: errorData
-                    };
-                },
-                () => {
-                    throw {
-                        status: response.status,
-                        statusText: response.statusText,
-                        data : null
-                    };
-                })
+            throw {
+                status: response.status,
+                statusText: response.statusText,
+                data: await parseBody()
+            };
         }
-        return response.json();
+
+        return parseBody();
     })
     .catch(error => {
       throw error;

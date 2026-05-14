@@ -1,8 +1,16 @@
-import { hotelsManagementTemplate } from "../templates/hotels-management.template.js";
+import {
+  createHotel,
+  createRoom,
+  deleteHotel,
+  deleteRoom,
+  getHotel,
+  getHotels,
+  updateHotel,
+  updateRoom,
+} from "../../services/admin.js";
 
 let allHotels = [];
 
-// Display status message
 function setStatus(message, type = "info") {
   const statusEl = document.querySelector(".hotels-management__status");
   if (!statusEl) return;
@@ -12,15 +20,8 @@ function setStatus(message, type = "info") {
   statusEl.style.background = type === "error" ? "#fff5f5" : "#f0f9ff";
   statusEl.style.color = type === "error" ? "#b42318" : "#0369a1";
   statusEl.textContent = message;
-
-  if (type !== "error") {
-    setTimeout(() => {
-      statusEl.style.display = "none";
-    }, 3000);
-  }
 }
 
-// Clear status message
 function clearStatus() {
   const statusEl = document.querySelector(".hotels-management__status");
   if (!statusEl) return;
@@ -28,82 +29,69 @@ function clearStatus() {
   statusEl.textContent = "";
 }
 
-// Generate star rating HTML
+function normalizeHotel(hotel) {
+  return {
+    ...hotel,
+    hotelName: hotel.address || hotel.hotelName || "Unnamed Hotel",
+    location: hotel.locationName || hotel.location || "-",
+    rating: hotel.averageStar || hotel.rating || 0,
+    roomCount: hotel.roomCount || hotel.rooms?.length || 0,
+    isOnline: hotel.isOnline !== false,
+  };
+}
+
 function generateStars(rating) {
-  const fullStars = Math.floor(rating);
-  const hasHalf = rating % 1 !== 0;
+  const fullStars = Math.floor(Number(rating) || 0);
+  const hasHalf = (Number(rating) || 0) % 1 !== 0;
   let stars = "";
-  
+
   for (let i = 0; i < 5; i++) {
-    if (i < fullStars) {
-      stars += '<i class="fa fa-star" style="color: #fbbf24;"></i>';
-    } else if (i === fullStars && hasHalf) {
-      stars += '<i class="fa fa-star-half-o" style="color: #fbbf24;"></i>';
-    } else {
-      stars += '<i class="fa fa-star-o" style="color: #d1d5db;"></i>';
-    }
+    if (i < fullStars) stars += '<i class="fa fa-star" style="color: #fbbf24;"></i>';
+    else if (i === fullStars && hasHalf) stars += '<i class="fa fa-star-half-o" style="color: #fbbf24;"></i>';
+    else stars += '<i class="fa fa-star-o" style="color: #d1d5db;"></i>';
   }
-  
+
   return stars;
 }
 
-// Get status badge HTML
-function getStatusBadge(isOnline) {
-  if (isOnline) {
-    return `<span style="display: inline-flex; align-items: center; gap: 4px; color: #10b981; font-size: 13px;">
-      <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span> Online
-    </span>`;
-  } else {
-    return `<span style="display: inline-flex; align-items: center; gap: 4px; color: #999; font-size: 13px;">
-      <span style="width: 8px; height: 8px; border-radius: 50%; background: #ddd;"></span> Offline
-    </span>`;
-  }
-}
-
-// Render a single hotel card
-function renderHotelCard(hotel) {
+function renderHotelCard(rawHotel) {
+  const hotel = normalizeHotel(rawHotel);
   const imageSrc = hotel.imageUrl || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23e5e7eb' width='400' height='300'/%3E%3Ctext x='50%' y='50%' text-anchor='middle' dy='.3em' fill='%239ca3af' font-size='20'%3ENo Image%3C/text%3E%3C/svg%3E";
-  
+
   return `
     <div class="hotel-card">
       <div class="hotel-card__image">
         <img src="${imageSrc}" alt="${hotel.hotelName}" />
       </div>
-      
       <div class="hotel-card__content">
-        <h3 class="hotel-card__name">${hotel.hotelName || "Unnamed Hotel"}</h3>
-        
+        <h3 class="hotel-card__name">${hotel.hotelName}</h3>
         <div class="hotel-card__meta">
           <div class="hotel-card__meta-item">
             <span class="hotel-card__label">Location:</span>
-            <span class="hotel-card__value">${hotel.location || "-"}</span>
+            <span class="hotel-card__value">${hotel.location}</span>
           </div>
-          
           <div class="hotel-card__meta-item">
             <span class="hotel-card__label">Rating:</span>
-            <span class="hotel-card__rating">${generateStars(hotel.rating || 0)}</span>
+            <span class="hotel-card__rating">${generateStars(hotel.rating)}</span>
           </div>
-          
           <div class="hotel-card__meta-item">
             <span class="hotel-card__label">Room Count:</span>
-            <span class="hotel-card__value">${hotel.roomCount || 0} Rooms</span>
+            <span class="hotel-card__value">${hotel.roomCount} Rooms</span>
           </div>
-          
           <div class="hotel-card__meta-item">
-            <span class="hotel-card__label">Status:</span>
-            <span class="hotel-card__status">${getStatusBadge(hotel.isOnline !== false)}</span>
+            <span class="hotel-card__label">Phone:</span>
+            <span class="hotel-card__value">${hotel.phoneNumber || "-"}</span>
           </div>
         </div>
-        
         <div class="hotel-card__actions">
-          <button class="hotel-card__btn hotel-card__btn--primary" data-hotel-id="${hotel.id}">
-            <i class="fa fa-pencil"></i> Edit Details
+          <button class="hotel-card__btn hotel-card__btn--primary" data-action="edit" data-hotel-id="${hotel.id}">
+            <i class="fa fa-pencil"></i> Edit
           </button>
-          <button class="hotel-card__btn hotel-card__btn--secondary" data-hotel-id="${hotel.id}">
-            <i class="fa fa-key"></i> Manage Rooms
+          <button class="hotel-card__btn hotel-card__btn--secondary" data-action="rooms" data-hotel-id="${hotel.id}">
+            <i class="fa fa-key"></i> Rooms
           </button>
-          <button class="hotel-card__btn hotel-card__btn--secondary" data-hotel-id="${hotel.id}">
-            <i class="fa fa-bar-chart"></i> View Analytics
+          <button class="hotel-card__btn hotel-card__btn--secondary" data-action="delete" data-hotel-id="${hotel.id}">
+            <i class="fa fa-trash"></i> Delete
           </button>
         </div>
       </div>
@@ -111,11 +99,9 @@ function renderHotelCard(hotel) {
   `;
 }
 
-// Render all hotel cards
 function renderHotels(hotels) {
   const grid = document.querySelector(".hotels-management__grid");
   const emptyEl = document.querySelector(".hotels-management__empty");
-  
   if (!grid) return;
 
   if (!hotels || hotels.length === 0) {
@@ -125,118 +111,142 @@ function renderHotels(hotels) {
   }
 
   if (emptyEl) emptyEl.style.display = "none";
-  grid.innerHTML = hotels.map(hotel => renderHotelCard(hotel)).join("");
-  
-  attachCardEventListeners();
+  grid.innerHTML = hotels.map(renderHotelCard).join("");
 }
 
-// Attach event listeners to action buttons
-function attachCardEventListeners() {
-  // Edit Details buttons
-  document.querySelectorAll(".hotel-card__btn--primary").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      const hotelId = btn.dataset.hotelId;
-      const hotel = allHotels.find(h => h.id == hotelId);
-      if (hotel) {
-        console.log("Edit hotel:", hotel);
-        setStatus(`Editing ${hotel.hotelName}...`, "info");
-        // TODO: Open edit modal/dialog
-      }
-    });
-  });
-
-  // Manage Rooms buttons
-  document.querySelectorAll(".hotel-card__btn--secondary").forEach((btn, idx) => {
-    if (idx % 3 === 1) { // Second button in each group
-      btn.addEventListener("click", (e) => {
-        const hotelId = btn.dataset.hotelId;
-        const hotel = allHotels.find(h => h.id == hotelId);
-        if (hotel) {
-          console.log("Manage rooms for hotel:", hotel);
-          setStatus(`Managing rooms for ${hotel.hotelName}...`, "info");
-          // TODO: Open rooms management
-        }
-      });
-    }
-  });
-
-  // View Analytics buttons
-  document.querySelectorAll(".hotel-card__btn--secondary").forEach((btn, idx) => {
-    if (idx % 3 === 2) { // Third button in each group
-      btn.addEventListener("click", (e) => {
-        const hotelId = btn.dataset.hotelId;
-        const hotel = allHotels.find(h => h.id == hotelId);
-        if (hotel) {
-          console.log("View analytics for hotel:", hotel);
-          setStatus(`Loading analytics for ${hotel.hotelName}...`, "info");
-          // TODO: Show analytics
-        }
-      });
-    }
-  });
+function askHotel(defaults = {}) {
+  const address = prompt("Hotel address/name:", defaults.address || "");
+  if (address === null) return null;
+  const phoneNumber = prompt("Phone number:", defaults.phoneNumber || "");
+  if (phoneNumber === null) return null;
+  const locationName = prompt("Location:", defaults.locationName || "");
+  if (locationName === null) return null;
+  return { address: address.trim(), phoneNumber: phoneNumber.trim(), locationName: locationName.trim() };
 }
 
-// Mock hotel data for development
-function getMockHotels() {
-  return [
-    {
-      id: 1,
-      hotelName: "The Oceanfront Villa",
-      location: "Maldives",
-      rating: 5,
-      roomCount: 120,
-      imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop",
-      isOnline: true
-    },
-    {
-      id: 2,
-      hotelName: "The Presidential Suite",
-      location: "Maldives",
-      rating: 4.5,
-      roomCount: 85,
-      imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=300&fit=crop",
-      isOnline: true
-    },
-    {
-      id: 3,
-      hotelName: "The Sunset Hilltop Retreat",
-      location: "Seychelles",
-      rating: 4.5,
-      roomCount: 100,
-      imageUrl: "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=400&h=300&fit=crop",
-      isOnline: false
-    },
-    {
-      id: 4,
-      hotelName: "Tropical Paradise Resort",
-      location: "Bali",
-      rating: 4,
-      roomCount: 150,
-      imageUrl: "https://images.unsplash.com/photo-1571896349842-34886015ae0f?w=400&h=300&fit=crop",
-      isOnline: true
-    }
-  ];
+function askRoom(defaults = {}) {
+  const roomNumber = prompt("Room number:", defaults.roomNumber || "");
+  if (roomNumber === null) return null;
+  const floor = prompt("Floor:", defaults.floor || "1");
+  if (floor === null) return null;
+  const area = prompt("Area:", defaults.area || "25m2");
+  if (area === null) return null;
+  const numberOfBed = prompt("Number of beds:", defaults.numberOfBed || "1");
+  if (numberOfBed === null) return null;
+  const price = prompt("Price per night:", defaults.price || "200000");
+  if (price === null) return null;
+  const typeCode = prompt("Room type code (SINGLE, DOUBLE, SUITE):", defaults.typeCode || "SINGLE");
+  if (typeCode === null) return null;
+  const roomStatus = prompt("Room status (Available, Booked, Maintenance):", defaults.roomStatus || "Available");
+  if (roomStatus === null) return null;
+
+  return {
+    roomNumber: Number(roomNumber),
+    floor: Number(floor),
+    area: area.trim(),
+    numberOfBed: Number(numberOfBed),
+    price: Number(price),
+    description: defaults.description || "No description",
+    roomIMG: defaults.roomIMG || "default-room.jpg",
+    typeCode: typeCode.trim(),
+    roomStatus: roomStatus.trim(),
+  };
 }
 
-// Initialize hotels management
-export function initHotelsManagement() {
-  // Show loading state
+async function loadHotels() {
   const loading = document.querySelector(".hotels-management__loading");
   if (loading) loading.style.display = "block";
+  clearStatus();
 
-  // Mock data - replace with actual API call later
-  allHotels = getMockHotels();
-  renderHotels(allHotels);
-
-  if (loading) loading.style.display = "none";
-
-  // Add Property button
-  const addBtn = document.querySelector(".hotels-management__add-btn");
-  if (addBtn) {
-    addBtn.addEventListener("click", () => {
-      console.log("Add new hotel");
-      setStatus("Opening new hotel form...", "info");
-      // TODO: Open add hotel modal
-    });
+  try {
+    allHotels = await getHotels() || [];
+    renderHotels(allHotels);
+  } catch (err) {
+    setStatus(err?.data?.message || "Could not load hotels from database.", "error");
+    renderHotels([]);
+  } finally {
+    if (loading) loading.style.display = "none";
   }
+}
+
+async function handleAddHotel() {
+  const hotel = askHotel();
+  if (!hotel) return;
+
+  try {
+    await createHotel(hotel);
+    setStatus("Hotel created.");
+    await loadHotels();
+  } catch (err) {
+    setStatus(err?.data?.message || "Create hotel failed.", "error");
+  }
+}
+
+async function handleEditHotel(hotelId) {
+  const current = allHotels.find(h => String(h.id) === String(hotelId));
+  const hotel = askHotel(current);
+  if (!hotel) return;
+
+  try {
+    await updateHotel(hotelId, hotel);
+    setStatus("Hotel updated.");
+    await loadHotels();
+  } catch (err) {
+    setStatus(err?.data?.message || "Update hotel failed.", "error");
+  }
+}
+
+async function handleDeleteHotel(hotelId) {
+  if (!confirm("Delete this hotel? Rooms and bookings will be detached by database rules.")) return;
+
+  try {
+    await deleteHotel(hotelId);
+    setStatus("Hotel deleted.");
+    await loadHotels();
+  } catch (err) {
+    setStatus(err?.data?.message || "Delete hotel failed.", "error");
+  }
+}
+
+async function handleRooms(hotelId) {
+  try {
+    const hotel = await getHotel(hotelId);
+    const rooms = hotel.rooms || [];
+    const roomList = rooms.map(room => `${room.id}: room ${room.roomNumber} - ${room.typeCode} - ${room.price}`).join("\n") || "No rooms yet.";
+    const action = prompt(`${roomList}\n\nType: add, edit, delete`, "add");
+    if (!action) return;
+
+    if (action.toLowerCase() === "add") {
+      const room = askRoom();
+      if (room) await createRoom(hotelId, room);
+    } else if (action.toLowerCase() === "edit") {
+      const roomId = prompt("Room ID to edit:");
+      const current = rooms.find(room => String(room.id) === String(roomId));
+      if (!roomId || !current) return;
+      const room = askRoom(current);
+      if (room) await updateRoom(hotelId, roomId, room);
+    } else if (action.toLowerCase() === "delete") {
+      const roomId = prompt("Room ID to delete:");
+      if (roomId && confirm(`Delete room ${roomId}?`)) await deleteRoom(hotelId, roomId);
+    }
+
+    setStatus("Room changes saved.");
+    await loadHotels();
+  } catch (err) {
+    setStatus(err?.data?.message || "Room action failed.", "error");
+  }
+}
+
+export function initHotelsManagement() {
+  loadHotels();
+
+  document.querySelector(".hotels-management__add-btn")?.addEventListener("click", handleAddHotel);
+  document.querySelector(".hotels-management__grid")?.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+    const hotelId = button.dataset.hotelId;
+    if (button.dataset.action === "edit") handleEditHotel(hotelId);
+    if (button.dataset.action === "delete") handleDeleteHotel(hotelId);
+    if (button.dataset.action === "rooms") handleRooms(hotelId);
+  });
 }

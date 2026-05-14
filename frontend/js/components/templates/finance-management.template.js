@@ -4,9 +4,9 @@ export function financeManagementTemplate() {
 
             <!-- Summary Cards -->
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px;">
-                ${renderFinanceCard("Total Earnings", "$5,240,000", "#c9a84c", "#1a1a2e")}
-                ${renderFinanceCard("Pending Payouts", "$120,500", "#1a1a2e", "#1a1a2e")}
-                ${renderFinanceCard("Tax Summary", "$890,000", "#1a1a2e", "#1a1a2e")}
+                ${renderFinanceCard("Total Earnings", "0 VND", "#c9a84c", "#1a1a2e", "finance-total-earnings")}
+                ${renderFinanceCard("Pending Payouts", "0 VND", "#1a1a2e", "#1a1a2e", "finance-pending-payouts")}
+                ${renderFinanceCard("Tax Summary", "0 VND", "#1a1a2e", "#1a1a2e", "finance-tax-summary")}
             </div>
 
             <!-- Monthly Revenue Distribution Chart -->
@@ -37,13 +37,7 @@ export function financeManagementTemplate() {
                         </tr>
                     </thead>
                     <tbody id="transaction-tbody">
-                        ${renderTransactionRow("Oct 25, 2023", "The Oceanfront Villa Booking", "$3,500", "Completed - Gold status")}
-                        ${renderTransactionRow("Sep 21, 2023", "The Oceanfront Villa Booking", "$1,500", "Completed - Gold status")}
-                        ${renderTransactionRow("Aug 27, 2023", "The Sunset Hilltop Retreat", "$1,000", "Completed - Gold status")}
-                        ${renderTransactionRow("Aug 10, 2023", "The Presidential Suite Booking", "$4,200", "Completed - Gold status")}
-                        ${renderTransactionRow("Jul 15, 2023", "The Oceanfront Villa Booking", "$2,800", "Completed - Gold status")}
-                        ${renderTransactionRow("Jun 30, 2023", "The Sunset Hilltop Retreat", "$1,750", "Pending")}
-                        ${renderTransactionRow("Jun 12, 2023", "The Presidential Suite Booking", "$5,000", "Completed - Gold status")}
+                        <tr><td colspan="4" style="padding: 18px 16px; font-size: 13px; color: #6b7280;">Loading transactions...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -51,12 +45,12 @@ export function financeManagementTemplate() {
     `;
 }
 
-function renderFinanceCard(title, value, bgColor, textColor) {
+function renderFinanceCard(title, value, bgColor, textColor, valueId) {
     const isGold = bgColor === "#c9a84c";
     return `
         <div style="background: ${isGold ? 'linear-gradient(135deg, #c9a84c, #e8cc7a)' : bgColor}; padding: 28px 28px; border-radius: 10px; border: 1px solid ${isGold ? 'transparent' : '#2d2d44'};">
             <div style="font-size: 13px; color: ${isGold ? '#5a3e00' : '#9aa3b0'}; margin-bottom: 10px; font-weight: 500;">${title}</div>
-            <div style="font-size: 32px; font-weight: 700; color: ${isGold ? '#1a1a2e' : '#f0e6c8'}; line-height: 1;">${value}</div>
+            <div id="${valueId}" style="font-size: 32px; font-weight: 700; color: ${isGold ? '#1a1a2e' : '#f0e6c8'}; line-height: 1;">${value}</div>
         </div>
     `;
 }

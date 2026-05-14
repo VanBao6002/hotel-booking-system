@@ -1,8 +1,8 @@
 import { getAllUsers, deleteUser, banUser, warnUser, grantStaffRole } from "../../services/users.js";
 import { showConfirmDialog } from "./admin-confirm.js";
 
-// Toggle mock mode: when true, frontend simulates actions instead of calling backend
-const MOCK_MODE = true;
+// Admin actions must call the backend so database changes are visible after reload.
+const MOCK_MODE = false;
 
 let allUsers = [];
 let currentPage = 1;
