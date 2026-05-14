@@ -35,6 +35,7 @@ public class HotelReviewController {
     }
 
     // // Thêm review mới
+    @PostMapping("/hotel/{hotelBranchId}")
     public ResponseEntity<ApiResponse> addReview(@PathVariable int hotelBranchId,
                                                  @RequestBody HotelReviewRequest request) {
         HotelReviewDTO dto = new HotelReviewDTO();

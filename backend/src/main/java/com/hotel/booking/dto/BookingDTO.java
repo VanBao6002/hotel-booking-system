@@ -2,35 +2,34 @@ package com.hotel.booking.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class BookingDTO {
     private int id;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private LocalDateTime bookedAt;
-    private String roomImg;
-    private Long bookingPrice;       // thêm trường mới
-    private Integer userId;          // thêm trường mới
+    private Long bookingPrice;
+    private Integer userId;
     private Integer hotelBranchId;
-    private Integer roomId;
 
-    // Constructor mặc định
+    // Danh sách phòng thuộc booking này
+    private List<BookingRoomDTO> bookingRooms;
+
     public BookingDTO() {}
 
-    // Constructor đầy đủ
     public BookingDTO(int id, LocalDate checkInDate, LocalDate checkOutDate,
-                      LocalDateTime bookedAt, String roomImg,
-                      Integer hotelBranchId, Integer roomId,
-                      Integer userId, Long bookingPrice) {
+                      LocalDateTime bookedAt, Long bookingPrice,
+                      Integer userId, Integer hotelBranchId,
+                      List<BookingRoomDTO> bookingRooms) {
         this.id = id;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.bookedAt = bookedAt;
-        this.roomImg = roomImg;
-        this.hotelBranchId = hotelBranchId;
-        this.roomId = roomId;
-        this.userId = userId;
         this.bookingPrice = bookingPrice;
+        this.userId = userId;
+        this.hotelBranchId = hotelBranchId;
+        this.bookingRooms = bookingRooms;
     }
 
     // Getter & Setter
@@ -46,9 +45,6 @@ public class BookingDTO {
     public LocalDateTime getBookedAt() { return bookedAt; }
     public void setBookedAt(LocalDateTime bookedAt) { this.bookedAt = bookedAt; }
 
-    public String getRoomImg() { return roomImg; }
-    public void setRoomImg(String roomImg) { this.roomImg = roomImg; }
-
     public Long getBookingPrice() { return bookingPrice; }
     public void setBookingPrice(Long bookingPrice) { this.bookingPrice = bookingPrice; }
 
@@ -58,6 +54,6 @@ public class BookingDTO {
     public Integer getHotelBranchId() { return hotelBranchId; }
     public void setHotelBranchId(Integer hotelBranchId) { this.hotelBranchId = hotelBranchId; }
 
-    public Integer getRoomId() { return roomId; }
-    public void setRoomId(Integer roomId) { this.roomId = roomId; }
+    public List<BookingRoomDTO> getBookingRooms() { return bookingRooms; }
+    public void setBookingRooms(List<BookingRoomDTO> bookingRooms) { this.bookingRooms = bookingRooms; }
 }

@@ -24,20 +24,22 @@ public class BookingService {
 
     public ApiResponse createBooking(BookingRequest request) {
         try {
-            // Kiểm tra phòng trống trước
-            boolean available = bookingRepository.isRoomBooked(
-                request.getRoomId(),
-                request.getCheckInDate(),
-                request.getCheckOutDate()
-            );
-
-            if (!available) {
-                return new ApiResponse(false, "Room is already booked for the selected dates");
+            // Kiểm tra tất cả phòng trong request
+            for (Integer roomId : request.getRoomIds()) {
+                boolean available = bookingRepository.isRoomBooked(
+                    roomId,
+                    request.getCheckInDate(),
+                    request.getCheckOutDate()
+                );
+                if (!available) {
+                    return new ApiResponse(false, "Room " + roomId + " is already booked for the selected dates");
+                }
             }
 
-            int rows = bookingRepository.addBooking(request);
-            if (rows > 0) {
-                return new ApiResponse(true, "Booking created successfully");
+            // Nếu tất cả phòng đều trống → thêm booking
+            int bookingId = bookingRepository.addBooking(request);
+            if (bookingId > 0) {
+                return new ApiResponse(true, "Booking created successfully with ID: " + bookingId);
             } else {
                 return new ApiResponse(false, "Failed to create booking");
             }
@@ -45,6 +47,7 @@ public class BookingService {
             return new ApiResponse(false, "Error: " + e.getMessage());
         }
     }
+
     public List<BookingDTO> getUserBookings(int userId) {
         return bookingRepository.getBookingsByUserId(userId);
     }

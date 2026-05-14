@@ -143,20 +143,42 @@ CREATE TABLE IF NOT EXISTS users (
         ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS booking(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+-- CREATE TABLE IF NOT EXISTS booking(
+--     id INT PRIMARY KEY AUTO_INCREMENT,
+--     check_in_date DATE NOT NULL,
+--     check_out_date DATE NOT NULL,
+--     booked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--     room_img TEXT NOT NULL,
+--     booking_price BIGINT NOT NULL DEFAULT 0,
+--     user_id INT,
+--     hotel_branch_id INT,
+--     room_id INT,
+--     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE,
+--     CONSTRAINT fk_booking_HotelBranch_id FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
+--     CONSTRAINT fk_booking_room_id FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
+-- );
+CREATE TABLE IF NOT EXISTS booking (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     check_in_date DATE NOT NULL,
     check_out_date DATE NOT NULL,
-    booked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    room_img TEXT NOT NULL,
-    booking_price BIGINT NOT NULL DEFAULT 0,
-    user_id INT,
-    hotel_branch_id INT,
-    room_id INT,
-    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_booking_HotelBranch_id FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_booking_room_id FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
+    booked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- thời điểm đặt phòng
+    hotel_branch_id INT NOT NULL,
+    user_id INT NOT NULL,
+    booking_price BIGINT NOT NULL,
+    CONSTRAINT fk_booking_branch FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE CASCADE,
+    CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE IF NOT EXISTS booking_room (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    booking_id INT NOT NULL,
+    room_id INT NOT NULL,
+    CONSTRAINT fk_booking FOREIGN KEY (booking_id) REFERENCES booking(id) ON DELETE CASCADE,
+    CONSTRAINT fk_room FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE
+);
+
+
 
 CREATE TABLE IF NOT EXISTS staff(
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -207,17 +229,17 @@ CREATE TABLE IF NOT EXISTS room(
     CONSTRAINT fk_room_RoomStatus_id FOREIGN KEY (RoomStatusID) REFERENCES roomstatus(id)  ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS booking(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    checkInDate DATE NOT NULL,
-    checkOutDate DATE  NOT NULL,
-    bookedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    roomIMG TEXT NOT NULL,
-    HotelBranchID INT ,
-    RoomID INT ,
-    CONSTRAINT fk_booking_HotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_booking_room_id FOREIGN KEY (RoomID) REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
-);
+-- CREATE TABLE IF NOT EXISTS booking(
+--     id INT PRIMARY KEY AUTO_INCREMENT,
+--     checkInDate DATE NOT NULL,
+--     checkOutDate DATE  NOT NULL,
+--     bookedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--     roomIMG TEXT NOT NULL,
+--     HotelBranchID INT ,
+--     RoomID INT ,
+--     CONSTRAINT fk_booking_HotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
+--     CONSTRAINT fk_booking_room_id FOREIGN KEY (RoomID) REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
+-- );
 
 CREATE TABLE IF NOT EXISTS bookingservice(
     Type_roomID INT ,
