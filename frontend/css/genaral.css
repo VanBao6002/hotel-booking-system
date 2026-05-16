@@ -25,6 +25,11 @@ body {
     background-color: var(--ivoryWhite-color);
 }
 
+.main {
+    padding-top: calc(var(--header-height) + 20px);
+    min-height: calc(100vh - var(--header-height));
+}
+
 /* reponsive */
 
 .grid {
