@@ -9,11 +9,17 @@ public class BookingDTO {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private LocalDateTime bookedAt;
-    private String roomIMG;
-    private Integer hotelBranchID;
-    private Integer roomID;
-    
-    // Admin panel fields
+
+    // Fields chung
+    private String roomImg;
+    private Integer hotelBranchId;
+    private Integer roomId;
+
+    // Fields từ mergeFrontEnd
+    private Integer userId;          
+    private Long bookingPrice;       
+
+    // Fields từ FE_QuanLy (Admin panel)
     private String guestName;
     private String guestEmail;
     private String hotelName;
@@ -27,17 +33,20 @@ public class BookingDTO {
     // Constructor mặc định
     public BookingDTO() {}
 
-    // Constructor đầy đủ (cho database)
+    // Constructor đầy đủ
     public BookingDTO(int id, LocalDate checkInDate, LocalDate checkOutDate,
-                      LocalDateTime bookedAt, String roomIMG,
-                      Integer hotelBranchID, Integer roomID) {
+                      LocalDateTime bookedAt, String roomImg,
+                      Integer hotelBranchId, Integer roomId,
+                      Integer userId, Long bookingPrice) {
         this.id = "B-" + id;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.bookedAt = bookedAt;
-        this.roomIMG = roomIMG;
-        this.hotelBranchID = hotelBranchID;
-        this.roomID = roomID;
+        this.roomImg = roomImg;
+        this.hotelBranchId = hotelBranchId;
+        this.roomId = roomId;
+        this.userId = userId;
+        this.bookingPrice = bookingPrice;
         this.numberOfNights = daysBetween(checkInDate, checkOutDate);
     }
 
@@ -71,14 +80,20 @@ public class BookingDTO {
     public LocalDateTime getBookedAt() { return bookedAt; }
     public void setBookedAt(LocalDateTime bookedAt) { this.bookedAt = bookedAt; }
 
-    public String getRoomIMG() { return roomIMG; }
-    public void setRoomIMG(String roomIMG) { this.roomIMG = roomIMG; }
+    public String getRoomImg() { return roomImg; }
+    public void setRoomImg(String roomImg) { this.roomImg = roomImg; }
 
-    public Integer getHotelBranchID() { return hotelBranchID; }
-    public void setHotelBranchID(Integer hotelBranchID) { this.hotelBranchID = hotelBranchID; }
+    public Long getBookingPrice() { return bookingPrice; }
+    public void setBookingPrice(Long bookingPrice) { this.bookingPrice = bookingPrice; }
 
-    public Integer getRoomID() { return roomID; }
-    public void setRoomID(Integer roomID) { this.roomID = roomID; }
+    public Integer getUserId() { return userId; }
+    public void setUserId(Integer userId) { this.userId = userId; }
+
+    public Integer getHotelBranchId() { return hotelBranchId; }
+    public void setHotelBranchId(Integer hotelBranchId) { this.hotelBranchId = hotelBranchId; }
+
+    public Integer getRoomId() { return roomId; }
+    public void setRoomId(Integer roomId) { this.roomId = roomId; }
 
     public String getGuestName() { return guestName; }
     public void setGuestName(String guestName) { this.guestName = guestName; }

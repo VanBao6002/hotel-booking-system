@@ -6,6 +6,8 @@
     --yellow-color: #FFFF00;
     --text-gray-color: #888888;
     --error-color: #FF0000;
+    --success-color: #22bb33;
+    --warning-color: #f0ad4e;
     --header-height: 100px;
 }
 

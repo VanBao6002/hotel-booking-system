@@ -52,7 +52,7 @@ public SearchResponse searchAvailableHotelBranches(LocalDate checkInDate,
                 return false;
             }
         // Còn lại thì kiểm tra phòng có trống không
-         return bookingRepo.isRoomAvailable(room.getId(), checkInDate, checkOutDate);
+         return bookingRepo.isRoomBooked(room.getId(), checkInDate, checkOutDate);
         })
     .collect(Collectors.toList());
 

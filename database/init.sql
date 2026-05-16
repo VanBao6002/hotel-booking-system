@@ -54,7 +54,7 @@ CREATE TABLE hotelreview (
     user_id INT NOT NULL,
     rating INT CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at DATE DEFAULT (CURRENT_DATE),
     CONSTRAINT fk_review_hotel FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
 
@@ -106,17 +106,7 @@ CREATE TABLE IF NOT EXISTS room(
     CONSTRAINT fk_room_RoomStatus_id FOREIGN KEY (room_status_id) REFERENCES roomstatus(id)  ON DELETE SET NULL ON UPDATE CASCADE
 )CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;;
 
-CREATE TABLE IF NOT EXISTS booking(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    check_in_date DATE NOT NULL,
-    check_out_date DATE NOT NULL,
-    booked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    room_img TEXT NOT NULL,
-    hotel_branch_id INT,
-    room_id INT,
-    CONSTRAINT fk_booking_HotelBranch_id FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_booking_room_id FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
-);
+
 
 
 
@@ -151,6 +141,21 @@ CREATE TABLE IF NOT EXISTS users (
         ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_users_country FOREIGN KEY (country_id) REFERENCES countries(id)
         ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS booking(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    check_in_date DATE NOT NULL,
+    check_out_date DATE NOT NULL,
+    booked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    room_img TEXT NOT NULL,
+    booking_price BIGINT NOT NULL DEFAULT 0,
+    user_id INT,
+    hotel_branch_id INT,
+    room_id INT,
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_booking_HotelBranch_id FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_booking_room_id FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS staff(

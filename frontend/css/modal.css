@@ -22,6 +22,8 @@
 .modal__body {
     display: flex;
     position: relative;
+    justify-content: center;
+    align-items: center;
 }
 
 #form-sign-in {
@@ -189,5 +191,212 @@
     color: var(--navyBlue-color);
     cursor: pointer;
 }
+.show-room {
+    display: none;
+    width: 1000px;
+    height: 600px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.show-room.show {
+    display: block;
+}
+.show-room_head {
+    height: 50px;
+    background-color: var(--ivoryWhite-color);
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+}
+.show-room__detail{
+    display: flex; 
+    width: 1000px;
+    height: 550px;
+}
+.show-room__id {
+    font-size: 2rem;
+    font-weight: bold;
+    padding-left: 20px;
+}
+.show-room_head {
+    border-bottom: 1px solid #ccc;
+}
+.show-room__exit {
+    margin: auto 20px auto auto;
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+}
+.show-room__detail-img {
+    height: 550px;
+    width: 700px;
+    background-color: white;
+}
+.show-room__detail-info {
+    display: flex;
+    flex-direction: column;
+}
+.show-room__detail-info-wrap {
+    display: flex;
+    flex-direction: column;
+    height: 550px;
+    width: 300px;
+    padding: 10px;
+    background-color: var(--ivoryWhite-color);
+}
+
+.show-room__detail-genaral-head,
+.show-room__detail-services-head,
+.show-room__detail-description-head {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+.show-room__detail-genaral-body ul,
+.show-room__detail-services-body ul,
+.show-room__detail-description-body ul {
+    padding-left: 0;
+    margin: 0;
+    font-size: 1.4rem;
+    list-style: none;
+    padding-left: 10px;
+    margin: 10px 0;
+}
+
+.show-room__detail-genaral-body li,
+.show-room__detail-services-body li,
+.show-room__detail-description-body li {
+    margin: 5px 0;
+} 
+
+.show-room-detail-line {
+    border: 1px solid #ccc;
+    margin: 10px 0;
+}
 
 
+.choice-room {
+    margin-top: auto;
+    padding: 20px 0 10px 0;
+    background-color: white;
+    border-top: 1px solid #ccc;
+    box-shadow: 2px 5px rgba(3, 18, 26, 0.15);
+}
+.choice-room__price {
+    display: flex;
+    padding-left: 10px;
+}
+.choice-room__price div:first-child {
+    color: #ff5e1f;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+.choice-room__button {
+    padding: 10px;
+}
+.choice-room__button div {
+    font-size: 2rem;
+    line-height: 4rem;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    background-color: #0a9af2;
+    border-radius: 10px;
+}
+.choice-room__button.active div {
+    background-color: #00FF00;
+}
+.choice-room__button:hover {
+    cursor: pointer;
+    filter: brightness(80%);
+}
+
+.show__notification {
+    display: none;
+}
+.show__notification.show {
+    display: block;
+}
+.show__notification.success {
+    color: var(--success-color);
+}
+.show__notification.warning {
+    color: var(--warning-color);
+}
+.show__notification.error {
+    color: var(--error-color);
+}
+.show__notification-wrap {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 400px;
+}
+.show__notification-head {
+    margin: 20px;
+}
+.show__notification-icon {
+    font-size: 8rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.show__notification-title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--navyBlue-color);
+}
+.show__notification-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto auto 20px auto;
+}
+.show__notification-text {
+    max-width: 300px;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 2rem;
+    color: #6c6c6c;
+}
+.show__notification-footer {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+.show__notification-previous-button,
+.show__notification-next-button {
+    color: white;
+    font-size: 1.6rem;
+    font-weight: bold;
+    line-height: 4.3rem;
+    min-width: 160px;
+    text-align: center;
+}
+.show__notification-next-button,
+.show__notification-previous-button {
+    display: none;
+}
+.show__notification-icon i{
+    display: none;
+}
+.show__notification.success .success__icon {
+    display: inline-block;
+}
+
+.show__notification.warning .warning__icon {
+    display: inline-block;
+}
+
+.show__notification.error .error__icon {
+    display: inline-block;
+}
+.show__notification.success .show__notification-next-button {
+    background-color: var(--success-color);
+}
+.show__notification.warning .show__notification-next-button {
+    background-color: var(--warning-color);
+}
+.show__notification.error .show__notification-next-button {
+    background-color: var(--error-color);
+}

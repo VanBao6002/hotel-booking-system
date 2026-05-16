@@ -36,6 +36,11 @@ const rules = [
         item: ["profile","changePassword","home"]
     },
     {
+        path: ["#booking-history"],
+        roles: ["customer"],
+        item: ["home"]
+    },
+    {
         path: ["#error"],
         roles: ["guest", "USER", "STAFF", "ADMIN"],
         item: []
@@ -87,10 +92,10 @@ const room = function navRoom() {
         </div>
     `;
 }
-const location = function navLocation() {
+const confirm = function navConfirm() {
     return `
-        <div class="header__navbar-link header__navbar-link-location">
-            <div class="header__navbar-item">Địa điểm</div>
+        <div class="header__navbar-link header__navbar-link-confirm">
+            <div class="header__navbar-item">Xác nhận</div>
         </div>
     `;
 }
@@ -129,7 +134,7 @@ const navComponents = {
   home,
   genaral,
   room,
-  location,
+  confirm,
   service,
   rate,
   profile,
@@ -212,7 +217,7 @@ function attachNavEvents() {
     const guessEl = document.querySelector(".header__navbar-link-guess");
     const genaralEl = document.querySelector(".header__navbar-link-genaral");
     const roomEl = document.querySelector(".header__navbar-link-room");
-    const locationEl = document.querySelector(".header__navbar-link-location");
+    const confirmEl = document.querySelector(".header__navbar-link-confirm");
     const serviceEl = document.querySelector(".header__navbar-link-service");
     const rateEl = document.querySelector(".header__navbar-link-rate");
     const profileEl = document.querySelector(".header__navbar-link-profile");
@@ -252,9 +257,9 @@ function attachNavEvents() {
             main.querySelector(".booking__info-room").scrollIntoView({behavior: "smooth", block: "center"});
         })
     }
-    if(locationEl) {
-        locationEl.addEventListener("click", () => {
-            main.querySelector(".booking__info-location").scrollIntoView({behavior: "smooth", block: "center"});
+    if(confirmEl) {
+        confirmEl.addEventListener("click", () => {
+            main.querySelector(".booking__info-confirm").scrollIntoView({behavior: "smooth", block: "center"});
         })
     }
     if(serviceEl) {

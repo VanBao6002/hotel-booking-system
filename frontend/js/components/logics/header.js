@@ -144,7 +144,8 @@ function userExtra() {
 export function hideAllForm() {
     getSignInForm().style.display = "none";
     getSignUpForm().style.display = "none";
-    
+    document.querySelector(".show-room").classList.remove("show");
+    document.querySelector(".show__notification").classList.remove("show");
 }
 
 
@@ -205,6 +206,12 @@ function showToast(message, type = "success") {
         toast.classList.remove(type);
         toastBody.innerText = "";
     },3000);
+}
+function showBookingHistory() {
+    const bookingHistory = document.querySelector(".header__navbar-extras-booking");
+    bookingHistory.addEventListener("click", () => {
+        navigation("#booking-history");
+    });
 }
 
 
@@ -332,4 +339,5 @@ export function initHeader() {
     attachValidation("form-sign-in",[emailField,passwordField]);
     attachValidation("form-sign-up",[fullnameField,usernameField,emailField,phoneNumberField,passwordFieldSIgnUp,confirmPasswordField]);
     submitForm();
+    showBookingHistory();
 }

@@ -1,15 +1,3 @@
-package com.hotel.booking.repository;
-
-import com.hotel.booking.dto.BookingDTO;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
-
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Optional;
-
 @Repository
 public class BookingRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -18,10 +6,12 @@ public class BookingRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    // Lấy tất cả booking cho admin
     public List<BookingDTO> getAllBookings() {
         return jdbcTemplate.query(adminBookingSql() + " ORDER BY b.booked_at DESC, b.id DESC", bookingMapper());
     }
 
+    // Lấy booking theo ID
     public Optional<BookingDTO> getBookingById(int id) {
         List<BookingDTO> rows = jdbcTemplate.query(
             adminBookingSql() + " WHERE b.id = ?",
@@ -31,6 +21,7 @@ public class BookingRepository {
         return rows.isEmpty() ? Optional.empty() : Optional.of(rows.get(0));
     }
 
+    // Lấy booking theo RoomID
     public List<BookingDTO> getBookingsByRoomID(int roomId) {
         return jdbcTemplate.query(
             adminBookingSql() + " WHERE b.room_id = ? ORDER BY b.booked_at DESC",
@@ -39,6 +30,7 @@ public class BookingRepository {
         );
     }
 
+    // Kiểm tra phòng có trống
     public boolean isRoomAvailable(int roomId, LocalDate checkIn, LocalDate checkOut) {
         String sql = """
             SELECT COUNT(*)
@@ -46,26 +38,29 @@ public class BookingRepository {
             WHERE room_id = ?
               AND (check_in_date < ? AND check_out_date > ?)
             """;
-
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, roomId, checkOut, checkIn);
         return count == null || count == 0;
     }
 
-    public void addBooking(BookingDTO booking) {
+    // Thêm booking mới (frontend)
+    public int addBooking(BookingRequest request) {
         String sql = """
-            INSERT INTO booking(check_in_date, check_out_date, room_img, hotel_branch_id, room_id)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO booking(check_in_date, check_out_date, room_img, hotel_branch_id, room_id, user_id, booking_price)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
-        jdbcTemplate.update(
+        return jdbcTemplate.update(
             sql,
-            booking.getCheckInDate(),
-            booking.getCheckOutDate(),
-            booking.getRoomIMG(),
-            booking.getHotelBranchID(),
-            booking.getRoomID()
+            request.getCheckInDate(),
+            request.getCheckOutDate(),
+            request.getRoomImg(),
+            request.getHotelBranchId(),
+            request.getRoomId(),
+            request.getUserId(),
+            request.getBookingPrice()
         );
     }
 
+    // SQL cho admin panel
     private String adminBookingSql() {
         return """
             SELECT b.id,
@@ -75,6 +70,8 @@ public class BookingRepository {
                    b.room_img,
                    b.hotel_branch_id,
                    b.room_id,
+                   b.user_id,
+                   b.booking_price,
                    hb.address AS hotel_name,
                    tr.name AS room_type,
                    r.price AS price_per_night,
@@ -105,6 +102,7 @@ public class BookingRepository {
             """;
     }
 
+    // Mapper cho BookingDTO
     private RowMapper<BookingDTO> bookingMapper() {
         return (rs, rowNum) -> {
             LocalDate checkInDate = rs.getDate("check_in_date").toLocalDate();
@@ -118,7 +116,9 @@ public class BookingRepository {
                 rs.getTimestamp("booked_at").toLocalDateTime(),
                 rs.getString("room_img"),
                 rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
-                rs.getObject("room_id") != null ? rs.getInt("room_id") : null
+                rs.getObject("room_id") != null ? rs.getInt("room_id") : null,
+                rs.getObject("user_id") != null ? rs.getInt("user_id") : null,
+                rs.getObject("booking_price") != null ? rs.getLong("booking_price") : null
             );
 
             Long pricePerNight = rs.getObject("price_per_night") != null ? rs.getLong("price_per_night") : 0L;
@@ -141,27 +141,35 @@ public class BookingRepository {
     }
 
     private String resolvePaymentStatus(Long paidAmount, Long totalPrice) {
-        if (paidAmount == null || paidAmount <= 0) {
-            return "Pending";
-        }
-        if (totalPrice == null || totalPrice <= 0 || paidAmount >= totalPrice) {
-            return "Paid";
-        }
+        if (paidAmount == null || paidAmount <= 0) return "Pending";
+        if (totalPrice == null || totalPrice <= 0 || paidAmount >= totalPrice) return "Paid";
         return "Partial";
     }
 
     private String resolveBookingStatus(LocalDate checkInDate, LocalDate checkOutDate, boolean hasCheckout) {
         LocalDate today = LocalDate.now();
-        if (hasCheckout || checkOutDate.isBefore(today)) {
-            return "Completed";
-        }
-        if (checkInDate.isAfter(today)) {
-            return "Confirmed";
-        }
+        if (hasCheckout || checkOutDate.isBefore(today)) return "Completed";
+        if (checkInDate.isAfter(today)) return "Confirmed";
         return "Confirmed";
     }
 
     private String valueOrDefault(String value, String fallback) {
         return value == null || value.isBlank() ? fallback : value;
+    }
+
+    // Lấy booking theo UserID (frontend)
+    public List<BookingDTO> getBookingsByUserId(int userId) {
+        String sql = "SELECT * FROM booking WHERE user_id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new BookingDTO(
+                rs.getInt("id"),
+                rs.getDate("check_in_date").toLocalDate(),
+                rs.getDate("check_out_date").toLocalDate(),
+                rs.getTimestamp("booked_at").toLocalDateTime(),
+                rs.getString("room_img"),
+                rs.getInt("hotel_branch_id"),
+                rs.getInt("room_id"),
+                rs.getInt("user_id"),
+                rs.getLong("booking_price")
+        ), userId);
     }
 }

@@ -21,38 +21,33 @@ export function searchHoteltemplate() {
                         </div>
                         <div class="search-hotel-filter__box">
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-one-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-one-star" value="1">
                             <label for="search-hotel-filter__choice-one-star">
-                              1 
-                              <i class="fa-solid fa-star"></i>
+                              1<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-two-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-two-star" value="2">
                             <label for="search-hotel-filter__choice-two-star">
-                              2 
-                              <i class="fa-solid fa-star"></i>
+                              2<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-three-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-three-star" value="2">
                             <label for="search-hotel-filter__choice-three-star">
-                              3 
-                              <i class="fa-solid fa-star"></i>
+                              3<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-four-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-four-star" value="4">
                             <label for="search-hotel-filter__choice-four-star">
-                              4 
-                              <i class="fa-solid fa-star"></i>
+                              4<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-five-star">
+                            <input type="checkbox" id="search-hotel-filter__choice-five-star" value="5">
                             <label for="search-hotel-filter__choice-five-star">
-                              5 
-                              <i class="fa-solid fa-star"></i>
+                              5<i class="fa-solid fa-star"></i>
                             </label>
                           </div>
                         </div>
