@@ -1,6 +1,6 @@
 SET NAMES utf8mb4;
 
-INSERT INTO roles (id, role_name) VALUES(1, 'USER'),(2, 'ADMIN'),(3, 'STAFF');
+INSERT INTO roles (id, role_name) VALUES(1, 'customer'),(2, 'manager'),(3, 'staff');
 INSERT INTO countries (code, country_name) VALUES ('VN', 'Vietnam'), ('US', 'United States');
 INSERT INTO genders (gender_name) VALUES ('Male'), ('Female');
 INSERT INTO roomstatus (status) VALUES ('Available'), ('Booked'), ('Maintenance');

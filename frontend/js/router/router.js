@@ -12,7 +12,7 @@ const rules = [
     },
     {
         path: ["#home-manager"],
-        roles: ["STAFF", "ADMIN"],
+        roles: ["staff", "ADMIN"],
         item: []
     },
     {
@@ -37,7 +37,7 @@ const rules = [
     },
     {
         path: ["#booking-history"],
-        roles: ["customer"],
+        roles: ["USER"],
         item: ["home"]
     },
     {
