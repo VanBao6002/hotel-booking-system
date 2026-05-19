@@ -6,6 +6,8 @@
     --yellow-color: #FFFF00;
     --text-gray-color: #888888;
     --error-color: #FF0000;
+    --success-color: #22bb33;
+    --warning-color: #f0ad4e;
     --header-height: 100px;
 }
 
@@ -21,6 +23,11 @@ html {
 }
 body {
     background-color: var(--ivoryWhite-color);
+}
+
+.main {
+    padding-top: calc(var(--header-height) + 20px);
+    min-height: calc(100vh - var(--header-height));
 }
 
 /* reponsive */

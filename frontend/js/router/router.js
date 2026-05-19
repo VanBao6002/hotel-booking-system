@@ -1,38 +1,48 @@
 import { errorTemplate } from "../components/templates/error.template.js";
 import { profileTemplate } from "../components/templates/profile.template.js"
-import { changePasswordTemplate } from "../components/templates/change-password..template.js"
+import { changePasswordTemplate } from "../components/templates/change-password.template.js"
 const routers = {};
 let currentPath = null;
 
 const rules = [
     {
         path: ["#home"],
-        roles: ["guest","customer"],
+        roles: ["guest", "USER", "STAFF", "ADMIN"],
         item: ["searchHotel", "discount", "guess"]
     },
     {
         path: ["#home-manager"],
-        roles: ["staff","manager"],
+        roles: ["staff", "ADMIN"],
+        item: []
+    },
+    {
+        path: ["#users-management"],
+        roles: ["ADMIN"],
         item: []
     },
     {
         path: ["#search-hotel"],
-        roles: ["guest", "customer","staff", "manager"],
+        roles: ["guest", "USER", "STAFF", "ADMIN"],
         item: ["home"]
     },
     {
         path: ["#booking"],
-        roles: ["customer"],
-        item: ["genaral","room","confirm","service","rate"]
+        roles: ["USER"],
+        item: ["genaral","room","location","service","rate"]
     },
     {
         path: ["#setting"],
-        roles: ["customer","staff","manager"],
+        roles: ["USER", "STAFF", "ADMIN"],
         item: ["profile","changePassword","home"]
     },
     {
+        path: ["#booking-history"],
+        roles: ["USER"],
+        item: ["home"]
+    },
+    {
         path: ["#error"],
-        roles: ["guest","customer","staff","manager"],
+        roles: ["guest", "USER", "STAFF", "ADMIN"],
         item: []
     }
 ]

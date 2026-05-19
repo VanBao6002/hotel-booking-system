@@ -121,7 +121,7 @@ export function bookingTemplate() {
                     <td>0</td>
                     <td>0</td>
                     <td><div class="room-total-price">0 VND</div></td>
-                    <td class="choice-button"><button class="room-choice__button">Xác nhận</button></td>
+                    <td class="choice-button"><button class="room-choice__button room-confirm__button">Xác nhận</button></td>
                 </tr>
                 </table>
               </div>

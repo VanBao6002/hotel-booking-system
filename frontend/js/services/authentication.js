@@ -12,6 +12,6 @@ export const userLogin = (userData) => {
     return apiClient("/api/v1/auth/login", {
         method: "POST",
         body: JSON.stringify(userData),
-        skipAuth: false
+        skipAuth: true
     });
 } 

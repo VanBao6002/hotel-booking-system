@@ -14,3 +14,10 @@ export const getReviewsHotel = (hotelId) => {
         skipAuth: true,
     })
 }
+export const bookingRoom = (data) => {
+    return apiClient("/api/bookings", {
+        method: "POST",
+        body: JSON.stringify(data),
+        skipAuth: false
+    })
+}

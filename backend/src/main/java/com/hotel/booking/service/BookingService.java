@@ -1,18 +1,14 @@
 package com.hotel.booking.service;
 
 
-import com.hotel.booking.dto.BookingRequest;
-import com.hotel.booking.dto.ApiResponse;
-import com.hotel.booking.dto.BookingDTO;
-import com.hotel.booking.repository.BookingRepository;
-
-// // import java.sql.SQLException;
-// import java.time.LocalDate;
-// import java.util.ArrayList;
 import java.util.List;
-// import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+
+import com.hotel.booking.dto.ApiResponse;
+import com.hotel.booking.dto.BookingDTO;
+import com.hotel.booking.dto.BookingRequest;
+import com.hotel.booking.repository.BookingRepository;
 @Service
 public class BookingService {
 
@@ -24,16 +20,15 @@ public class BookingService {
 
     public ApiResponse createBooking(BookingRequest request) {
         try {
-            // Kiểm tra tất cả phòng trong request
-            for (Integer roomId : request.getRoomIds()) {
-                boolean available = bookingRepository.isRoomBooked(
-                    roomId,
-                    request.getCheckInDate(),
-                    request.getCheckOutDate()
-                );
-                if (!available) {
-                    return new ApiResponse(false, "Room " + roomId + " is already booked for the selected dates");
-                }
+            // Kiểm tra phòng trống trước
+            boolean available = bookingRepository.isRoomAvailable(
+                request.getRoomId(),
+                request.getCheckInDate(),
+                request.getCheckOutDate()
+            );
+
+            if (!available) {
+                return new ApiResponse(false, "Room is already booked for the selected dates");
             }
 
             // Nếu tất cả phòng đều trống → thêm booking

@@ -1,3 +1,4 @@
+import { navigation } from "../../router/router.js";
 import { getReviewsHotel } from "../../services/hotel.js";
 import { HotelService } from "../../utils/utils.js";
 
@@ -94,24 +95,11 @@ let confirmDetail = {
 
 function updateConfirmTable() {
     const confirmTable = document.querySelector(".booking__info-confirm .booking__info-room-table");
-    confirmTable.innerHTML = `
-        <tr>
-            <th>Phòng đơn</th>
-            <th>Phòng đôi</th>
-            <th>Tổng tiền</th>
-            <th>Xác nhận</th>
-        </tr>
-        <tr>
-            <td>${confirmDetail.singleRoomsId.length}</td>
-            <td>${confirmDetail.doubleRoomsId.length}</td>
-            <td><div class="room-total-price">${confirmDetail.totalPrice.toLocaleString("vi-VN")} VND</div></td>
-            <td class="choice-button"><button class="room-choice__button">Xác nhận</button></td>
-        </tr>
-    `
-
-    // document.querySelector(".booking__info-confirm .room-choice__button").addEventListener("click", () => {
-
-    // });
+    const cells = confirmTable.querySelectorAll("td");
+    
+    cells[0].innerText = confirmDetail.singleRoomsId.length;
+    cells[1].innerText = confirmDetail.doubleRoomsId.length;
+    cells[2].querySelector(".room-total-price").innerText = confirmDetail.totalPrice.toLocaleString("vi-VN") + " VNĐ";
 }
 
 function updateConfirmDetail(roomId, typeCode, roomPrice , choice = true){
@@ -337,7 +325,7 @@ function renderReviews() {
                         <div class="convervation__chat">
                             <div class="convervation__chat-info">
                                 <div class="convervation__chat-rate">
-                                    <span>${review.rating}</span> <i class="fa-solid fa-star star"></i>
+                                    <span>${review.rating}</span><i class="fa-solid fa-star star"></i>
                                 </div>
                                 <div class="convervation__chat-time">
                                     ${review.createdAt}
@@ -373,7 +361,74 @@ function renderBooking() {
 
 }
 
+function handleBooking() {
 
+    const confirmButton = document.querySelector(".room-confirm__button");
+    const modal = document.querySelector(".modal");
+    const showNotification = modal.querySelector(".show__notification");
+    const notificationTitle = showNotification.querySelector(".show__notification-title span");
+    const notificationText = showNotification.querySelector(".show__notification-text");
+    const backButton = showNotification.querySelector(".show__notification-previous-button");
+    const nextButton = showNotification.querySelector(".show__notification-next-button");
+
+    confirmButton.addEventListener("click", () => {
+        if(confirmDetail.singleRoomsId.length === 0 && confirmDetail.doubleRoomsId.length === 0) {
+            modal.classList.add("active");
+            nextButton.innerText = "";
+            nextButton.style.display = "none";
+            backButton.style.display = "block"
+            showNotification.classList.remove("error", "warning", "success", "qrcode");
+            showNotification.classList.add("show", "error");  
+            notificationTitle.innerText = "Xác nhận đặt phòng";
+            notificationText.innerText = "Bạn chưa chọn phòng nào";
+        }
+        else {
+            modal.classList.add("active");
+            showNotification.classList.remove("error", "warning", "success", "qrcode");
+            showNotification.classList.add("show", "warning");  
+            notificationTitle.innerText = "Xác nhận đặt phòng";
+            notificationText.innerHTML = `
+                Bạn đã đặt <strong>${confirmDetail.singleRoomsId.length} phòng đơn</strong> và <strong>${confirmDetail.doubleRoomsId.length} phòng đôi</strong> 
+                với tổng số tiền cần thanh toán là <strong>${confirmDetail.totalPrice.toLocaleString("vi-VN")} VND</strong>. 
+                Vui lòng xác nhận nếu thông tin trên là chính xác.
+            `;
+            nextButton.innerText = "Thanh toán";
+            nextButton.style.display = "block";
+            backButton.style.display = "block"
+            nextButton.onclick = () => {
+                showNotification.classList.remove("error", "warning", "success", "qrcode");
+                showNotification.classList.add("qrcode");
+                notificationTitle.innerText = "QR Code";
+                notificationText.innerHTML = `
+                    <img style="width: 100%;" src="./assets/images/qrcode.png" atl="QR pyament">
+                `
+                backButton.style.display = "none"
+                nextButton.style.display = "none"
+                
+                if(showNotification.classList.contains("qrcode")) {
+                    setTimeout(() => {
+                        if(modal.classList.contains("active")) {
+                            navigation("home");
+                            showNotification.classList.remove("error", "warning", "success", "qrcode");
+                            showNotification.classList.add("success");
+                            notificationTitle.innerText = "Đăt phòng thành công";
+                            notificationText.innerText = "Cảm ơn bạn đã đặt phòng của chúng tôi";
+                        }
+                    },3000);
+                }
+            };
+
+        }
+
+        backButton.addEventListener("click", ()=> {
+            showNotification.classList.remove("show", "error", "warning", "success", "qrcode");
+            notificationText.innerText = "";
+            notificationTitle.innerText = "";
+            modal.classList.remove("active");
+        })
+    })
+
+}
 
 
 export function initBooking() {
@@ -395,4 +450,5 @@ export function initBooking() {
 
 
     renderBooking();
+    handleBooking();
 } 
