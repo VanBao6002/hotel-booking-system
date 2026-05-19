@@ -266,7 +266,10 @@ export function initBookingSearch() {
                 doubleRoomQuantity: count.coupleRoom
             };
             console.log(searchInfoData);
-
+            localStorage.setItem("DuringBooking", JSON.stringify({
+                checkInDate: `${startDate.year}-${startDate.month}-${startDate.day}`,
+                checkOutDate: `${endDate.year}-${endDate.month}-${endDate.day}`,
+            }));
             searchHotel(searchInfoData)
                 .then(data => {
                     navigation("#search-hotel");
@@ -275,6 +278,7 @@ export function initBookingSearch() {
                 })
                 .catch(errorData => {
                     console.log("fail(searchbooking)");
+                    console.log(errorData);
                 })
         }
     });

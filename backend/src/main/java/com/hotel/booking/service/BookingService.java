@@ -20,18 +20,25 @@ public class BookingService {
 
     public ApiResponse createBooking(BookingRequest request) {
         try {
-            // Kiểm tra phòng trống trước
-            boolean available = bookingRepository.isRoomAvailable(
-                request.getRoomId(),
-                request.getCheckInDate(),
-                request.getCheckOutDate()
-            );
-
-            if (!available) {
-                return new ApiResponse(false, "Room is already booked for the selected dates");
+            if (request.getRoomIds() == null || request.getRoomIds().isEmpty()) {
+                return new ApiResponse(false, "Room IDs cannot be empty");
             }
 
-            // Nếu tất cả phòng đều trống → thêm booking
+            for (Integer roomId : request.getRoomIds()) {
+                if (roomId == null) {
+                    return new ApiResponse(false, "Room ID cannot be null");
+                }
+                boolean available = bookingRepository.isRoomAvailable(
+                    roomId,
+                    request.getCheckInDate(),
+                    request.getCheckOutDate()
+                );
+
+                if (!available) {
+                    return new ApiResponse(false, "Room " + roomId + " is already booked for the selected dates");
+                }
+            }
+
             int bookingId = bookingRepository.addBooking(request);
             if (bookingId > 0) {
                 return new ApiResponse(true, "Booking created successfully with ID: " + bookingId);

@@ -1,8 +1,5 @@
 package com.hotel.booking.repository;
 
-import com.hotel.booking.dto.BookingDTO;
-import com.hotel.booking.dto.BookingRequest;
-import com.hotel.booking.dto.BookingRoomDTO;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -14,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import com.hotel.booking.dto.BookingDTO;
 import com.hotel.booking.dto.BookingRequest;
+import com.hotel.booking.dto.BookingRoomDTO;
+
 
 @Repository
 public class BookingRepository {
@@ -51,9 +50,11 @@ public class BookingRepository {
     public boolean isRoomAvailable(int roomId, LocalDate checkIn, LocalDate checkOut) {
         String sql = """
             SELECT COUNT(*)
-            FROM booking
-            WHERE room_id = ?
-              AND (check_in_date < ? AND check_out_date > ?)
+            FROM booking_room br
+            JOIN booking b ON br.booking_id = b.id
+            WHERE br.room_id = ?
+              AND b.check_in_date < ?
+              AND b.check_out_date > ?
             """;
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, roomId, checkOut, checkIn);
         return count == null || count == 0;
@@ -62,10 +63,10 @@ public class BookingRepository {
     // Thêm booking mới (frontend)
     public int addBooking(BookingRequest request) {
         String sql = """
-            INSERT INTO booking(check_in_date, check_out_date, room_img, hotel_branch_id, room_id, user_id, booking_price)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO booking(check_in_date, check_out_date, hotel_branch_id, user_id, booking_price)
+            VALUES (?, ?, ?, ?, ?)
             """;
-        return jdbcTemplate.update(
+        jdbcTemplate.update(
             sql,
             request.getCheckInDate(),
             request.getCheckOutDate(),
@@ -151,11 +152,10 @@ public class BookingRepository {
                 checkInDate,
                 checkOutDate,
                 rs.getTimestamp("booked_at").toLocalDateTime(),
-                rs.getString("room_img"),
-                rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
-                rs.getObject("room_id") != null ? rs.getInt("room_id") : null,
+                rs.getObject("booking_price") != null ? rs.getLong("booking_price") : null,
                 rs.getObject("user_id") != null ? rs.getInt("user_id") : null,
-                rs.getObject("booking_price") != null ? rs.getLong("booking_price") : null
+                rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
+                List.of()
             );
 
             Long pricePerNight = rs.getObject("price_per_night") != null ? rs.getLong("price_per_night") : 0L;
@@ -196,7 +196,7 @@ public class BookingRepository {
 
     // Lấy booking theo UserID (frontend)
     public List<BookingDTO> getBookingsByUserId(int userId) {
-        String sql = "SELECT * FROM booking WHERE user_id = ?";
+        String sql = "SELECT id, check_in_date, check_out_date, booked_at, hotel_branch_id, user_id, booking_price FROM booking WHERE user_id = ?";
         List<BookingDTO> bookings = jdbcTemplate.query(
             sql,
             (rs, rowNum) -> new BookingDTO(
@@ -204,11 +204,41 @@ public class BookingRepository {
                 rs.getDate("check_in_date").toLocalDate(),
                 rs.getDate("check_out_date").toLocalDate(),
                 rs.getTimestamp("booked_at").toLocalDateTime(),
-                rs.getString("room_img"),
-                rs.getInt("hotel_branch_id"),
-                rs.getInt("room_id"),
+                rs.getLong("booking_price"),
                 rs.getInt("user_id"),
-                rs.getLong("booking_price")
-        ), userId);
+                rs.getInt("hotel_branch_id"),
+                List.of()
+            ),
+            userId
+        );
+
+        // Với mỗi booking, lấy danh sách phòng
+        for (BookingDTO booking : bookings) {
+            String roomSql = "SELECT br.id AS booking_room_id, br.booking_id, r.id AS room_id, " +
+                            "r.room_number, r.room_img, tr.name AS room_type, r.price " +
+                            "FROM booking_room br " +
+                            "JOIN room r ON br.room_id = r.id " +
+                            "JOIN typeroom tr ON r.type_room_id = tr.id " +
+                            "WHERE br.booking_id = ?";
+
+            List<BookingRoomDTO> bookingRooms = jdbcTemplate.query(
+                roomSql,
+                (rs, rowNum) -> new BookingRoomDTO(
+                    rs.getInt("booking_room_id"),
+                    rs.getInt("booking_id"),
+                    rs.getInt("room_id"),
+                    rs.getString("room_number"),
+                    rs.getString("room_img"),
+                    rs.getString("room_type"),
+                    rs.getLong("price")
+                ),
+                booking.getBookingId()
+            );
+
+            booking.setBookingRooms(bookingRooms);
+        }
+
+        return bookings;
     }
+
 }

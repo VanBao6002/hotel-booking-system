@@ -1,9 +1,10 @@
 package com.hotel.booking.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.List;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class BookingRequest {
 
@@ -26,6 +27,8 @@ public class BookingRequest {
     @NotNull(message = "Room IDs cannot be null")
     private List<Integer> roomIds; // danh sách phòng
 
+    private Integer roomId;
+
     // Getters & Setters
     public LocalDate getCheckInDate() { return checkInDate; }
     public void setCheckInDate(LocalDate checkInDate) { this.checkInDate = checkInDate; }
@@ -44,4 +47,13 @@ public class BookingRequest {
 
     public List<Integer> getRoomIds() { return roomIds; }
     public void setRoomIds(List<Integer> roomIds) { this.roomIds = roomIds; }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
+    }
+
 }

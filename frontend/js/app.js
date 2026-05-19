@@ -43,6 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!localStorage.getItem("userData")) {
         localStorage.setItem("userData", "");
     }
+    if(!localStorage.getItem("DuringBooking")) {
+        localStorage.setItem("DuringBooking", "false");
+    }
     if(!localStorage.getItem("hotelData")) {
         localStorage.setItem("hotelData", "");
     }

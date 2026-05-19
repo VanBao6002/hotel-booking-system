@@ -21,3 +21,9 @@ export const bookingRoom = (data) => {
         skipAuth: false
     })
 }
+export const getBookingHistory = (userId) => {
+    return apiClient(`/api/bookings/user/${userId}`, {
+        method: "GET",
+        skipAuth: false
+    })
+}

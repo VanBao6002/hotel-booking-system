@@ -1,5 +1,5 @@
 import { navigation } from "../../router/router.js";
-import { getReviewsHotel } from "../../services/hotel.js";
+import { bookingRoom, getReviewsHotel } from "../../services/hotel.js";
 import { HotelService } from "../../utils/utils.js";
 
 let isShowRoomDetailInit = false;
@@ -413,6 +413,18 @@ function handleBooking() {
                             showNotification.classList.add("success");
                             notificationTitle.innerText = "Đăt phòng thành công";
                             notificationText.innerText = "Cảm ơn bạn đã đặt phòng của chúng tôi";
+
+
+                            const bookingData  = {
+                                checkInDate: JSON.parse(localStorage.getItem("DuringBooking")).checkInDate,
+                                checkOutDate: JSON.parse(localStorage.getItem("DuringBooking")).checkOutDate,
+                                bookingPrice: confirmDetail.totalPrice,
+                                userId: JSON.parse(localStorage.getItem("userData")).id,
+                                hotelBranchId : Number(localStorage.getItem("choicedHotelId")),
+                                roomIds: [...confirmDetail.singleRoomsId, ...confirmDetail.doubleRoomsId]
+                            }
+
+                            bookingRoom(bookingData);
                         }
                     },3000);
                 }
