@@ -1,4 +1,8 @@
 package com.hotel.booking.repository;
+
+import com.hotel.booking.dto.BookingDTO;
+import com.hotel.booking.dto.BookingRequest;
+import com.hotel.booking.dto.BookingRoomDTO;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -65,14 +69,34 @@ public class BookingRepository {
             sql,
             request.getCheckInDate(),
             request.getCheckOutDate(),
-            request.getRoomImg(),
             request.getHotelBranchId(),
-            request.getRoomId(),
             request.getUserId(),
             request.getBookingPrice()
         );
+
+        // 2. Lấy id booking vừa tạo (dựa vào điều kiện duy nhất: user + branch + ngày)
+        String findSql = "SELECT id FROM booking WHERE user_id = ? AND hotel_branch_id = ? " +
+                        "AND check_in_date = ? AND check_out_date = ? ORDER BY id DESC LIMIT 1";
+
+        Integer bookingId = jdbcTemplate.queryForObject(
+            findSql,
+            Integer.class,
+            request.getUserId(),
+            request.getHotelBranchId(),
+            request.getCheckInDate(),
+            request.getCheckOutDate()
+        );
+
+        // 3. Insert danh sách phòng vào booking_room
+        String roomSql = "INSERT INTO booking_room(booking_id, room_id) VALUES (?, ?)";
+        for (Integer roomId : request.getRoomIds()) {
+            jdbcTemplate.update(roomSql, bookingId, roomId);
+        }
+
+        return bookingId;
     }
 
+    // Lấy tất cả booking theo userId
     // SQL cho admin panel
     private String adminBookingSql() {
         return """
@@ -173,7 +197,9 @@ public class BookingRepository {
     // Lấy booking theo UserID (frontend)
     public List<BookingDTO> getBookingsByUserId(int userId) {
         String sql = "SELECT * FROM booking WHERE user_id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new BookingDTO(
+        List<BookingDTO> bookings = jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> new BookingDTO(
                 rs.getInt("id"),
                 rs.getDate("check_in_date").toLocalDate(),
                 rs.getDate("check_out_date").toLocalDate(),

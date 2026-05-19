@@ -65,14 +65,15 @@ public class HotelReviewRepository {
     return response;
 }
 
-    // Thêm review mới
-    // public int addReview(HotelReviewDTO review) {
-    //     String sql = "INSERT INTO hotelreview(hotel_branch_id, user_id, rating, comment) VALUES (?, ?, ?, ?)";
-    //     return jdbcTemplate.update(sql,
-    //             review.getHotelBranchId(),
-    //             review.getUserId(),
-    //             review.getRating(),
-    //             review.getComment()
-    //     );
-    // }
+    public int addReview(HotelReviewDTO review) {
+        String sql = "INSERT INTO hotelreview (hotel_branch_id, user_id, rating, comment, created_at) " +
+                     "VALUES (?, ?, ?, ?, ?)";
+        return jdbcTemplate.update(sql,
+                review.getHotelBranchId(),
+                review.getUserId(),
+                review.getRating(),
+                review.getComment(),
+                review.getCreatedAt()
+        );
+    }
 }

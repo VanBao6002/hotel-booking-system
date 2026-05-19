@@ -2,6 +2,7 @@ package com.hotel.booking.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.time.format.DateTimeFormatter;
 
 public class BookingDTO {
@@ -9,11 +10,15 @@ public class BookingDTO {
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
     private LocalDateTime bookedAt;
+    private Long bookingPrice;
+    private Integer userId;
 
     // Fields chung
     private String roomImg;
     private Integer hotelBranchId;
-    private Integer roomId;
+
+    // Danh sách phòng thuộc booking này
+    private List<BookingRoomDTO> bookingRooms;
 
     // Fields từ mergeFrontEnd
     private Integer userId;          
@@ -33,20 +38,18 @@ public class BookingDTO {
     // Constructor mặc định
     public BookingDTO() {}
 
-    // Constructor đầy đủ
     public BookingDTO(int id, LocalDate checkInDate, LocalDate checkOutDate,
-                      LocalDateTime bookedAt, String roomImg,
-                      Integer hotelBranchId, Integer roomId,
-                      Integer userId, Long bookingPrice) {
+                      LocalDateTime bookedAt, Long bookingPrice,
+                      Integer userId, Integer hotelBranchId,
+                      List<BookingRoomDTO> bookingRooms) {
         this.id = "B-" + id;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
         this.bookedAt = bookedAt;
-        this.roomImg = roomImg;
-        this.hotelBranchId = hotelBranchId;
-        this.roomId = roomId;
-        this.userId = userId;
         this.bookingPrice = bookingPrice;
+        this.userId = userId;
+        this.hotelBranchId = hotelBranchId;
+        this.bookingRooms = bookingRooms;
         this.numberOfNights = daysBetween(checkInDate, checkOutDate);
     }
 
@@ -80,9 +83,6 @@ public class BookingDTO {
     public LocalDateTime getBookedAt() { return bookedAt; }
     public void setBookedAt(LocalDateTime bookedAt) { this.bookedAt = bookedAt; }
 
-    public String getRoomImg() { return roomImg; }
-    public void setRoomImg(String roomImg) { this.roomImg = roomImg; }
-
     public Long getBookingPrice() { return bookingPrice; }
     public void setBookingPrice(Long bookingPrice) { this.bookingPrice = bookingPrice; }
 
@@ -92,6 +92,8 @@ public class BookingDTO {
     public Integer getHotelBranchId() { return hotelBranchId; }
     public void setHotelBranchId(Integer hotelBranchId) { this.hotelBranchId = hotelBranchId; }
 
+    public List<BookingRoomDTO> getBookingRooms() { return bookingRooms; }
+    public void setBookingRooms(List<BookingRoomDTO> bookingRooms) { this.bookingRooms = bookingRooms; }
     public Integer getRoomId() { return roomId; }
     public void setRoomId(Integer roomId) { this.roomId = roomId; }
 
