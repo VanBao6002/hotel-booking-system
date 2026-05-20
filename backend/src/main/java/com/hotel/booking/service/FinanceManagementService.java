@@ -1,16 +1,17 @@
 package com.hotel.booking.service;
 
-import com.hotel.booking.dto.FinanceSummaryDTO;
-import com.hotel.booking.dto.MonthlyRevenueDTO;
-import com.hotel.booking.dto.TransactionDTO;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
+import com.hotel.booking.dto.FinanceSummaryDTO;
+import com.hotel.booking.dto.MonthlyRevenueDTO;
+import com.hotel.booking.dto.TransactionDTO;
 
 @Service
 public class FinanceManagementService {
@@ -25,7 +26,8 @@ public class FinanceManagementService {
         Long expectedRevenue = queryLong("""
             SELECT COALESCE(SUM(GREATEST(DATEDIFF(b.check_out_date, b.check_in_date), 1) * COALESCE(r.price, 0)), 0)
             FROM booking b
-            LEFT JOIN room r ON b.room_id = r.id
+            JOIN booking_room br ON br.booking_id = b.id
+            LEFT JOIN room r ON br.room_id = r.id
             """);
         long pendingPayouts = Math.max(0L, expectedRevenue - totalEarnings);
         long taxSummary = Math.round(totalEarnings * 0.1);

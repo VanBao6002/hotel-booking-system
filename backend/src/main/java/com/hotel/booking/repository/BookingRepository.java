@@ -105,22 +105,16 @@ public class BookingRepository {
                    b.check_in_date,
                    b.check_out_date,
                    b.booked_at,
-                   b.room_img,
                    b.hotel_branch_id,
-                   b.room_id,
                    b.user_id,
                    b.booking_price,
                    hb.address AS hotel_name,
-                   tr.name AS room_type,
-                   r.price AS price_per_night,
                    receipt_summary.amount AS paid_amount,
                    review_user.full_name AS guest_name,
                    review_user.email AS guest_email,
                    checkout_summary.checkout_id AS checkout_id
             FROM booking b
             LEFT JOIN hotelbranch hb ON b.hotel_branch_id = hb.id
-            LEFT JOIN room r ON b.room_id = r.id
-            LEFT JOIN typeroom tr ON r.type_room_id = tr.id
             LEFT JOIN (
                 SELECT BookingID, SUM(amount) AS amount
                 FROM receipt
@@ -158,15 +152,15 @@ public class BookingRepository {
                 List.of()
             );
 
-            Long pricePerNight = rs.getObject("price_per_night") != null ? rs.getLong("price_per_night") : 0L;
             long nights = Math.max(1, ChronoUnit.DAYS.between(checkInDate, checkOutDate));
-            long totalPrice = pricePerNight * nights;
+            Long bookingPrice = rs.getObject("booking_price") != null ? rs.getLong("booking_price") : null;
+            Long pricePerNight = bookingPrice != null ? bookingPrice / nights : null;
+            Long totalPrice = bookingPrice;
             Long paidAmount = rs.getObject("paid_amount") != null ? rs.getLong("paid_amount") : null;
 
             booking.setGuestName(valueOrDefault(rs.getString("guest_name"), "Guest #" + rawId));
             booking.setGuestEmail(rs.getString("guest_email"));
             booking.setHotelName(valueOrDefault(rs.getString("hotel_name"), "Unknown hotel"));
-            booking.setRoomType(valueOrDefault(rs.getString("room_type"), "Unknown room"));
             booking.setNumberOfNights((int) nights);
             booking.setPricePerNight(pricePerNight);
             booking.setTotalPrice(totalPrice);
