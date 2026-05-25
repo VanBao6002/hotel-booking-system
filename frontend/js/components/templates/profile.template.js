@@ -6,19 +6,17 @@ export function profileTemplate() {
     let gender = "";
     let phoneNumber = "";
     let address = "";
-    let country = "";
     const data = localStorage.getItem("userData");
     if(data) {
         const userData = JSON.parse(data);
         if(userData) {
-            fullName = userData.fullName || "";
-            username = userData.userName || "";
-            email = userData.email || "";
-            dateOfBirth = userData.dateOfBirth || "";
-            gender = userData.gender || "";
-            phoneNumber = userData.phoneNumber || "";
-            address = userData.currentAddress || "";
-            country = "";
+            fullName = userData.fullName ?? "";
+            username = userData.userName ?? "";
+            email = userData.email ?? "";
+            dateOfBirth = userData.dateOfBirth ?? "";
+            gender = userData.gender ?? "";
+            phoneNumber = userData.phoneNumber ?? "";
+            address = userData.currentAddress ?? "";
         }
     }
     return `
@@ -29,48 +27,54 @@ export function profileTemplate() {
             <div class="profile__wrap">
               <div class="group-info">
                 <label for="fullname">Họ và Tên</label>
-                <i class="fa-regular fa-pen-to-square"></i>
-                <input type="text" name="fullname" id="fullname" value="${fullName}" readonly>
+                <i class="edit fa-regular fa-pen-to-square"></i>
+                <input type="text" name="fullName" id="fullname" value="${fullName}" readonly style="pointer-events:none;">
+                <div class="error-message" id="fullNameError"></div>
               </div>
               <div class="group-info">
                 <label for="fullname">Username</label>
-                <input type="text" name="username" id="username" value="${username}" readonly>
+                <input type="text" name="username" id="username" value="${username}" readonly style="pointer-events:none;">
               </div>
               <div class="group-info">
                 <label for="fullname">Email</label>
-                <i class="fa-regular fa-pen-to-square"></i>
-                <input type="text" name="email" id="email" value="${email}" readonly>
+                <i class="edit fa-regular fa-pen-to-square"></i>
+                <input type="text" name="email" id="email" value="${email}" readonly style="pointer-events:none;">
+                <div class="error-message" id="emailError"></div>
               </div>
               <div class="group-info">
                 <div class="group-info-wrap">
                   <div class="group-info-section">
                     <label for="fullname">Ngày sinh</label>
-                    <i class="fa-regular fa-pen-to-square"></i>
-                    <input type="date" name="dateofbirth" id="dateofbirth" value="${dateOfBirth}" readonly>
+                    <i class="edit fa-regular fa-pen-to-square"></i>
+                    <input type="date" name="dateOfBirth" id="dateofbirth" value="${dateOfBirth}" readonly style="pointer-events:none;">
+                    <div class="error-message" id="dateOfBirthError"></div>
                   </div>
                   <div class="group-info-section">
                     <label for="fullname">Giới tính</label>
-                    <i class="fa-regular fa-pen-to-square"></i>
-                    <input type="text" name="gender" id="gender" value="${gender}" readonly>
+                    <i class="edit fa-regular fa-pen-to-square"></i>
+                    <input type="text" name="gender" id="gender" value="${gender}" readonly style="pointer-events:none;">
+                    <div class="gender-options">
+                      <ul class="gender-list">
+                        <li class="gender-item" >Nam</li>
+                        <li class="gender-item" >Nữ</li>
+                        <li class="gender-item" >Khác</li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="group-info">
                 <label for="fullname">Số điện thoại</label>
-                <i class="fa-regular fa-pen-to-square"></i>
-                <input type="text" name="phonenumber" id="phonenumber" value="${phoneNumber}" readonly>
+                <i class="edit fa-regular fa-pen-to-square"></i>
+                <input type="text" name="phoneNumber" id="phonenumber" value="${phoneNumber}" readonly style="pointer-events:none;">
+                <div class="error-message" id="phoneNumberError"></div>
               </div>
               <div class="group-info">
                 <div class="group-info-wrap">
                   <div class="group-info-section">
                     <label for="fullname">Địa chỉ</label>
-                    <i class="fa-regular fa-pen-to-square"></i>
-                    <input type="text" name="address" id="address" value="${address}" readonly>
-                  </div>
-                  <div class="group-info-section">
-                    <label for="fullname">Quốc gia</label>
-                    <i class="fa-regular fa-pen-to-square"></i>
-                    <input type="text" name="country" id="country" value="${country}" readonly>
+                    <i class="edit fa-regular fa-pen-to-square"></i>
+                    <input type="text" name="address" id="address" value="${address}" readonly style="pointer-events:none;">
                   </div>
                 </div>
               </div>

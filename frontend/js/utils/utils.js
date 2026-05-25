@@ -114,3 +114,29 @@ export const HotelService = {
         return rooms;
     }
 }
+export function isValidEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
+// export function validatePassword(password, confirmPassword) {
+//     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+//     const isStrong = regex.test(password);
+//     const isMatch = password === confirmPassword;
+//     return isStrong && isMatch;
+// }
+export function isValidPassword(password) {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+}
+
+export function isValidUsername(username) {
+    const regex = /^(?![_0-9])[a-zA-Z0-9_]{3,16}$/;
+    const forbidden = ["admin", "root", "system"];
+    return regex.test(username) && !forbidden.includes(username.toLowerCase());
+}
+
+export function isValidPhoneNumber(phone) {
+    const regex = /^(0[3|5|7|8|9][0-9]{8}|(\+84)[3|5|7|8|9][0-9]{8})$/;
+    return regex.test(phone);
+}

@@ -54,7 +54,8 @@ const confirmPasswordField = {
 
 import { navigation } from "../../router/router.js";
 import { userLogin, userRegister } from "../../services/authentication.js";
-
+import { getMe } from "../../services/users.js";
+import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
 
 const getModal = () => { return document.querySelector(".modal"); }
 const getSignInForm = () => { return document.querySelector("#form-sign-in");}
@@ -71,33 +72,7 @@ function turnOnModal() {
     getModal().classList.add('active');
 }
 
-function isValidEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-}
 
-function validatePassword(password, confirmPassword) {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    const isStrong = regex.test(password);
-    const isMatch = password === confirmPassword;
-    return isStrong && isMatch;
-}
-
-function isValidPassword(password) {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-}
-
-function isValidUsername(username) {
-    const regex = /^(?![_0-9])[a-zA-Z0-9_]{3,16}$/;
-    const forbidden = ["admin", "root", "system"];
-    return regex.test(username) && !forbidden.includes(username.toLowerCase());
-}
-
-function isValidPhoneNumber(phone) {
-    const regex = /^(0[3|5|7|8|9][0-9]{8}|(\+84)[3|5|7|8|9][0-9]{8})$/;
-    return regex.test(phone);
-}
 
 
 export function showForm(type) {
@@ -243,13 +218,21 @@ function submitForm(){
                     const role = (data?.user?.role || "USER").toString().toUpperCase();
                     localStorage.setItem("role", role);
                     localStorage.setItem("token", data.accessToken);
-                    localStorage.setItem("userData", JSON.stringify(data.user));
+                    // localStorage.setItem("userData", JSON.stringify(data.user));
                     console.log(localStorage.getItem("role"));
                     console.log(localStorage.getItem("token"));
                     document.querySelector(".header__navbar-user").classList.add("logged-in");
                     document.querySelector(".user__info-name span").innerText = data.user.fullName;
                     showToast("Đăng nhập thành công");
                     navigation(role === "ADMIN" || role === "STAFF" ? "#home-manager" : "#home");
+                    getMe()
+                        .then(userData => {
+                            localStorage.setItem("userData", JSON.stringify(userData));
+                        })
+                        .catch(error => {
+                            console.log("Failed to fetch user data after login", error);
+                            localStorage.setItem("userData", "");
+                        });
 
                 })
                 .catch(errorData => {

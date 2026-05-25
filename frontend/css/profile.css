@@ -1,6 +1,6 @@
-.setting {
+/* .setting {
     margin-top: calc(var(--header-height) + 24px);
-}
+} */
 .profile {
     padding: 20px 150px;
     background-color: white;
@@ -50,6 +50,7 @@
 }
 .group-info-section {
     flex: 1;
+    position: relative;
 }
 
 .save-info__btn {
@@ -62,9 +63,59 @@
     font-size: 1.6rem;
     font-weight: bold;
     color: white;
-    background-color: #0a9af2;
+    background-color: var(--lightGray-color);
 }
-.save-info__btn:hover {
+.save-info__btn.active {
+    background-color: #0a9af2;;
+    cursor: pointer;
+}
+.save-info__btn.active:hover {
     filter: brightness(80%);
     cursor: pointer;
+}
+.group-info input:focus {
+    outline: none;
+    border: 1px solid var(--navyBlue-color);
+}
+
+.group-info input.changed {
+    border: 1px solid var(--navyBlue-color);
+}
+
+.group-info input.error {
+    border: 1px solid var(--error-color);
+    background-color: rgba(251, 0, 0,0.25);
+}
+
+.gender-options {
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    border: 1px solid var(--lightGray-color);
+    border-radius: 10px;
+    animation: slideDown 0.3s ease;
+}
+#gender:focus + .gender-options {
+    display: block;
+}
+.gender-list {
+    list-style: none;
+    margin: 0;
+    font-size: 1.6rem;   
+    padding: 0;
+}
+.gender-item {
+    padding: 10px 10px;
+}
+.gender-item:hover{
+    cursor: pointer;
+    padding: 10px 10px;
+    background-color: var(--ivoryWhite-color);
+}
+.error-message {
+    color: var(--error-color);
+    font-size: 1.4rem;
+    margin-top: 5px;
+    padding-left: 10px;
 }
