@@ -1,4 +1,5 @@
 import { getBookingHistory } from "../../services/hotel.js";
+import { safeJsonParse } from "../../utils/utils.js";
 
 function handleData(rawData) {
     function formatDateTime(dateTime) {
@@ -75,7 +76,7 @@ function renderBooking(userId){
         .catch(err => console.error("Lỗi khi lấy booking:", err));
 
 }
-
 export function initBookingHistory() {
-    renderBooking(JSON.parse(localStorage.getItem("userData")).id);
+    const user = safeJsonParse(localStorage.getItem("userData"), {});
+    renderBooking(user?.id);
 }

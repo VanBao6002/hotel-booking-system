@@ -1,6 +1,6 @@
-import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
+import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber, safeJsonParse } from "../../utils/utils.js";
 
-const userData = JSON.parse(localStorage.getItem("userData"));
+const userData = safeJsonParse(localStorage.getItem("userData"), {});
 
 const oldProfile = {
     fullName : userData.fullName ?? "",

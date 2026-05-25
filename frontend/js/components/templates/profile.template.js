@@ -1,3 +1,5 @@
+import { safeJsonParse } from "../../utils/utils.js";
+
 export function profileTemplate() {
     let fullName = "";
     let username = "";
@@ -6,18 +8,15 @@ export function profileTemplate() {
     let gender = "";
     let phoneNumber = "";
     let address = "";
-    const data = localStorage.getItem("userData");
-    if(data) {
-        const userData = JSON.parse(data);
-        if(userData) {
-            fullName = userData.fullName ?? "";
-            username = userData.userName ?? "";
-            email = userData.email ?? "";
-            dateOfBirth = userData.dateOfBirth ?? "";
-            gender = userData.gender ?? "";
-            phoneNumber = userData.phoneNumber ?? "";
-            address = userData.currentAddress ?? "";
-        }
+    const userData = safeJsonParse(localStorage.getItem("userData"), {});
+    if(userData) {
+      fullName = userData.fullName ?? "";
+      username = userData.userName ?? "";
+      email = userData.email ?? "";
+      dateOfBirth = userData.dateOfBirth ?? "";
+      gender = userData.gender ?? "";
+      phoneNumber = userData.phoneNumber ?? "";
+      address = userData.currentAddress ?? "";
     }
     return `
         <div class="setting">

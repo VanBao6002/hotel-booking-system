@@ -111,7 +111,7 @@ function userExtra() {
         document.querySelector(".header__navbar-user").classList.remove("logged-in");
         localStorage.setItem("role", "guest");
         localStorage.setItem("token", "");
-        localStorage.setItem("userData", "");
+        localStorage.removeItem("userData");
         navigation("#home");
     });
 }
@@ -208,7 +208,7 @@ function submitForm(){
             const form = getSignInForm();
 
             const userData = {
-                userNameOrEmail: form.querySelector("#email").value,
+                phoneNumberOrEmail: form.querySelector("#email").value,
                 password: form.querySelector("#password").value
             }
 
@@ -231,7 +231,7 @@ function submitForm(){
                         })
                         .catch(error => {
                             console.log("Failed to fetch user data after login", error);
-                            localStorage.setItem("userData", "");
+                            localStorage.setItem("userData", JSON.stringify({}));
                         });
 
                 })

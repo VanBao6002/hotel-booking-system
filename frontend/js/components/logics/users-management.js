@@ -1,5 +1,6 @@
 import { getAllUsers, deleteUser, banUser, warnUser, grantStaffRole } from "../../services/users.js";
 import { showConfirmDialog } from "./admin-confirm.js";
+import { safeJsonParse } from "../../utils/utils.js";
 
 // Admin actions must call the backend so database changes are visible after reload.
 const MOCK_MODE = false;
@@ -121,7 +122,7 @@ function renderPagination(total) {
 
 function disableSelfActions() {
   try {
-    const userData = JSON.parse(localStorage.getItem("userData") || "null");
+    const userData = safeJsonParse(localStorage.getItem("userData"), {});
     const selfId = userData?.id;
     if (!selfId) return;
     const row = document.querySelector(`tr[data-user-id="${selfId}"]`);

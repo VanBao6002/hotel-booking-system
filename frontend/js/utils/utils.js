@@ -1,15 +1,13 @@
 export function getUserInfo() {
     const data = localStorage.getItem("userData");
-
-    if(data) {
-        const userData = JSON.parse(data);
-        if(userData && userData.fullName) {
-            return {
-                signIn: "logged-in",
-                fullName: userData.fullName
-            }
+    const userData = safeJsonParse(data, null);
+    if(userData && userData.fullName) {
+        return {
+            signIn: "logged-in",
+            fullName: userData.fullName
         }
-    };
+    }
+    
     return { signIn: "", fullName: ""};
 }
 
@@ -22,7 +20,7 @@ export const HotelService = {
     getBranches(filterFn,sortFn) {
         const data = localStorage.getItem("hotelData");
         if(!data) return [];
-        const parse = JSON.parse(data);
+        const parse = safeJsonParse(data, null);
         if( !parse || !parse.branches || parse.branches.length === 0) return [];
 
         let branches = parse.branches.map(branch => {
@@ -139,4 +137,13 @@ export function isValidUsername(username) {
 export function isValidPhoneNumber(phone) {
     const regex = /^(0[3|5|7|8|9][0-9]{8}|(\+84)[3|5|7|8|9][0-9]{8})$/;
     return regex.test(phone);
+}
+
+export function safeJsonParse(str, fallback = null) {
+    if (!str) return fallback;
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        return fallback;
+    }
 }

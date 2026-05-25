@@ -1,6 +1,6 @@
 import { navigation } from "../../router/router.js";
 import { bookingRoom, getReviewsHotel } from "../../services/hotel.js";
-import { HotelService } from "../../utils/utils.js";
+import { HotelService, safeJsonParse } from "../../utils/utils.js";
 
 let isShowRoomDetailInit = false;
 
@@ -415,11 +415,13 @@ function handleBooking() {
                             notificationText.innerText = "Cảm ơn bạn đã đặt phòng của chúng tôi";
 
 
+                            const during = safeJsonParse(localStorage.getItem("DuringBooking"), {});
+                            const currentUser = safeJsonParse(localStorage.getItem("userData"), {});
                             const bookingData  = {
-                                checkInDate: JSON.parse(localStorage.getItem("DuringBooking")).checkInDate,
-                                checkOutDate: JSON.parse(localStorage.getItem("DuringBooking")).checkOutDate,
+                                checkInDate: during.checkInDate,
+                                checkOutDate: during.checkOutDate,
                                 bookingPrice: confirmDetail.totalPrice,
-                                userId: JSON.parse(localStorage.getItem("userData")).id,
+                                userId: currentUser.id,
                                 hotelBranchId : Number(localStorage.getItem("choicedHotelId")),
                                 roomIds: [...confirmDetail.singleRoomsId, ...confirmDetail.doubleRoomsId]
                             }
