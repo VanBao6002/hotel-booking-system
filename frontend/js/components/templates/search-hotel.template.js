@@ -33,7 +33,7 @@ export function searchHoteltemplate() {
                             </label>
                           </div>
                           <div class="search-hotel-filter__box-choice">
-                            <input type="checkbox" id="search-hotel-filter__choice-three-star" value="2">
+                            <input type="checkbox" id="search-hotel-filter__choice-three-star" value="3">
                             <label for="search-hotel-filter__choice-three-star">
                               3<i class="fa-solid fa-star"></i>
                             </label>
