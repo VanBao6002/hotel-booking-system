@@ -52,12 +52,16 @@ const confirmPasswordField = {
 
 // Su kien Dang nhap/ Dang ky
 
-import { userLogin } from "../../services/login.js";
+import { navigation } from "../../router/router.js";
+import { userLogin, userRegister } from "../../services/authentication.js";
+import { getMe } from "../../services/users.js";
+import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
 
 const getModal = () => { return document.querySelector(".modal"); }
 const getSignInForm = () => { return document.querySelector("#form-sign-in");}
 const getSignUpForm = () => { return document.querySelector("#form-sign-up");}
 const getModalOverlay = () => { return document.querySelector(".modal .modal__overlay");}
+
 
 
 export function turnOffModal() {
@@ -68,33 +72,7 @@ function turnOnModal() {
     getModal().classList.add('active');
 }
 
-function isValidEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-}
 
-function validatePassword(password, confirmPassword) {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    const isStrong = regex.test(password);
-    const isMatch = password === confirmPassword;
-    return isStrong && isMatch;
-}
-
-function isValidPassword(password) {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-}
-
-function isValidUsername(username) {
-    const regex = /^(?![_0-9])[a-zA-Z0-9_]{3,16}$/;
-    const forbidden = ["admin", "root", "system"];
-    return regex.test(username) && !forbidden.includes(username.toLowerCase());
-}
-
-function isValidPhoneNumber(phone) {
-    const regex = /^(0[3|5|7|8|9][0-9]{8}|(\+84)[3|5|7|8|9][0-9]{8})$/;
-    return regex.test(phone);
-}
 
 
 export function showForm(type) {
@@ -108,10 +86,41 @@ export function showForm(type) {
     });
 }
 
+function userExtra() {
+    const userInfo = document.querySelector(".user__info");
+    const userInfoExtra = userInfo.querySelector(".user__info-extra");
+    const userSignOut = userInfo.querySelector(".extra__item-sign-out");
+    const userSetiing = userInfo.querySelector(".extra__item-setting");
+
+    userInfo.addEventListener("click", (e) => {
+        userInfoExtra.style.display = "block";
+    }); 
+    
+    document.addEventListener("click", (e) => {
+        if(!userInfo.contains(e.target)) {
+            userInfoExtra.style.display = "none";
+        }
+    });
+
+    userSetiing.addEventListener("click", () => {
+        userInfoExtra.style.display = "none";
+        navigation("#setting");
+    })
+
+    userSignOut.addEventListener("click", () => {
+        document.querySelector(".header__navbar-user").classList.remove("logged-in");
+        localStorage.setItem("role", "guest");
+        localStorage.setItem("token", "");
+        localStorage.setItem("userData", "");
+        navigation("#home");
+    });
+}
+
 export function hideAllForm() {
     getSignInForm().style.display = "none";
     getSignUpForm().style.display = "none";
-    
+    document.querySelector(".show-room").classList.remove("show");
+    document.querySelector(".show__notification").classList.remove("show");
 }
 
 
@@ -137,30 +146,149 @@ function attachValidation(formID, rules) {
 }
 
 
+function validateForm(formID,rules) {
+    const form = document.getElementById(formID);
+    let isValid = true;
+
+    rules.forEach(rule => {
+        const filed = form.querySelector(rule.selector);
+        const inputGroup = filed.closest(".form-group");
+        const errorMessage = inputGroup.querySelector(".form-error");
+
+        if(!rule.validate(filed.value)) {
+            inputGroup.classList.add("invalid");
+            errorMessage.innerText = rule.message;
+            isValid = false;
+        }
+        else {
+            inputGroup.classList.remove("invalid");
+            errorMessage.innerText = "";
+        }
+    })
+    return isValid
+}
+
+function showToast(message, type = "success") {
+    const toast = document.querySelector(".toast");
+    toast.classList.add("show");
+    toast.classList.add(type);
+    const toastBody = toast.querySelector(".toast__body span");
+    toastBody.innerText = message;
+
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        toast.classList.remove(type);
+        toastBody.innerText = "";
+    },3000);
+}
+function showBookingHistory() {
+    const bookingHistory = document.querySelector(".header__navbar-extras-booking");
+    bookingHistory.addEventListener("click", () => {
+        navigation("#booking-history");
+    });
+}
+
+
 function submitForm(){
     const submitButton = getModal().querySelectorAll(".confirm-btn");
 
-    let response = {};
-
     // sign in
 
-    function handleClick(e) {
+    submitButton[0].addEventListener("click", (e)=> {
         e.preventDefault();
-        const inputs = getSignInForm().querySelectorAll(".form-input");
-        for(let input of inputs) {
-            if(input.value === "") {
-                return;
-            }
-        }
-        
-        turnOffModal();
-        hideAllForm();
-    }
 
-    submitButton[0].addEventListener("click", handleClick);
-    // sign up
+
+        const isValid = validateForm("form-sign-in",[emailField,passwordField]);
+        if(!isValid) {
+            console.log("fail");
+        }
+        else {
+            console.log("success");
+            const form = getSignInForm();
+
+            const userData = {
+                userNameOrEmail: form.querySelector("#email").value,
+                password: form.querySelector("#password").value
+            }
+
+            userLogin(userData)
+                .then(data => {
+                    console.log("Success(login)");
+                    const role = (data?.user?.role || "USER").toString().toUpperCase();
+                    localStorage.setItem("role", role);
+                    localStorage.setItem("token", data.accessToken);
+                    // localStorage.setItem("userData", JSON.stringify(data.user));
+                    console.log(localStorage.getItem("role"));
+                    console.log(localStorage.getItem("token"));
+                    document.querySelector(".header__navbar-user").classList.add("logged-in");
+                    document.querySelector(".user__info-name span").innerText = data.user.fullName;
+                    showToast("Đăng nhập thành công");
+                    navigation(role === "ADMIN" || role === "STAFF" ? "#home-manager" : "#home");
+                    getMe()
+                        .then(userData => {
+                            localStorage.setItem("userData", JSON.stringify(userData));
+                        })
+                        .catch(error => {
+                            console.log("Failed to fetch user data after login", error);
+                            localStorage.setItem("userData", "");
+                        });
+
+                })
+                .catch(errorData => {
+                    console.log("fail(login)");
+                    showToast(`Đăng nhập thất bại: ${errorData.data.message}`,"error");
+                })
+            
+                turnOffModal();
+                hideAllForm();
+        }
+
+    });
+    
     submitButton[1].addEventListener("click", (e) => {
         e.preventDefault();
+        
+
+        const isValid = validateForm("form-sign-up",
+            [fullnameField,
+                usernameField,
+                emailField,
+                phoneNumberField,
+                passwordFieldSIgnUp,
+                confirmPasswordField])
+        if(!isValid) {
+            console.log("fail");
+        }
+        else {
+            console.log("success");
+            const form = getSignUpForm();
+
+            const userData = {
+                userName: form.querySelector("#username").value,
+                password: form.querySelector("#password").value,
+                email: form.querySelector("#email").value,
+                fullName: form.querySelector("#fullname").value,
+                phoneNumber: form.querySelector("#phone-number").value
+            };
+
+            userRegister(userData)
+                .then(data => {
+                    console.log("Success(register)");
+                    showToast("Đăng ký thành công");                    
+                    turnOffModal();
+                    hideAllForm();
+                })
+                .catch(errorData => {
+                    console.log("fail(register)");
+                    if(errorData.status) {
+                        showToast(`Đăng ký thất bại: ${errorData.data.message}`,"error");
+                    }
+                    else {
+                        showToast("Kết nối tới server thất bại","error");
+                    }
+                })
+        }
     });
 
     console.log(getSignInForm().querySelectorAll(".form-input"));
@@ -190,8 +318,9 @@ export function initHeader() {
         showForm("sign-up");
     });
 
-
+    userExtra();
     attachValidation("form-sign-in",[emailField,passwordField]);
     attachValidation("form-sign-up",[fullnameField,usernameField,emailField,phoneNumberField,passwordFieldSIgnUp,confirmPasswordField]);
     submitForm();
+    showBookingHistory();
 }

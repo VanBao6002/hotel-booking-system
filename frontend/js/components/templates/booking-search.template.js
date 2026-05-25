@@ -68,7 +68,7 @@ export function bookingSearchTemplate() {
                             <span>Phòng đơn</span>
                           </div>
                           <div class="booking-search__control">
-                            <div class="booking-search__control-btn-minus booking-search__control-btn--limit">
+                            <div class="booking-search__control-btn-minus ">
                               <i class="fa-solid fa-minus minus-btn"></i>
                             </div>
                             <span></span>
@@ -99,12 +99,7 @@ export function bookingSearchTemplate() {
                     <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
                   </div>
-                  <div class="booking-search__last-view">
-                    <span class="booking-search__last-view-text">
-                      Khách sạn xem gần đây
-                      <i class="fa-solid fa-magnifying-glass"></i>
-                    </span>
-                  </div>
+                  
                 </div>
               </div>
             </div>

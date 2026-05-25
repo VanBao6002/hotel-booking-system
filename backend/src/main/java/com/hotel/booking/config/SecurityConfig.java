@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(RequestAccessPolicy.PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers("/api/v1/users/profile").authenticated()
                         .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/hotels/**", "/api/v1/bookings/**", "/api/v1/finance/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated())
                     .exceptionHandling(ex -> ex

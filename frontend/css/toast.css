@@ -1,0 +1,32 @@
+.toast {
+    display: none;
+    position: fixed;
+    padding: 10px;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    background: #2ecc71;
+    border-radius: 10px;
+}
+.toast__body {
+    font-size: 1.6rem;
+    font-weight: bold;
+    line-height: 2rem;
+    color: var(--ivoryWhite-color);
+    width: 200px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: slideRight linear 0.2s;
+}
+.toast.show  {
+    display: flex;
+}
+
+.toast.error {
+    background: #e74c3c;
+}
+.toast.warning {
+    background: #f39c12;
+}

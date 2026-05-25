@@ -1,7 +1,8 @@
 package com.hotel.booking.config;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.util.AntPathMatcher;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public final class RequestAccessPolicy {
 
@@ -17,7 +18,9 @@ public final class RequestAccessPolicy {
         "/api/v1/auth/forgot-password",
         "/api/v1/auth/reset-password",
         "/internal/debug/last-otp",
-        "/api/search/hotel"
+        "/api/search/hotel",
+        "/api/bookings/**",
+        "/api/reviews/**"
     };
 
     private RequestAccessPolicy() {
