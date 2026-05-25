@@ -1,23 +1,32 @@
 package com.hotel.booking.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 
 public class RegisterRequest {
+    @NotBlank(message = "Username cannot be blank")
+    private String userName;
+
     @NotBlank(message = "Password cannot be blank")
     private String password;
 
-    @Pattern(
-        regexp = "^(|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,})$",
-        message = "Email should be valid"
-    )
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email should be valid")
     private String email;
 
     @NotBlank(message = "Full name cannot be blank")
     private String fullName;
-    
+
     @NotBlank(message = "Phone number cannot be blank")
     private String phoneNumber;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public String getPassword() {
         return password;

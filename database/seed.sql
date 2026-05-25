@@ -128,7 +128,7 @@ VALUES
 
 
 
-INSERT INTO users (email, password_hash, role_id, full_name, date_of_birth, gender_id, phone_number, current_address, country_id)
+INSERT INTO users (user_name, email, password_hash, role_id, full_name, date_of_birth, gender_id, phone_number, current_address, country_id)
 VALUES
 ('user', 'user@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Customer User', '1990-01-01', 1, '0909000000', 'HCM', 1),
 ('admin', 'admin@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 2, 'Admin User', '1995-05-05', 1, '0909111111', 'HCM', 1),

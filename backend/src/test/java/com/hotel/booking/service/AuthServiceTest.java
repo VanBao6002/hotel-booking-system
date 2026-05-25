@@ -36,7 +36,6 @@ import com.hotel.booking.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
-    private static final String LOGIN_IDENTIFIER = "0909000000";
 
     @Mock
     private UserRepository userRepository;
@@ -55,7 +54,7 @@ class AuthServiceTest {
     @BeforeEach
     void setUp() {
         loginRequest = new LoginRequest();
-        loginRequest.setPhoneNumberOrEmail(LOGIN_IDENTIFIER);
+        loginRequest.setUserNameOrEmail("test-user");
         loginRequest.setPassword("plain-password");
     }
 
@@ -64,12 +63,12 @@ class AuthServiceTest {
         User user = buildUser();
         user.setFailedLoginAttempts(4);
 
-        when(userRepository.findByPhoneNumberOrEmail(LOGIN_IDENTIFIER, LOGIN_IDENTIFIER)).thenReturn(Optional.of(user));
+        when(userRepository.findByUserNameOrEmail("test-user", "test-user")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("plain-password", "encoded-password")).thenReturn(false);
 
         UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> authService.login(loginRequest));
 
-        assertEquals("Phone number or email or password not match", ex.getMessage());
+        assertEquals("Username or password not match", ex.getMessage());
         assertEquals(5, user.getFailedLoginAttempts());
         assertNotNull(user.getLockedUntil());
         verify(userRepository).save(user);
@@ -80,7 +79,7 @@ class AuthServiceTest {
         User user = buildUser();
         user.setLockedUntil(LocalDateTime.now().plusMinutes(10));
 
-        when(userRepository.findByPhoneNumberOrEmail(LOGIN_IDENTIFIER, LOGIN_IDENTIFIER)).thenReturn(Optional.of(user));
+        when(userRepository.findByUserNameOrEmail("test-user", "test-user")).thenReturn(Optional.of(user));
 
         UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> authService.login(loginRequest));
 
@@ -93,7 +92,7 @@ class AuthServiceTest {
         User user = buildUser();
         user.setIsActive(false);
 
-        when(userRepository.findByPhoneNumberOrEmail(LOGIN_IDENTIFIER, LOGIN_IDENTIFIER)).thenReturn(Optional.of(user));
+        when(userRepository.findByUserNameOrEmail("test-user", "test-user")).thenReturn(Optional.of(user));
 
         UnauthorizedException ex = assertThrows(UnauthorizedException.class, () -> authService.login(loginRequest));
 
@@ -101,13 +100,14 @@ class AuthServiceTest {
         verify(passwordEncoder, never()).matches(anyString(), anyString());
     }
 
+    @SuppressWarnings("null")
     @Test
     void loginResetsFailureStateAndReturnsTokenOnSuccess() {
         User user = buildUser();
         user.setFailedLoginAttempts(3);
         user.setLockedUntil(LocalDateTime.now().minusMinutes(1));
 
-        when(userRepository.findByPhoneNumberOrEmail(LOGIN_IDENTIFIER, LOGIN_IDENTIFIER)).thenReturn(Optional.of(user));
+        when(userRepository.findByUserNameOrEmail("test-user", "test-user")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("plain-password", "encoded-password")).thenReturn(true);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(jwtService.generateAccessToken(any(User.class))).thenReturn("access-token");
@@ -127,6 +127,7 @@ class AuthServiceTest {
     @Test
     void forgotPasswordGeneratesTokenOnlyForExistingEmail() {
         ForgotPasswordRequest request = new ForgotPasswordRequest();
+        request.setEmail("user@example.com");
 
         User user = buildUser();
         user.setEmail("user@example.com");
@@ -135,14 +136,17 @@ class AuthServiceTest {
         authService.forgotPassword(request);
         verify(jwtService).generateResetPasswordToken(user);
 
+        request.setEmail("unknown@example.com");
         when(userRepository.findByEmail("unknown@example.com")).thenReturn(Optional.empty());
         authService.forgotPassword(request);
         verify(jwtService, times(1)).generateResetPasswordToken(any(User.class));
     }
 
+    @SuppressWarnings("null")
     @Test
     void resetPasswordRejectsWhenNewPasswordEqualsCurrentPassword() {
         ResetPasswordRequest request = new ResetPasswordRequest();
+        request.setResetToken("reset-token");
         request.setNewPassword("new-password");
 
         User user = buildUser();
@@ -158,6 +162,7 @@ class AuthServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+    @SuppressWarnings("null")
     @Test
     void changePasswordUpdatesPasswordHashWhenCurrentPasswordIsCorrect() {
         ChangePasswordRequest request = new ChangePasswordRequest();
@@ -167,8 +172,8 @@ class AuthServiceTest {
         User user = buildUser();
 
         when(jwtService.extractBearerToken("Bearer token")).thenReturn("token");
-        when(jwtService.extractSubject("token")).thenReturn("1");
-        when(userRepository.findById(1)).thenReturn(Optional.of(user));
+        when(jwtService.extractSubject("token")).thenReturn("test-user");
+        when(userRepository.findByUserName("test-user")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("current-password", "encoded-password")).thenReturn(true);
         when(passwordEncoder.matches("new-password", "encoded-password")).thenReturn(false);
         when(passwordEncoder.encode("new-password")).thenReturn("new-hash");
@@ -180,11 +185,22 @@ class AuthServiceTest {
         assertEquals("new-hash", userCaptor.getValue().getPasswordHash());
     }
 
+    @Test
+    void logoutValidatesAuthorizationHeaderAndToken() {
+        when(jwtService.extractBearerToken("Bearer token")).thenReturn("token");
+        when(jwtService.extractSubject("token")).thenReturn("test-user");
+
+        authService.logout("Bearer token");
+
+        verify(jwtService).extractBearerToken("Bearer token");
+        verify(jwtService).extractSubject("token");
+    }
+
     private User buildUser() {
         User user = new User();
         user.setId(1);
+        user.setUserName("test-user");
         user.setEmail("user@example.com");
-        user.setPhoneNumber(LOGIN_IDENTIFIER);
         user.setPasswordHash("encoded-password");
         user.setRole(Role.USER);
         user.setIsActive(true);

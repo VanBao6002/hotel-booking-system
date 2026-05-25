@@ -40,7 +40,7 @@ public class JwtService {
 		Instant expiresAt = now.plusSeconds(accessTokenExpirationSeconds);
 
 		return Jwts.builder()
-			.subject(String.valueOf(user.getId()))
+			.subject(user.getUserName())
 			.claim("userId", user.getId())
 			.claim("email", user.getEmail())
 			.claim("role", user.getRole().toAuthorityRole())
@@ -51,7 +51,7 @@ public class JwtService {
 	}
 	
 	/** 
-	 * Validates an access token and returns its subject (user id).
+	 * Validates an access token and returns its subject (ex: username).
 	 */
 	public String extractSubject(String token) {
 		return parseAccessClaims(token).getSubject();
