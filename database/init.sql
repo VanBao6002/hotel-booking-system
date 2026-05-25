@@ -250,14 +250,13 @@ CREATE TABLE IF NOT EXISTS bookingservice(
 
 CREATE TABLE IF NOT EXISTS users (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    user_name VARCHAR(50) UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     role_id INT NOT NULL,
     full_name VARCHAR(100),
     date_of_birth DATE,
     gender_id INT,
-    phone_number VARCHAR(20),
+    phone_number VARCHAR(20) NOT NULL UNIQUE,
     current_address VARCHAR(255),
     country_id INT,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
@@ -276,6 +275,23 @@ CREATE TABLE IF NOT EXISTS users (
         ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_users_country FOREIGN KEY (country_id) REFERENCES countries(id)
         ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS password_otps (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
+    otp_hash VARCHAR(255) NOT NULL,
+    purpose VARCHAR(50) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_used BOOLEAN NOT NULL DEFAULT FALSE,
+    attempts INT NOT NULL DEFAULT 0,
+    CONSTRAINT fk_password_otps_user FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    INDEX idx_password_otps_phone (phone_number),
+    INDEX idx_password_otps_user (user_id),
+    INDEX idx_password_otps_expires (expires_at)
 );
 CREATE TABLE IF NOT EXISTS staff(
     id INT PRIMARY KEY AUTO_INCREMENT,

@@ -3,18 +3,18 @@ package com.hotel.booking.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginRequest {
-    @NotBlank(message = "Username or email cannot be blank")
-    private String userNameOrEmail;
+    @NotBlank(message = "Phone number or email cannot be blank")
+    private String phoneNumberOrEmail;
     
     @NotBlank(message = "Password cannot be blank")
     private String password;
 
-    public String getUserNameOrEmail() {
-        return userNameOrEmail;
+    public String getPhoneNumberOrEmail() {
+        return phoneNumberOrEmail;
     }
 
-    public void setUserNameOrEmail(String userNameOrEmail) {
-        this.userNameOrEmail = userNameOrEmail;
+    public void setPhoneNumberOrEmail(String phoneNumberOrEmail) {
+        this.phoneNumberOrEmail = phoneNumberOrEmail;
     }
 
     public String getPassword() {
