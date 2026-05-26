@@ -57,6 +57,7 @@ Success response (`200 OK`):
 {
   "id": 1,
   "email": "john.doe@example.com",
+  "userName": "johndoe",
   "fullName": "John Doe",
   "phoneNumber": "0123456789",
   "dateOfBirth": "1996-08-21",
@@ -141,6 +142,7 @@ Content-Type: application/json
 
 {
   "password": "password123",
+  "userName": "johndoe",
   "email": "john.doe@example.com",
   "fullName": "John Doe",
   "phoneNumber": "0123456789"
@@ -153,6 +155,7 @@ Success response (`200 OK`):
 {
   "id": 7,
   "email": "john.doe@example.com",
+  "userName": "johndoe",
   "fullName": "John Doe",
   "phoneNumber": "0123456789",
   "dateOfBirth": null,
@@ -166,6 +169,9 @@ Notes:
 
 - `email` is optional.
 - `phoneNumber` is required and must be unique.
+ - `userName` is required and must be unique.
+ - `email` is optional.
+ - `phoneNumber` is required and must be unique.
 
 ### Login
 
@@ -189,6 +195,7 @@ Example success response:
   "user": {
     "id": 1,
     "email": "john.doe@example.com",
+    "userName": "johndoe",
     "fullName": "John Doe",
     "phoneNumber": "0123456789",
     "dateOfBirth": "1996-08-21",

@@ -34,11 +34,11 @@ VALUES
 (5, 1, 1, 2, 5, 8, 4.00);
 
 
-INSERT INTO users (email, password_hash, role_id, full_name, date_of_birth, gender_id, phone_number, current_address, country_id)
+INSERT INTO users (user_name, email, password_hash, role_id, full_name, date_of_birth, gender_id, phone_number, current_address, country_id)
 VALUES
-('user@example.com', 'hash123', 1, 'Customer User', '1990-01-01', 1, '0909000000', 'HCM', 1),
-('admin@example.com', 'hash123', 2, 'Admin User', '1995-05-05', 1, '0909111111', 'HCM', 1),
-('staff@example.com', 'hash123', 3, 'Staff User', '2000-10-10', 2, '0909222222', 'HN', 1);
+('user', 'user@example.com', 'hash123', 1, 'Customer User', '1990-01-01', 1, '0909000000', 'HCM', 1),
+('admin', 'admin@example.com', 'hash123', 2, 'Admin User', '1995-05-05', 1, '0909111111', 'HCM', 1),
+('staff', 'staff@example.com', 'hash123', 3, 'Staff User', '2000-10-10', 2, '0909222222', 'HN', 1);
 
 INSERT INTO services (name, description) VALUES
 ('Breakfast Buffet', 'Daily breakfast buffet at the hotel restaurant'),

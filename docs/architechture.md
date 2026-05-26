@@ -79,7 +79,7 @@ Purpose: stores account credentials, account status, and user profile basics.
 | Column | Type | Null | Default | Key | Description |
 |---|---|---|---|---|---|
 | id | INT | No | AUTO_INCREMENT | PK | User identifier |
-| user_name | VARCHAR(50) | Yes | - | UNIQUE | Optional username |
+| user_name | VARCHAR(100) | No | - | UNIQUE | Required username (NOT NULL, UNIQUE) |
 | email | VARCHAR(255) | No | - | UNIQUE | Login identity |
 | password_hash | VARCHAR(255) | No | - | - | BCrypt password hash |
 | role_id | INT | No | - | FK | Role reference |

@@ -44,6 +44,7 @@ public class UserService {
         }
 
         user.setEmail(normalizedEmail);
+        user.setUserName(request.getUserName());
         user.setFullName(request.getFullName());
         user.setDateOfBirth(request.getDateOfBirth());
         user.setGenderId(request.getGenderId());

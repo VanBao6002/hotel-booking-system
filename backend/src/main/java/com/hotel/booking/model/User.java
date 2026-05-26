@@ -24,6 +24,9 @@ public class User {
     @Column(name = "full_name", length = 100)
     private String fullName;
 
+    @Column(name = "user_name", length = 100)
+    private String userName;
+
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
@@ -95,6 +98,14 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public LocalDate getDateOfBirth() {
