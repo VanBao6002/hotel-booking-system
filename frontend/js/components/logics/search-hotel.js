@@ -21,13 +21,15 @@ function extraOption() {
 }
 
 function choiceHotel() {
-  document.querySelectorAll(".search-hotel-result__wrap").forEach(wrap => {
-    wrap.addEventListener("click", () => {
+  const container = document.querySelector(".search-hotel-result__body");
+  container.addEventListener("click", (e) => {
+    const wrap = e.target.closest(".search-hotel-result__wrap");
+    if (wrap) {
       const hotelId = wrap.id;
       localStorage.setItem("choicedHotelId", hotelId);
       navigation("#booking");
-    })
-  })
+    }
+  });
 }
 
 function hotelCard(id, address, averageStar, price) {
