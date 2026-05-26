@@ -160,12 +160,17 @@
     top: 26px;
     left: 4px;
 }
+.user__info-extra.has-management .line::after {
+    top: 56px;
+}
 .extra__item-setting,
+.extra__item-manage,
 .extra__item-sign-out {
     padding: 5px;
     border-radius: 5px;
 }
 .extra__item-setting:hover,
+.extra__item-manage:hover,
 .extra__item-sign-out:hover {
     cursor: pointer;
     background-color: var(--navyBlue-color);
@@ -199,4 +204,3 @@
 .logged-in .btn {
     display: none;
 }
-

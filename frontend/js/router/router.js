@@ -233,8 +233,7 @@ function attachNavEvents() {
     if(homeEl) {
         homeEl.addEventListener("click", () => {
             console.log(window.location.hash)
-            const role = localStorage.getItem("role");
-            navigation(role === "manager" ? "#home-manager" : role === "staff" ? "#home-staff" : "#home");
+            navigation("#home");
         })
     }
 
@@ -307,8 +306,7 @@ export function initRouter() {
     });
 
     if(!window.location.hash) {
-        const role = localStorage.getItem("role");
-        window.location.hash = role === "manager" ? "#home-manager" : role === "staff" ? "#home-staff" : "#home";
+        window.location.hash = "#home";
     }
 
     currentPath = window.location.hash;

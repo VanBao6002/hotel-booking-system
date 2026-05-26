@@ -116,6 +116,9 @@ function userExtra() {
     const userInfoExtra = userInfo.querySelector(".user__info-extra");
     const userSignOut = userInfo.querySelector(".extra__item-sign-out");
     const userSetiing = userInfo.querySelector(".extra__item-setting");
+    const userManage = userInfo.querySelector(".extra__item-manage");
+
+    updateManageMenuVisibility();
 
     userInfo.addEventListener("click", (e) => {
         userInfoExtra.style.display = "block";
@@ -132,13 +135,35 @@ function userExtra() {
         navigation("#setting");
     })
 
+    userManage?.addEventListener("click", () => {
+        userInfoExtra.style.display = "none";
+        const role = localStorage.getItem("role");
+        if (role === "manager") {
+            navigation("#home-manager");
+        } else if (role === "staff") {
+            navigation("#home-staff");
+        }
+    });
+
     userSignOut.addEventListener("click", () => {
         document.querySelector(".header__navbar-user").classList.remove("logged-in");
         localStorage.setItem("role", "guest");
         localStorage.setItem("token", "");
         localStorage.setItem("userData", "");
+        updateManageMenuVisibility();
         navigation("#home");
     });
+}
+
+function updateManageMenuVisibility() {
+    const manageItem = document.querySelector(".extra__item-manage");
+    const extraMenu = document.querySelector(".user__info-extra");
+    const role = localStorage.getItem("role");
+    const canManage = role === "manager" || role === "staff";
+    if (manageItem) {
+        manageItem.style.display = canManage ? "block" : "none";
+    }
+    extraMenu?.classList.toggle("has-management", canManage);
 }
 
 export function hideAllForm() {
@@ -248,8 +273,9 @@ function submitForm(){
                     console.log(localStorage.getItem("token"));
                     document.querySelector(".header__navbar-user").classList.add("logged-in");
                     document.querySelector(".user__info-name span").innerText = data.user.fullName;
+                    updateManageMenuVisibility();
                     showToast("Đăng nhập thành công");
-                    navigation(role === "manager" ? "#home-manager" : role === "staff" ? "#home-staff" : "#home");
+                    navigation("#home");
 
                 })
                 .catch(errorData => {
