@@ -26,7 +26,8 @@ public final class UserMapper {
         dto.setDateOfBirth(user.getDateOfBirth());
         dto.setCurrentAddress(user.getCurrentAddress());
         dto.setLockedUntil(user.getLockedUntil());
+        dto.setActive(user.getIsActive());
         dto.setRole(user.getRole().toApiRole());
         return dto;
     }
-}  
+}

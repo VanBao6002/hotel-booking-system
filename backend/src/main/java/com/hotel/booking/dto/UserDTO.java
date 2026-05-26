@@ -12,7 +12,10 @@ public class UserDTO {
     private LocalDate dateOfBbirth;
     private String currentAddress;
     private LocalDateTime lockedUntil;
+    private String lockReason;
+    private Boolean active;
     private String role;
+    private Integer staffHotelBranchId;
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -38,6 +41,15 @@ public class UserDTO {
     public LocalDateTime getLockedUntil() { return lockedUntil; }
     public void setLockedUntil(LocalDateTime lockedUntil) { this.lockedUntil = lockedUntil; }
 
+    public String getLockReason() { return lockReason; }
+    public void setLockReason(String lockReason) { this.lockReason = lockReason; }
+
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
+
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public Integer getStaffHotelBranchId() { return staffHotelBranchId; }
+    public void setStaffHotelBranchId(Integer staffHotelBranchId) { this.staffHotelBranchId = staffHotelBranchId; }
 }

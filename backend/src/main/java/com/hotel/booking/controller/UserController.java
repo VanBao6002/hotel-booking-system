@@ -39,7 +39,7 @@ public class UserController {
     }
 
     /**
-     * DELETE /api/v1/users/{userId} - Xóa user
+     * DELETE /api/v1/users/{userId} - Soft delete user by disabling the account.
      * Response: 204 No Content
      */
     @DeleteMapping("/{userId}")
@@ -78,16 +78,27 @@ public class UserController {
 
     /**
      * PUT /api/v1/users/{userId}/role - Thay đổi role của user
-     * Request Body: { "role": "STAFF" }
+     * Request Body: { "role": "staff" }
      * Response: 200 OK với user object đã update
      */
     @PutMapping("/{userId}/role")
     public ResponseEntity<UserDTO> grantStaffRole(
             @PathVariable Integer userId,
-            @RequestBody Map<String, String> body) {
-        String role = body.getOrDefault("role", "STAFF");
-        UserDTO user = userService.updateUserRole(userId, role);
+            @RequestBody Map<String, Object> body) {
+        String role = String.valueOf(body.getOrDefault("role", "staff"));
+        Integer hotelBranchId = parseInteger(body.get("hotelBranchId"));
+        UserDTO user = userService.updateUserRole(userId, role, hotelBranchId);
         return ResponseEntity.ok(user);
+    }
+
+    private Integer parseInteger(Object value) {
+        if (value == null || String.valueOf(value).isBlank()) {
+            return null;
+        }
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        return Integer.valueOf(String.valueOf(value));
     }
 }
  

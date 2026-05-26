@@ -33,3 +33,6 @@ export const getFinanceSummary = () => apiClient("/api/v1/finance/summary", { me
 export const getFinanceTransactions = () => apiClient("/api/v1/finance/transactions", { method: "GET" });
 export const getMonthlyRevenue = (year = new Date().getFullYear()) =>
   apiClient(`/api/v1/finance/monthly-revenue?year=${encodeURIComponent(year)}`, { method: "GET" });
+
+export const getManagerDashboard = (year = new Date().getFullYear()) =>
+  apiClient(`/api/v1/dashboard/manager?year=${encodeURIComponent(year)}`, { method: "GET" });

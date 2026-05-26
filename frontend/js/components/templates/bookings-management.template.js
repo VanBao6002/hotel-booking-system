@@ -28,9 +28,6 @@ export function bookingsManagementTemplate() {
                 <div style="flex: 1; min-width: 140px; position: relative;">
                     <select id="bm-hotel-select" style="width: 100%; appearance: none; border: 1px solid #e2e2da; border-radius: 7px; padding: 9px 36px 9px 14px; background: #fafaf8; font-size: 13px; color: #1a1a2e; outline: none; cursor: pointer;">
                         <option value="">Hotel</option>
-                        <option value="oceanfront">The Oceanfront Villa</option>
-                        <option value="presidential">The Presidential Suite</option>
-                        <option value="sunset">The Sunset Elite</option>
                     </select>
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9aa3b0">
                         <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -62,12 +59,7 @@ export function bookingsManagementTemplate() {
                         </tr>
                     </thead>
                     <tbody id="bm-tbody">
-                        ${renderBookingRow("B-1001", "John Doe",    "The Oceanfront Villa",    "Oct 20 - Oct 25", "$10,500", "Paid",    "gold",     "Confirmed", "gold")}
-                        ${renderBookingRow("B-1002", "Jane Smith",  "The Presidential Suite",  "Nov 1 - Nov 5",   "$25,000", "Partial", "charcoal", "Completed", "charcoal")}
-                        ${renderBookingRow("B-1003", "John Doe",    "The Oceanfront Villa",    "Nov 1 - Oct 19",  "$10,500", "Paid",    "gold",     "Confirmed", "charcoal")}
-                        ${renderBookingRow("B-1004", "Jane Smith",  "The Presidential Suite",  "Oct 19 - Oct 21", "$25,000", "Paid",    "gold",     "Confirmed", "gold")}
-                        ${renderBookingRow("B-1005", "James Curran","The Sunset Elite",        "Nov 22 - Nov 29", "$12,000", "Partial", "charcoal", "Completed", "charcoal")}
-                        ${renderBookingRow("B-1006", "Jane Smith",  "The Oceanfront Villa",    "Nov 21 - Nov 25", "$15,500", "Paid",    "gold",     "Completed", "charcoal")}
+                        <tr><td colspan="8" style="padding:24px;text-align:center;color:#6b7280;">Loading bookings...</td></tr>
                     </tbody>
                 </table>
 

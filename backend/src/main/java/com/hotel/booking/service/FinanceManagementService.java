@@ -3,6 +3,7 @@ package com.hotel.booking.service;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,23 +13,21 @@ import org.springframework.stereotype.Service;
 import com.hotel.booking.dto.FinanceSummaryDTO;
 import com.hotel.booking.dto.MonthlyRevenueDTO;
 import com.hotel.booking.dto.TransactionDTO;
+import com.hotel.booking.repository.DatabaseSchemaInspector;
 
 @Service
 public class FinanceManagementService {
     private final JdbcTemplate jdbcTemplate;
+    private final DatabaseSchemaInspector schemaInspector;
 
-    public FinanceManagementService(JdbcTemplate jdbcTemplate) {
+    public FinanceManagementService(JdbcTemplate jdbcTemplate, DatabaseSchemaInspector schemaInspector) {
         this.jdbcTemplate = jdbcTemplate;
+        this.schemaInspector = schemaInspector;
     }
 
     public FinanceSummaryDTO getFinanceSummary() {
         Long totalEarnings = queryLong("SELECT COALESCE(SUM(amount), 0) FROM receipt");
-        Long expectedRevenue = queryLong("""
-            SELECT COALESCE(SUM(GREATEST(DATEDIFF(b.check_out_date, b.check_in_date), 1) * COALESCE(r.price, 0)), 0)
-            FROM booking b
-            JOIN booking_room br ON br.booking_id = b.id
-            LEFT JOIN room r ON br.room_id = r.id
-            """);
+        Long expectedRevenue = queryExpectedRevenue();
         long pendingPayouts = Math.max(0L, expectedRevenue - totalEarnings);
         long taxSummary = Math.round(totalEarnings * 0.1);
 
@@ -104,5 +103,50 @@ public class FinanceManagementService {
     private Long queryLong(String sql) {
         Long value = jdbcTemplate.queryForObject(sql, Long.class);
         return value == null ? 0L : value;
+    }
+
+    private Long queryExpectedRevenue() {
+        if (schemaInspector.columnExists("booking", "booking_price")) {
+            return queryLong("SELECT COALESCE(SUM(booking_price), 0) FROM booking");
+        }
+
+        if (schemaInspector.tableExists("booking_room")) {
+            return queryRevenueRows("""
+                SELECT b.id,
+                       b.check_in_date,
+                       b.check_out_date,
+                       SUM(COALESCE(r.price, 0)) AS nightly_price
+                FROM booking b
+                JOIN booking_room br ON br.booking_id = b.id
+                LEFT JOIN room r ON br.room_id = r.id
+                GROUP BY b.id, b.check_in_date, b.check_out_date
+                """);
+        }
+
+        if (schemaInspector.columnExists("booking", "room_id")) {
+            return queryRevenueRows("""
+                SELECT b.id,
+                       b.check_in_date,
+                       b.check_out_date,
+                       COALESCE(r.price, 0) AS nightly_price
+                FROM booking b
+                LEFT JOIN room r ON b.room_id = r.id
+                """);
+        }
+
+        return 0L;
+    }
+
+    private Long queryRevenueRows(String sql) {
+        return jdbcTemplate.query(sql, rs -> {
+            long total = 0L;
+            while (rs.next()) {
+                LocalDate checkIn = rs.getDate("check_in_date").toLocalDate();
+                LocalDate checkOut = rs.getDate("check_out_date").toLocalDate();
+                long nights = Math.max(1L, ChronoUnit.DAYS.between(checkIn, checkOut));
+                total += nights * rs.getLong("nightly_price");
+            }
+            return total;
+        });
     }
 }

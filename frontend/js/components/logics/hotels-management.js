@@ -16,9 +16,9 @@ function setStatus(message, type = "info") {
   if (!statusEl) return;
 
   statusEl.style.display = "block";
-  statusEl.style.borderColor = type === "error" ? "#f3b5b5" : "#e5e7eb";
-  statusEl.style.background = type === "error" ? "#fff5f5" : "#f0f9ff";
-  statusEl.style.color = type === "error" ? "#b42318" : "#0369a1";
+  statusEl.style.borderColor = type === "error" ? "#f3b5b5" : "#dbeafe";
+  statusEl.style.background = type === "error" ? "#fff5f5" : "#eff6ff";
+  statusEl.style.color = type === "error" ? "#b42318" : "#1d4ed8";
   statusEl.textContent = message;
 }
 
@@ -29,6 +29,24 @@ function clearStatus() {
   statusEl.textContent = "";
 }
 
+function friendlyError(err, fallback) {
+  const message = err?.data?.message || err?.message || "";
+  if (!message || /StatementCallback|PreparedStatementCallback|bad SQL|SELECT | FROM | JOIN |SQL syntax/i.test(message)) {
+    return fallback;
+  }
+  return message;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  }[char]));
+}
+
 function normalizeHotel(hotel) {
   return {
     ...hotel,
@@ -37,6 +55,15 @@ function normalizeHotel(hotel) {
     rating: hotel.averageStar || hotel.rating || 0,
     roomCount: hotel.roomCount || hotel.rooms?.length || 0,
     isOnline: hotel.isOnline !== false,
+  };
+}
+
+function normalizeRoom(room = {}) {
+  return {
+    ...room,
+    roomIMG: room.roomIMG || room.roomImg || "default-room.jpg",
+    typeCode: room.typeCode || "SINGLE",
+    roomStatus: room.roomStatus || "Available",
   };
 }
 
@@ -61,14 +88,14 @@ function renderHotelCard(rawHotel) {
   return `
     <div class="hotel-card">
       <div class="hotel-card__image">
-        <img src="${imageSrc}" alt="${hotel.hotelName}" />
+        <img src="${imageSrc}" alt="${escapeHtml(hotel.hotelName)}" />
       </div>
       <div class="hotel-card__content">
-        <h3 class="hotel-card__name">${hotel.hotelName}</h3>
+        <h3 class="hotel-card__name">${escapeHtml(hotel.hotelName)}</h3>
         <div class="hotel-card__meta">
           <div class="hotel-card__meta-item">
             <span class="hotel-card__label">Location:</span>
-            <span class="hotel-card__value">${hotel.location}</span>
+            <span class="hotel-card__value">${escapeHtml(hotel.location)}</span>
           </div>
           <div class="hotel-card__meta-item">
             <span class="hotel-card__label">Rating:</span>
@@ -76,11 +103,11 @@ function renderHotelCard(rawHotel) {
           </div>
           <div class="hotel-card__meta-item">
             <span class="hotel-card__label">Room Count:</span>
-            <span class="hotel-card__value">${hotel.roomCount} Rooms</span>
+            <span class="hotel-card__value">${escapeHtml(hotel.roomCount)} Rooms</span>
           </div>
           <div class="hotel-card__meta-item">
             <span class="hotel-card__label">Phone:</span>
-            <span class="hotel-card__value">${hotel.phoneNumber || "-"}</span>
+            <span class="hotel-card__value">${escapeHtml(hotel.phoneNumber || "-")}</span>
           </div>
         </div>
         <div class="hotel-card__actions">
@@ -90,7 +117,7 @@ function renderHotelCard(rawHotel) {
           <button class="hotel-card__btn hotel-card__btn--secondary" data-action="rooms" data-hotel-id="${hotel.id}">
             <i class="fa fa-key"></i> Rooms
           </button>
-          <button class="hotel-card__btn hotel-card__btn--secondary" data-action="delete" data-hotel-id="${hotel.id}">
+          <button class="hotel-card__btn hotel-card__btn--secondary hotel-card__btn--danger" data-action="delete" data-hotel-id="${hotel.id}">
             <i class="fa fa-trash"></i> Delete
           </button>
         </div>
@@ -114,126 +141,464 @@ function renderHotels(hotels) {
   grid.innerHTML = hotels.map(renderHotelCard).join("");
 }
 
-function askHotel(defaults = {}) {
-  const address = prompt("Hotel address/name:", defaults.address || "");
-  if (address === null) return null;
-  const phoneNumber = prompt("Phone number:", defaults.phoneNumber || "");
-  if (phoneNumber === null) return null;
-  const locationName = prompt("Location:", defaults.locationName || "");
-  if (locationName === null) return null;
-  return { address: address.trim(), phoneNumber: phoneNumber.trim(), locationName: locationName.trim() };
-}
-
-function askRoom(defaults = {}) {
-  const roomNumber = prompt("Room number:", defaults.roomNumber || "");
-  if (roomNumber === null) return null;
-  const floor = prompt("Floor:", defaults.floor || "1");
-  if (floor === null) return null;
-  const area = prompt("Area:", defaults.area || "25m2");
-  if (area === null) return null;
-  const numberOfBed = prompt("Number of beds:", defaults.numberOfBed || "1");
-  if (numberOfBed === null) return null;
-  const price = prompt("Price per night:", defaults.price || "200000");
-  if (price === null) return null;
-  const typeCode = prompt("Room type code (SINGLE, DOUBLE, SUITE):", defaults.typeCode || "SINGLE");
-  if (typeCode === null) return null;
-  const roomStatus = prompt("Room status (Available, Booked, Maintenance):", defaults.roomStatus || "Available");
-  if (roomStatus === null) return null;
-
-  return {
-    roomNumber: Number(roomNumber),
-    floor: Number(floor),
-    area: area.trim(),
-    numberOfBed: Number(numberOfBed),
-    price: Number(price),
-    description: defaults.description || "No description",
-    roomIMG: defaults.roomIMG || "default-room.jpg",
-    typeCode: typeCode.trim(),
-    roomStatus: roomStatus.trim(),
-  };
-}
-
-async function loadHotels() {
+async function loadHotels(options = {}) {
   const loading = document.querySelector(".hotels-management__loading");
   if (loading) loading.style.display = "block";
-  clearStatus();
+  if (!options.preserveStatus) clearStatus();
 
   try {
     allHotels = await getHotels() || [];
     renderHotels(allHotels);
   } catch (err) {
-    setStatus(err?.data?.message || "Could not load hotels from database.", "error");
+    setStatus(friendlyError(err, "Could not load hotels from database."), "error");
     renderHotels([]);
   } finally {
     if (loading) loading.style.display = "none";
   }
 }
 
-async function handleAddHotel() {
-  const hotel = askHotel();
-  if (!hotel) return;
+function openHotelModal({ title, subtitle = "", body, footer, size = "md", onReady }) {
+  closeHotelModal();
 
-  try {
-    await createHotel(hotel);
-    setStatus("Hotel created.");
-    await loadHotels();
-  } catch (err) {
-    setStatus(err?.data?.message || "Create hotel failed.", "error");
+  const modalId = `hotel-modal-title-${Date.now()}`;
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="hotel-management-modal">
+      <div class="hotel-management-modal__backdrop" data-close-modal></div>
+      <section class="hotel-management-modal__panel hotel-management-modal__panel--${size}" role="dialog" aria-modal="true" aria-labelledby="${modalId}">
+        <header class="hotel-management-modal__header">
+          <div>
+            <h3 id="${modalId}">${escapeHtml(title)}</h3>
+            ${subtitle ? `<p>${escapeHtml(subtitle)}</p>` : ""}
+          </div>
+          <button class="hotel-management-modal__icon-btn" type="button" data-close-modal aria-label="Close">
+            <i class="fa fa-times"></i>
+          </button>
+        </header>
+        <div class="hotel-management-modal__error" style="display:none;"></div>
+        <div class="hotel-management-modal__body">${body}</div>
+        <footer class="hotel-management-modal__footer">${footer}</footer>
+      </section>
+    </div>
+  `);
+
+  const wrapper = document.querySelector(".hotel-management-modal");
+  const close = () => closeHotelModal();
+  const handleKeydown = (event) => {
+    if (event.key === "Escape") close();
+  };
+
+  wrapper.querySelectorAll("[data-close-modal]").forEach(el => {
+    el.addEventListener("click", close);
+  });
+  document.addEventListener("keydown", handleKeydown);
+  wrapper.dataset.keydownAttached = "true";
+  wrapper._hotelModalKeydown = handleKeydown;
+  document.body.classList.add("hotel-modal-open");
+
+  if (onReady) onReady(wrapper, close);
+  (wrapper.querySelector(".hotel-management-modal__body input, .hotel-management-modal__body select, .hotel-management-modal__body textarea")
+    || wrapper.querySelector(".hotel-management-modal__body button")
+    || wrapper.querySelector(".hotel-management-modal__icon-btn"))?.focus();
+}
+
+function closeHotelModal() {
+  const modal = document.querySelector(".hotel-management-modal");
+  if (modal?._hotelModalKeydown) {
+    document.removeEventListener("keydown", modal._hotelModalKeydown);
   }
+  modal?.remove();
+  document.body.classList.remove("hotel-modal-open");
+}
+
+function setModalError(modal, message) {
+  const errorEl = modal.querySelector(".hotel-management-modal__error");
+  if (!errorEl) return;
+  errorEl.textContent = message;
+  errorEl.style.display = "block";
+}
+
+function setButtonLoading(button, loading, label) {
+  if (!button) return;
+  button.disabled = loading;
+  button.innerHTML = loading
+    ? `<i class="fa fa-spinner fa-spin"></i> Saving`
+    : label;
+}
+
+function hotelPayloadFromForm(form) {
+  const formData = new FormData(form);
+  const address = String(formData.get("address") || "").trim();
+  const phoneNumber = String(formData.get("phoneNumber") || "").trim();
+  const locationName = String(formData.get("locationName") || "").trim();
+
+  if (!address || !phoneNumber || !locationName) {
+    throw new Error("Please fill in hotel name, phone number, and location.");
+  }
+
+  return { address, phoneNumber, locationName };
+}
+
+function roomPayloadFromForm(form, defaults = {}) {
+  const formData = new FormData(form);
+  const room = {
+    roomNumber: Number(formData.get("roomNumber")),
+    floor: Number(formData.get("floor")),
+    area: String(formData.get("area") || "").trim(),
+    numberOfBed: Number(formData.get("numberOfBed")),
+    price: Number(formData.get("price")),
+    description: String(formData.get("description") || "").trim() || "No description",
+    roomIMG: String(formData.get("roomIMG") || "").trim() || defaults.roomIMG || "default-room.jpg",
+    typeCode: String(formData.get("typeCode") || "SINGLE").trim(),
+    roomStatus: String(formData.get("roomStatus") || "Available").trim(),
+  };
+
+  if (!room.roomNumber || !room.floor || !room.area || !room.numberOfBed || !room.price) {
+    throw new Error("Please fill in room number, floor, area, beds, and price.");
+  }
+
+  return room;
+}
+
+function openHotelForm({ mode, defaults = {}, onSubmit }) {
+  const isEdit = mode === "edit";
+  const title = isEdit ? "Edit Property" : "Add Property";
+  const submitLabel = isEdit ? `<i class="fa fa-save"></i> Save Changes` : `<i class="fa fa-plus"></i> Add Property`;
+
+  openHotelModal({
+    title,
+    subtitle: isEdit ? "Update the core property details." : "Create a new hotel branch.",
+    body: `
+      <form class="hotel-admin-form" id="hotel-admin-form">
+        <label>
+          <span>Hotel address/name</span>
+          <input name="address" type="text" value="${escapeHtml(defaults.address || "")}" required>
+        </label>
+        <label>
+          <span>Phone number</span>
+          <input name="phoneNumber" type="text" value="${escapeHtml(defaults.phoneNumber || "")}" required>
+        </label>
+        <label>
+          <span>Location</span>
+          <input name="locationName" type="text" value="${escapeHtml(defaults.locationName || "")}" required>
+        </label>
+      </form>
+    `,
+    footer: `
+      <button class="hotel-modal-btn hotel-modal-btn--ghost" type="button" data-close-modal>Cancel</button>
+      <button class="hotel-modal-btn hotel-modal-btn--primary" type="submit" form="hotel-admin-form">${submitLabel}</button>
+    `,
+    onReady(modal, close) {
+      const form = modal.querySelector("#hotel-admin-form");
+      const submitBtn = modal.querySelector(".hotel-modal-btn--primary");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        try {
+          const payload = hotelPayloadFromForm(form);
+          setButtonLoading(submitBtn, true, submitLabel);
+          await onSubmit(payload);
+          close();
+        } catch (err) {
+          setModalError(modal, friendlyError(err, err.message || "Hotel action failed."));
+          setButtonLoading(submitBtn, false, submitLabel);
+        }
+      });
+    },
+  });
+}
+
+function option(value, current) {
+  return `<option value="${value}" ${value === current ? "selected" : ""}>${value}</option>`;
+}
+
+function openRoomForm({ hotelId, mode, defaults = {}, onSubmit }) {
+  const room = normalizeRoom(defaults);
+  const isEdit = mode === "edit";
+  const title = isEdit ? `Edit Room ${room.roomNumber || ""}` : "Add Room";
+  const submitLabel = isEdit ? `<i class="fa fa-save"></i> Save Room` : `<i class="fa fa-plus"></i> Add Room`;
+
+  openHotelModal({
+    title,
+    subtitle: `Hotel #${hotelId}`,
+    size: "lg",
+    body: `
+      <form class="hotel-admin-form hotel-admin-form--grid" id="hotel-room-form">
+        <label>
+          <span>Room number</span>
+          <input name="roomNumber" type="number" min="1" value="${escapeHtml(room.roomNumber || "")}" required>
+        </label>
+        <label>
+          <span>Floor</span>
+          <input name="floor" type="number" min="1" value="${escapeHtml(room.floor || "1")}" required>
+        </label>
+        <label>
+          <span>Area</span>
+          <input name="area" type="text" value="${escapeHtml(room.area || "25m2")}" required>
+        </label>
+        <label>
+          <span>Beds</span>
+          <input name="numberOfBed" type="number" min="1" value="${escapeHtml(room.numberOfBed || "1")}" required>
+        </label>
+        <label>
+          <span>Price per night</span>
+          <input name="price" type="number" min="1" value="${escapeHtml(room.price || "200000")}" required>
+        </label>
+        <label>
+          <span>Room type</span>
+          <select name="typeCode">
+            ${option("SINGLE", room.typeCode)}
+            ${option("DOUBLE", room.typeCode)}
+            ${option("SUITE", room.typeCode)}
+          </select>
+        </label>
+        <label>
+          <span>Status</span>
+          <select name="roomStatus">
+            ${option("Available", room.roomStatus)}
+            ${option("Booked", room.roomStatus)}
+            ${option("Maintenance", room.roomStatus)}
+          </select>
+        </label>
+        <label>
+          <span>Image filename</span>
+          <input name="roomIMG" type="text" value="${escapeHtml(room.roomIMG)}">
+        </label>
+        <label class="hotel-admin-form__wide">
+          <span>Description</span>
+          <textarea name="description" rows="3">${escapeHtml(room.description || "")}</textarea>
+        </label>
+      </form>
+    `,
+    footer: `
+      <button class="hotel-modal-btn hotel-modal-btn--ghost" type="button" data-close-modal>Cancel</button>
+      <button class="hotel-modal-btn hotel-modal-btn--primary" type="submit" form="hotel-room-form">${submitLabel}</button>
+    `,
+    onReady(modal, close) {
+      const form = modal.querySelector("#hotel-room-form");
+      const submitBtn = modal.querySelector(".hotel-modal-btn--primary");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        try {
+          const payload = roomPayloadFromForm(form, room);
+          setButtonLoading(submitBtn, true, submitLabel);
+          await onSubmit(payload);
+          close();
+        } catch (err) {
+          setModalError(modal, friendlyError(err, err.message || "Room action failed."));
+          setButtonLoading(submitBtn, false, submitLabel);
+        }
+      });
+    },
+  });
+}
+
+function openConfirmDialog({ title, message, details = "", confirmText = "Confirm", danger = false, onConfirm }) {
+  const confirmLabel = `${danger ? '<i class="fa fa-trash"></i>' : '<i class="fa fa-check"></i>'} ${confirmText}`;
+
+  openHotelModal({
+    title,
+    body: `
+      <div class="hotel-confirm">
+        <div class="hotel-confirm__icon ${danger ? "hotel-confirm__icon--danger" : ""}">
+          <i class="fa ${danger ? "fa-exclamation-triangle" : "fa-check"}"></i>
+        </div>
+        <div>
+          <p>${escapeHtml(message)}</p>
+          ${details ? `<span>${escapeHtml(details)}</span>` : ""}
+        </div>
+      </div>
+    `,
+    footer: `
+      <button class="hotel-modal-btn hotel-modal-btn--ghost" type="button" data-close-modal>Cancel</button>
+      <button class="hotel-modal-btn ${danger ? "hotel-modal-btn--danger" : "hotel-modal-btn--primary"}" type="button" id="hotel-confirm-btn">${confirmLabel}</button>
+    `,
+    onReady(modal, close) {
+      const confirmBtn = modal.querySelector("#hotel-confirm-btn");
+      confirmBtn.addEventListener("click", async () => {
+        try {
+          setButtonLoading(confirmBtn, true, confirmLabel);
+          await onConfirm();
+          close();
+        } catch (err) {
+          setModalError(modal, friendlyError(err, "Action failed."));
+          setButtonLoading(confirmBtn, false, confirmLabel);
+        }
+      });
+    },
+  });
+}
+
+function renderRoomRows(rooms) {
+  if (!rooms.length) {
+    return `
+      <div class="hotel-rooms-empty">
+        <i class="fa fa-bed"></i>
+        <span>No rooms yet</span>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="hotel-rooms-table-wrap">
+      <table class="hotel-rooms-table">
+        <thead>
+          <tr>
+            <th>Room</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rooms.map(rawRoom => {
+            const room = normalizeRoom(rawRoom);
+            return `
+              <tr>
+                <td>
+                  <strong>${escapeHtml(room.roomNumber || "-")}</strong>
+                  <span>Floor ${escapeHtml(room.floor || "-")} | ${escapeHtml(room.area || "-")}</span>
+                </td>
+                <td>${escapeHtml(room.typeCode || "-")}</td>
+                <td><span class="hotel-room-status">${escapeHtml(room.roomStatus || "-")}</span></td>
+                <td>${Number(room.price || 0).toLocaleString("vi-VN")} VND</td>
+                <td>
+                  <button class="hotel-room-action" data-room-action="edit" data-room-id="${room.id}" aria-label="Edit room">
+                    <i class="fa fa-pencil"></i>
+                  </button>
+                  <button class="hotel-room-action hotel-room-action--danger" data-room-action="delete" data-room-id="${room.id}" aria-label="Delete room">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function openRoomsModal(hotel) {
+  const rooms = hotel.rooms || [];
+
+  openHotelModal({
+    title: "Rooms",
+    subtitle: hotel.address || `Hotel #${hotel.id}`,
+    size: "xl",
+    body: `
+      <div class="hotel-rooms-toolbar">
+        <div>
+          <strong>${rooms.length}</strong>
+          <span>${rooms.length === 1 ? "room" : "rooms"} in this property</span>
+        </div>
+        <button class="hotel-modal-btn hotel-modal-btn--primary" type="button" id="hotel-add-room-btn">
+          <i class="fa fa-plus"></i> Add Room
+        </button>
+      </div>
+      ${renderRoomRows(rooms)}
+    `,
+    footer: `<button class="hotel-modal-btn hotel-modal-btn--ghost" type="button" data-close-modal>Close</button>`,
+    onReady(modal, close) {
+      modal.querySelector("#hotel-add-room-btn")?.addEventListener("click", () => {
+        close();
+        openRoomForm({
+          hotelId: hotel.id,
+          mode: "add",
+          onSubmit: async (room) => {
+            await createRoom(hotel.id, room);
+            await loadHotels({ preserveStatus: true });
+            setStatus("Room created.");
+          },
+        });
+      });
+
+      modal.querySelectorAll("[data-room-action]").forEach(button => {
+        button.addEventListener("click", () => {
+          const roomId = button.dataset.roomId;
+          const room = rooms.find(item => String(item.id) === String(roomId));
+          close();
+
+          if (button.dataset.roomAction === "edit" && room) {
+            openRoomForm({
+              hotelId: hotel.id,
+              mode: "edit",
+              defaults: room,
+              onSubmit: async (payload) => {
+                await updateRoom(hotel.id, roomId, payload);
+                await loadHotels({ preserveStatus: true });
+                setStatus("Room updated.");
+              },
+            });
+          }
+
+          if (button.dataset.roomAction === "delete" && room) {
+            openConfirmDialog({
+              title: "Delete Room",
+              message: `Delete room ${room.roomNumber || roomId}?`,
+              details: "Existing booking relations will follow database rules.",
+              confirmText: "Delete Room",
+              danger: true,
+              onConfirm: async () => {
+                await deleteRoom(hotel.id, roomId);
+                await loadHotels({ preserveStatus: true });
+                setStatus("Room deleted.");
+              },
+            });
+          }
+        });
+      });
+    },
+  });
+}
+
+async function handleAddHotel() {
+  openHotelForm({
+    mode: "add",
+    onSubmit: async (hotel) => {
+      await createHotel(hotel);
+      await loadHotels({ preserveStatus: true });
+      setStatus("Hotel created.");
+    },
+  });
 }
 
 async function handleEditHotel(hotelId) {
   const current = allHotels.find(h => String(h.id) === String(hotelId));
-  const hotel = askHotel(current);
-  if (!hotel) return;
-
-  try {
-    await updateHotel(hotelId, hotel);
-    setStatus("Hotel updated.");
-    await loadHotels();
-  } catch (err) {
-    setStatus(err?.data?.message || "Update hotel failed.", "error");
-  }
+  openHotelForm({
+    mode: "edit",
+    defaults: current,
+    onSubmit: async (hotel) => {
+      await updateHotel(hotelId, hotel);
+      await loadHotels({ preserveStatus: true });
+      setStatus("Hotel updated.");
+    },
+  });
 }
 
 async function handleDeleteHotel(hotelId) {
-  if (!confirm("Delete this hotel? Rooms and bookings will be detached by database rules.")) return;
+  const current = allHotels.find(h => String(h.id) === String(hotelId));
+  const hotelName = current?.address || `Hotel #${hotelId}`;
 
-  try {
-    await deleteHotel(hotelId);
-    setStatus("Hotel deleted.");
-    await loadHotels();
-  } catch (err) {
-    setStatus(err?.data?.message || "Delete hotel failed.", "error");
-  }
+  openConfirmDialog({
+    title: "Delete Property",
+    message: `Delete ${hotelName}?`,
+    details: "Rooms and bookings will be handled by the database rules.",
+    confirmText: "Delete Property",
+    danger: true,
+    onConfirm: async () => {
+      await deleteHotel(hotelId);
+      await loadHotels({ preserveStatus: true });
+      setStatus("Hotel deleted.");
+    },
+  });
 }
 
 async function handleRooms(hotelId) {
   try {
     const hotel = await getHotel(hotelId);
-    const rooms = hotel.rooms || [];
-    const roomList = rooms.map(room => `${room.id}: room ${room.roomNumber} - ${room.typeCode} - ${room.price}`).join("\n") || "No rooms yet.";
-    const action = prompt(`${roomList}\n\nType: add, edit, delete`, "add");
-    if (!action) return;
-
-    if (action.toLowerCase() === "add") {
-      const room = askRoom();
-      if (room) await createRoom(hotelId, room);
-    } else if (action.toLowerCase() === "edit") {
-      const roomId = prompt("Room ID to edit:");
-      const current = rooms.find(room => String(room.id) === String(roomId));
-      if (!roomId || !current) return;
-      const room = askRoom(current);
-      if (room) await updateRoom(hotelId, roomId, room);
-    } else if (action.toLowerCase() === "delete") {
-      const roomId = prompt("Room ID to delete:");
-      if (roomId && confirm(`Delete room ${roomId}?`)) await deleteRoom(hotelId, roomId);
-    }
-
-    setStatus("Room changes saved.");
-    await loadHotels();
+    openRoomsModal(hotel);
   } catch (err) {
-    setStatus(err?.data?.message || "Room action failed.", "error");
+    setStatus(friendlyError(err, "Could not load rooms."), "error");
   }
 }
 

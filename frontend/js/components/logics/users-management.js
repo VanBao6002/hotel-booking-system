@@ -49,9 +49,26 @@ function updateRowStatus(userId, status, message) {
 }
 
 function roleBadge(role) {
-  if (role === "ADMIN")  return `<span class="role-badge badge-admin">Admin</span>`;
-  if (role === "STAFF")  return `<span class="role-badge badge-staff">Staff</span>`;
-  return `<span class="role-badge badge-user">User</span>`;
+  if (role === "manager") return `<span class="role-badge badge-admin">Manager</span>`;
+  if (role === "staff") return `<span class="role-badge badge-staff">Staff</span>`;
+  return `<span class="role-badge badge-user">Customer</span>`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  }[char]));
+}
+
+function accountStatusBadge(user) {
+  if (user.active === false) {
+    return `<span class="role-badge" style="background:#fee2e2;color:#991b1b;">Đã vô hiệu hóa</span>`;
+  }
+  return `<span class="role-badge" style="background:#dcfce7;color:#166534;">Hoạt động</span>`;
 }
 
 // Render user table with action buttons (uses current page & filters)
@@ -75,20 +92,24 @@ function renderRows(users) {
   tbody.innerHTML = pageUsers
     .map((u) => {
       const locked = u.lockedUntil ? new Date(u.lockedUntil).toLocaleString() : "-";
+      const lockReason = u.lockReason ? `<div style="font-size:11px;color:#b42318;margin-top:4px;">${escapeHtml(u.lockReason)}</div>` : "";
+      const lockInfo = u.lockedUntil ? `<div style="font-size:11px;color:#6b7280;margin-top:4px;">Khóa đến: ${escapeHtml(locked)}</div>` : "";
+      const staffHotel = u.staffHotelBranchId ? `<div style="font-size:11px;color:#6b7280;margin-top:4px;">Hotel #${u.staffHotelBranchId}</div>` : "";
+      const disabledAction = u.active === false ? "disabled" : "";
       return `
         <tr style="border-top:1px solid #f0f0f0;" data-user-id="${u.id}">
           <td style="padding: 12px 14px;">${u.id ?? ""}</td>
           <td style="padding: 12px 14px;">${u.userName ?? ""}</td>
           <td style="padding: 12px 14px;">${u.email ?? ""}</td>
           <td style="padding: 12px 14px;">${u.fullName ?? ""}</td>
-          <td style="padding: 12px 14px;">${roleBadge(u.role)}</td>
-          <td style="padding: 12px 14px;">${locked}</td>
+          <td style="padding: 12px 14px;">${roleBadge(u.role)}${staffHotel}</td>
+          <td style="padding: 12px 14px;">${accountStatusBadge(u)}${lockInfo}${lockReason}</td>
           <td style="padding: 12px 14px;">
             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-              <button class="action-btn action-delete" data-user-id="${u.id}" data-user-name="${u.userName}" title="Delete user"><i class="fa fa-trash"></i> Xóa</button>
-              <button class="action-btn action-ban" data-user-id="${u.id}" data-user-name="${u.userName}" title="Ban user"><i class="fa fa-lock"></i> Cấm</button>
-              <button class="action-btn action-warn" data-user-id="${u.id}" data-user-name="${u.userName}" title="Send warning"><i class="fa fa-exclamation-triangle"></i> Cảnh báo</button>
-              <button class="action-btn action-promote" data-user-id="${u.id}" data-user-name="${u.userName}" title="Promote to STAFF"><i class="fa fa-user-plus"></i> Thăng cấp</button>
+              <button class="action-btn action-delete" data-user-id="${u.id}" data-user-name="${u.userName}" title="Vô hiệu hóa tài khoản" ${disabledAction}><i class="fa fa-ban"></i> Vô hiệu hóa</button>
+              <button class="action-btn action-ban" data-user-id="${u.id}" data-user-name="${u.userName}" title="Ban user" ${disabledAction}><i class="fa fa-lock"></i> Cấm</button>
+              <button class="action-btn action-warn" data-user-id="${u.id}" data-user-name="${u.userName}" title="Send warning" ${disabledAction}><i class="fa fa-exclamation-triangle"></i> Cảnh báo</button>
+              <button class="action-btn action-promote" data-user-id="${u.id}" data-user-name="${u.userName}" title="Promote to staff" ${disabledAction}><i class="fa fa-user-plus"></i> Thăng cấp</button>
             </div>
             <span class="row-status" style="display: none; font-size: 12px; margin-top: 4px; padding: 4px; border-radius: 3px;"></span>
           </td>
@@ -168,7 +189,7 @@ async function loadUsers() {
       status === 401
         ? "Bạn chưa đăng nhập."
         : status === 403
-          ? "Bạn không có quyền Admin để xem danh sách người dùng."
+          ? "Bạn không có quyền Manager để xem danh sách người dùng."
           : err?.data?.message || "Tải dữ liệu thất bại.";
     setStatus(message, "error");
     allUsers = [];
@@ -182,14 +203,18 @@ function simulateActionSuccess(userId, action) {
     // update local array role
     const u = allUsers.find((x) => x.id === userId);
     if (u) {
-      u.role = "STAFF";
+      u.role = "staff";
     }
     applyFiltersAndRender();
     updateRowStatus(userId, "success", "✓ Đã nâng cấp");
   } else if (action === "delete") {
-    allUsers = allUsers.filter((x) => x.id !== userId);
+    const u = allUsers.find((x) => x.id === userId);
+    if (u) {
+      u.active = false;
+      u.lockReason = "Account disabled by manager";
+    }
     applyFiltersAndRender();
-    updateRowStatus(userId, "success", "✓ Đã xóa");
+    updateRowStatus(userId, "success", "Đã vô hiệu hóa");
   } else if (action === "ban") {
     updateRowStatus(userId, "success", "✓ Đã cấm");
   } else if (action === "warn") {
@@ -197,22 +222,22 @@ function simulateActionSuccess(userId, action) {
   }
 }
 
-// Handle delete user action
+// Handle account disable action. The backend keeps the user row for audit/history.
 async function handleDeleteUser(userId, userName) {
   showConfirmDialog("delete", userId, userName, async (reason) => {
-    updateRowStatus(userId, "loading", "Đang xóa...");
+    updateRowStatus(userId, "loading", "Đang vô hiệu hóa...");
     try {
       if (MOCK_MODE) {
         simulateActionSuccess(userId, "delete");
         return;
       }
       await deleteUser(userId);
-      updateRowStatus(userId, "success", "✓ Xóa thành công");
+      updateRowStatus(userId, "success", "Vô hiệu hóa thành công");
       // Reload users after 1.5 seconds to show update
       setTimeout(loadUsers, 1500);
     } catch (err) {
-      const message = err?.data?.message || "Xóa thất bại";
-      updateRowStatus(userId, "error", "✗ " + message);
+      const message = err?.data?.message || "Vô hiệu hóa thất bại";
+      updateRowStatus(userId, "error", message);
     }
   });
 }
@@ -255,7 +280,7 @@ async function handleWarnUser(userId, userName) {
   });
 }
 
-// Handle grant STAFF role action
+// Handle grant staff role action
 async function handleGrantStaffRole(userId, userName) {
   showConfirmDialog("promote", userId, userName, async (reason) => {
     updateRowStatus(userId, "loading", "Đang nâng cấp...");
@@ -293,9 +318,9 @@ function setupToolbar() {
       <input class="admin-search" placeholder="Tìm theo username, email, họ tên..." style="flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:8px;" />
       <select class="admin-filter-role" style="padding:10px 12px; border:1px solid #ddd; border-radius:8px; background:#fff;">
         <option value="all">Tất cả vai trò</option>
-        <option value="ADMIN">Admin</option>
-        <option value="STAFF">Staff</option>
-        <option value="USER">User</option>
+        <option value="manager">Manager</option>
+        <option value="staff">Staff</option>
+        <option value="customer">Customer</option>
       </select>
     </div>
     <div style="display:flex; gap:8px; align-items:center;">

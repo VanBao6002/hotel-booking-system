@@ -5,8 +5,8 @@ export const renderConfirmModal = (actionType, userId, userName) => {
   // Map action types to user-friendly messages and input labels
   const actionConfig = {
     delete: {
-      title: "Xác nhận Xóa Người Dùng",
-      message: `Bạn có chắc là muốn xóa người dùng "${userName}"? Hành động này không thể hoàn tác.`,
+      title: "Xác nhận vô hiệu hóa tài khoản",
+      message: `Tài khoản "${userName}" sẽ bị vô hiệu hóa đăng nhập, nhưng dữ liệu đặt phòng và lịch sử liên quan vẫn được giữ lại.`,
       inputLabel: "",
       inputPlaceholder: "",
       showInput: false,
@@ -26,8 +26,8 @@ export const renderConfirmModal = (actionType, userId, userName) => {
       showInput: true,
     },
     promote: {
-      title: "Xác nhận Trở Thành STAFF",
-      message: `Bạn có chắc là muốn nâng cấp người dùng "${userName}" lên vai trò STAFF?`,
+      title: "Xác nhận Trở Thành Staff",
+      message: `Bạn có chắc là muốn nâng cấp người dùng "${userName}" lên vai trò staff?`,
       inputLabel: "",
       inputPlaceholder: "",
       showInput: false,

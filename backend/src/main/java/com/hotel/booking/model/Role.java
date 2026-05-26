@@ -2,9 +2,9 @@ package com.hotel.booking.model;
 
 public enum Role {
 
-	USER(1, "USER", "ROLE_USER"),
-	ADMIN(2, "ADMIN", "ROLE_ADMIN"),
-	STAFF(3, "STAFF", "ROLE_STAFF");
+	CUSTOMER(1, "customer", "ROLE_CUSTOMER"),
+	MANAGER(2, "manager", "ROLE_MANAGER"),
+	STAFF(3, "staff", "ROLE_STAFF");
 
 	private final int id;
 	private final String apiRole;
@@ -41,5 +41,18 @@ public enum Role {
 
 		throw new IllegalStateException("Unsupported user roleId: " + roleId);
     }
-}	
-  
+
+	public static Role fromName(String roleName) {
+		if (roleName == null || roleName.isBlank()) {
+			throw new IllegalArgumentException("Role is required");
+		}
+
+		String normalized = roleName.trim().toLowerCase();
+		return switch (normalized) {
+			case "customer", "user" -> CUSTOMER;
+			case "manager", "admin" -> MANAGER;
+			case "staff" -> STAFF;
+			default -> throw new IllegalArgumentException("Unsupported role: " + roleName);
+		};
+	}
+}

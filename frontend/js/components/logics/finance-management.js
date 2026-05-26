@@ -1,6 +1,7 @@
 import { getFinanceSummary, getFinanceTransactions, getMonthlyRevenue } from "../../services/admin.js";
 
 let latestMonthlyData = [];
+let latestTransactions = [];
 
 export function initFinanceManagement() {
     requestAnimationFrame(async () => {
@@ -11,6 +12,24 @@ export function initFinanceManagement() {
 
 function formatMoney(value) {
     return `${Number(value || 0).toLocaleString("vi-VN")} VND`;
+}
+
+function friendlyError(err, fallback) {
+    const message = err?.data?.message || "";
+    if (!message || /StatementCallback|PreparedStatementCallback|bad SQL|SELECT | FROM | JOIN |SQL syntax/i.test(message)) {
+        return fallback;
+    }
+    return message;
+}
+
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+    }[char]));
 }
 
 async function loadFinanceData() {
@@ -26,14 +45,17 @@ async function loadFinanceData() {
         document.getElementById("finance-tax-summary").textContent = formatMoney(summary.taxSummary);
 
         latestMonthlyData = monthlyRevenue?.data || [];
+        latestTransactions = transactions || [];
         renderFinanceBarChart(latestMonthlyData);
-        renderTransactions(transactions || []);
+        renderTransactions(latestTransactions);
     } catch (err) {
+        console.error("Could not load finance data", err);
         const tbody = document.getElementById("transaction-tbody");
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="4" style="padding:18px 16px;color:#b42318;">${err?.data?.message || "Could not load finance data."}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="padding:18px 16px;color:#b42318;">${friendlyError(err, "Could not load finance data.")}</td></tr>`;
         }
         renderFinanceBarChart([]);
+        latestTransactions = [];
     }
 }
 
@@ -133,13 +155,14 @@ function initExportButtons() {
 
     if (csvBtn) {
         csvBtn.addEventListener("click", () => {
-            const rows = document.querySelectorAll("#transaction-tbody tr");
             let csv = "Date,Description,Amount,Status\n";
-            rows.forEach(row => {
-                const cells = row.querySelectorAll("td");
-                if (cells.length === 4) {
-                    csv += Array.from(cells).map(c => `"${c.textContent.trim()}"`).join(",") + "\n";
-                }
+            latestTransactions.forEach(tx => {
+                csv += [
+                    tx.date || "",
+                    tx.description || "",
+                    formatMoney(tx.amount),
+                    tx.status || "",
+                ].map(value => `"${String(value).replaceAll('"', '""')}"`).join(",") + "\n";
             });
             downloadFile("transactions.csv", csv, "text/csv");
         });
@@ -147,9 +170,57 @@ function initExportButtons() {
 
     if (pdfBtn) {
         pdfBtn.addEventListener("click", () => {
-            alert("Export PDF will be integrated later.");
+            openPdfReport(latestTransactions);
         });
     }
+}
+
+function openPdfReport(transactions) {
+    const rows = transactions.length ? transactions : [];
+    const printWindow = window.open("", "_blank", "noopener,noreferrer");
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+        <!doctype html>
+        <html>
+        <head>
+            <title>Transaction History</title>
+            <style>
+                body { font-family: Arial, sans-serif; color: #1a1a2e; margin: 32px; }
+                h1 { font-size: 22px; margin: 0 0 18px; }
+                table { width: 100%; border-collapse: collapse; font-size: 12px; }
+                th, td { border-bottom: 1px solid #e8e4dc; padding: 9px 8px; text-align: left; }
+                th { background: #fafaf8; color: #4b5563; }
+                .amount { text-align: right; font-weight: 700; }
+                @media print { body { margin: 18mm; } }
+            </style>
+        </head>
+        <body>
+            <h1>Transaction History</h1>
+            <table>
+                <thead>
+                    <tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    ${rows.length ? rows.map(tx => `
+                        <tr>
+                            <td>${escapeHtml(tx.date || "-")}</td>
+                            <td>${escapeHtml(tx.description || "-")}</td>
+                            <td class="amount">${escapeHtml(formatMoney(tx.amount))}</td>
+                            <td>${escapeHtml(tx.status || "-")}</td>
+                        </tr>
+                    `).join("") : `<tr><td colspan="4">No transactions found</td></tr>`}
+                </tbody>
+            </table>
+            <script>
+                window.addEventListener("load", () => {
+                    window.print();
+                });
+            </script>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
 }
 
 function downloadFile(filename, content, mimeType) {

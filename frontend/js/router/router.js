@@ -7,42 +7,47 @@ let currentPath = null;
 const rules = [
     {
         path: ["#home"],
-        roles: ["guest", "USER", "STAFF", "ADMIN"],
+        roles: ["guest", "customer", "staff", "manager"],
         item: ["searchHotel", "discount", "guess"]
     },
     {
         path: ["#home-manager"],
-        roles: ["staff", "ADMIN"],
+        roles: ["manager"],
+        item: []
+    },
+    {
+        path: ["#home-staff"],
+        roles: ["staff"],
         item: []
     },
     {
         path: ["#users-management"],
-        roles: ["ADMIN"],
+        roles: ["manager"],
         item: []
     },
     {
         path: ["#search-hotel"],
-        roles: ["guest", "USER", "STAFF", "ADMIN"],
+        roles: ["guest", "customer", "staff", "manager"],
         item: ["home"]
     },
     {
         path: ["#booking"],
-        roles: ["USER"],
+        roles: ["customer"],
         item: ["genaral","room","location","service","rate"]
     },
     {
         path: ["#setting"],
-        roles: ["USER", "STAFF", "ADMIN"],
+        roles: ["customer", "staff", "manager"],
         item: ["profile","changePassword","home"]
     },
     {
         path: ["#booking-history"],
-        roles: ["USER"],
+        roles: ["customer"],
         item: ["home"]
     },
     {
         path: ["#error"],
-        roles: ["guest", "USER", "STAFF", "ADMIN"],
+        roles: ["guest", "customer", "staff", "manager"],
         item: []
     }
 ]
@@ -228,7 +233,8 @@ function attachNavEvents() {
     if(homeEl) {
         homeEl.addEventListener("click", () => {
             console.log(window.location.hash)
-            navigation("#home");
+            const role = localStorage.getItem("role");
+            navigation(role === "manager" ? "#home-manager" : role === "staff" ? "#home-staff" : "#home");
         })
     }
 
@@ -301,7 +307,8 @@ export function initRouter() {
     });
 
     if(!window.location.hash) {
-        window.location.hash = "#home";
+        const role = localStorage.getItem("role");
+        window.location.hash = role === "manager" ? "#home-manager" : role === "staff" ? "#home-staff" : "#home";
     }
 
     currentPath = window.location.hash;

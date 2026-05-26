@@ -5,12 +5,14 @@ import { initPopularDestinations } from "./components/logics/popular-destination
 import { initSearchHotel } from "./components/logics/search-hotel.js";
 import { initUsersManagement } from "./components/logics/users-management.js";
 import { initHomeManager } from "./components/logics/home-manager.js";
+import { initHomeStaff } from "./components/logics/home-staff.js";
 
 import { addRoute, initRouter } from "./router/router.js";
 
 import { headerTemplate } from "./components/templates/header.template.js";
 import { homeTemplate } from "./components/templates/home.template.js";
 import { homeManagerTemplate } from "./components/templates/home-manager.template.js";
+import { homeStaffTemplate } from "./components/templates/home-staff.template.js";
 import { searchHoteltemplate } from "./components/templates/search-hotel.template.js";
 import { bookingTemplate } from "./components/templates/booking.template.js";
 import { usersManagementTemplate } from "./components/templates/users-management.template.js";
@@ -36,6 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if(!localStorage.getItem("role")) {
         localStorage.setItem("role", "guest");
+    } else {
+        const legacyRoleMap = { USER: "customer", ADMIN: "manager", STAFF: "staff" };
+        const currentRole = localStorage.getItem("role");
+        localStorage.setItem("role", legacyRoleMap[currentRole] || currentRole.toLowerCase());
     }
     if(!localStorage.getItem("token")) {
         localStorage.setItem("token", "");
@@ -84,6 +90,14 @@ document.addEventListener("DOMContentLoaded", () => {
         main.innerHTML = homeManagerTemplate();
         initHomeManager(); 
     }
+    });
+
+    addRoute("#home-staff", () => {
+        const main = document.querySelector(".main");
+        if (main) {
+            main.innerHTML = homeStaffTemplate();
+            initHomeStaff();
+        }
     });
 
     addRoute("#users-management", () => {
