@@ -7,8 +7,9 @@ public class UserDTO {
     private Integer id;
     private String email;
     private String fullName;
+    private String userName;
     private String phoneNumber;
-    private LocalDate dateOfBbirth;
+    private LocalDate dateOfBirth;
     private String currentAddress;
     private LocalDateTime lockedUntil;
     private String role;
@@ -22,11 +23,14 @@ public class UserDTO {
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
 
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+
     public String getPhoneNumber() {return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber; }
 
-    public LocalDate getDateOfBirth() {return dateOfBbirth; }
-    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBbirth = dateOfBirth; }
+    public LocalDate getDateOfBirth() {return dateOfBirth; }
+    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
 
     public String getCurrentAddress() {return currentAddress; }
     public void setCurrentAddress(String currentAddress) { this.currentAddress = currentAddress; }

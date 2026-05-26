@@ -15,6 +15,7 @@ public class RegisterRequest {
 
     @NotBlank(message = "Full name cannot be blank")
     private String fullName;
+    private String userName;
     
     @NotBlank(message = "Phone number cannot be blank")
     private String phoneNumber;
@@ -42,6 +43,9 @@ public class RegisterRequest {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
 
     public String getPhoneNumber() {
         return phoneNumber;
