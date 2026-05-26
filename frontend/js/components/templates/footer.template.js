@@ -6,8 +6,9 @@ export function footerTemplate() {
   
               <div class="grid__column-nine-columns">
                 <div class="footer__info">
-                  <p>PBL 3: Công nghệ phần mền</p>
-                  <p>Thành viên: Trần Quang Phước, Phan Thành Lương, Văn Gia Bảo, Nguyễn Văn Thắng </p>
+                  <div class="footer__brand">PTBL Booking Hotel</div>
+                  <p>PBL 3: Công nghệ phần mềm</p>
+                  <p>Thành viên: Trần Quang Phước, Phan Thành Lương, Văn Gia Bảo, Nguyễn Văn Thắng</p>
                   <p>Giảng viên hướng dẫn: Võ Đức Hoàng</p>
                   <p>Năm học 2025–2026</p>
                   <p>Trường Đại học Bách Khoa Đà Nẵng – Khoa Công nghệ Thông tin</p>
@@ -16,6 +17,7 @@ export function footerTemplate() {
   
               <div class="grid__column-three-columns">
                 <div class="footer__contact">
+                  <div class="footer__contact-title">Liên hệ</div>
                   <p>
                     <i class="fa-brands fa-facebook"></i>
                     <a href="https://www.facebook.com/abendeptraiso1" target="_blank">Trần Quang Phước</a>
@@ -37,7 +39,7 @@ export function footerTemplate() {
   
             </div>
             <div class="grid__row">
-              <p class="copyright">© Bản quyền thuộc về nhóm thực hiện</p>
+              <p class="copyright">© 2025–2026 PTBL Booking Hotel · Bản quyền thuộc về nhóm thực hiện</p>
             </div>
           </div>
         </div>

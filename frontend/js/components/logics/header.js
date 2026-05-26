@@ -340,6 +340,32 @@ function submitForm(){
 
 
 export function initHeader() {
+    // Scroll effect on header
+    const header = document.getElementById("main-header");
+    if (header) {
+        const onScroll = () => {
+            if (window.scrollY > 20) {
+                header.classList.add("scrolled");
+            } else {
+                header.classList.remove("scrolled");
+            }
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+    }
+
+    // Scroll-reveal observer
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
+
     getModalOverlay().addEventListener("click", () => {
         turnOffModal();
         hideAllForm();

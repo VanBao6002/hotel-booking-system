@@ -1,70 +1,129 @@
+/* ============================================================
+   PROFILE – Settings Page (Dark Luxury)
+   ============================================================ */
+
 .setting {
-    margin-top: calc(var(--header-height) + 24px);
+    padding-top: 12px;
 }
+
 .profile {
-    padding: 20px 150px;
-    background-color: white;
-    border-radius: 20px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: 40px 48px;
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
 }
+
+/* Top accent */
+.profile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gold-gradient);
+}
+
 .profile__title {
+    font-family: 'Playfair Display', Georgia, serif;
     text-align: center;
-    font-size: 2.4rem;
-    font-weight: bold;
-    color: var(--navyBlue-color);
-    margin-bottom: 20px;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
 }
+
 .profile__wrap {
-    border: 1px solid var(--lightGray-color);
-    border-radius: 10px;
-    padding: 0 20px 20px 20px;
-    box-shadow: 0 2px 5px rgba(3, 18, 26, 0.15);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    background: var(--bg-surface);
 }
+
+/* ---- Form groups ---- */
 .group-info {
     margin-top: 20px;
+    position: relative;
 }
-.group-info input {
-    width: 100%;
-    height: 43px;
-    border-radius: 10px;
-    padding: 0 10px;
-    font-size: 1.6rem;
-    border: 1px solid var(--lightGray-color);
-    box-shadow: 0 2px 5px rgba(3, 18, 26, 0.15);
-}
+
 .group-info label,
-.group-info i {
-    font-size: 1.6rem;
-    padding: 0 0 5px 10px;
-    font-weight: 500;
-    color: #1e3c52;
+.group-info > i {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 0 0 8px 4px;
     cursor: pointer;
 }
-.group-info input:focus {
+
+.group-info input {
+    width: 100%;
+    height: 50px;
+    border-radius: var(--radius-md);
+    padding: 0 16px;
+    font-size: 1.5rem;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
     outline: none;
-    border: 2px solid var(--navyBlue-color);
+    transition: border-color var(--duration-fast),
+                box-shadow var(--duration-fast);
 }
+
+.group-info input::placeholder {
+    color: var(--text-muted);
+}
+
+.group-info input:focus {
+    border-color: var(--border-gold-hover);
+    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.12);
+    background: var(--bg-elevated);
+}
+
+.group-info input:disabled {
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
 .group-info-wrap {
     display: flex;
-    width: 100%;
     gap: 20px;
+    width: 100%;
 }
+
 .group-info-section {
     flex: 1;
 }
 
+/* ---- Save button ---- */
 .save-info__btn {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
-    border-radius: 10px;
-    height: 43px;
-    font-size: 1.6rem;
-    font-weight: bold;
-    color: white;
-    background-color: #0a9af2;
-}
-.save-info__btn:hover {
-    filter: brightness(80%);
+    margin-top: 28px;
+    border-radius: var(--radius-md);
+    height: 50px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--text-inverse);
+    background: var(--gold-gradient);
     cursor: pointer;
+    box-shadow: var(--shadow-gold);
+    transition: all var(--duration-normal) var(--ease-out);
+    border: none;
+}
+
+.save-info__btn:hover {
+    box-shadow: var(--gold-glow);
+    transform: translateY(-2px);
+    filter: brightness(1.06);
 }

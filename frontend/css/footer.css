@@ -1,22 +1,125 @@
+/* ============================================================
+   FOOTER – Dark Luxury
+   ============================================================ */
+
 .footer {
-    margin-top: 70px;
-    /* position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0; */
-    font-size: 1.6rem;
-    color: white;
-    background-color: var(--navyBlue-color);
+    margin-top: 80px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-subtle);
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    position: relative;
+    overflow: hidden;
 }
 
-.copyright {
-    margin: 0 auto;
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--gold-gradient);
+    opacity: 0.5;
+}
+
+.footer .grid {
+    padding-top: 48px;
+    padding-bottom: 32px;
+}
+
+.footer .grid__row {
+    align-items: flex-start;
+}
+
+/* ---- Info block ---- */
+.footer__info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.footer__brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.0rem;
+    font-weight: 700;
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+}
+
+.footer__info p {
+    line-height: 1.7;
+    color: var(--text-muted);
+    font-size: 1.3rem;
+}
+
+.footer__info p:first-of-type {
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* ---- Contact block ---- */
+.footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer__contact-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+}
+
+.footer__contact p {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    transition: color var(--duration-fast);
+}
+
+.footer__contact p:hover {
+    color: var(--text-secondary);
+}
+
+.footer__contact i {
+    font-size: 1.6rem;
+    color: var(--gold-dark);
+    width: 18px;
+    flex-shrink: 0;
 }
 
 .footer__contact a {
     text-decoration: none;
-    color: white;
+    color: inherit;
+    transition: color var(--duration-fast);
 }
+
 .footer__contact a:hover {
-    text-decoration: underline;
+    color: var(--gold);
+}
+
+/* ---- Copyright ---- */
+.footer .grid__row + .grid__row {
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 24px;
+    padding-top: 24px;
+}
+
+.copyright {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 12px;
+    letter-spacing: 0.03em;
 }

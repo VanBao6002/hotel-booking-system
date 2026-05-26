@@ -1,61 +1,143 @@
+/* ============================================================
+   ADVERTISING BANNER – Premium Slider (Dark Luxury)
+   ============================================================ */
+
 .advertising-banner {
-    margin-top: 150px;
+    margin-top: 72px;
+    padding: 0 0 8px 0;
+}
+
+.advertising-banner__title {
+    margin-bottom: 8px;
+}
+
+.advertising-banner__subtitle {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
 }
 
 .advertising-banner__box {
     position: relative;
 }
+
 .advertising-banner__wrap {
     display: flex;
-    height: 224px;
+    gap: 0;
+    height: 240px;
     overflow-x: scroll;
     scroll-behavior: smooth;
-    background-color: white;
-    border-radius: 10px;
-    margin: -12px;
-    z-index: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--bg-secondary);
 }
+
+.advertising-banner__wrap::-webkit-scrollbar {
+    display: none;
+}
+
 .advertising-banner__picture {
-    min-width: 407.95px;
-    padding: 12px;
-    
+    flex-shrink: 0;
+    width: calc(33.33% - 8px);
+    margin-right: 12px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
 }
+
+.advertising-banner__picture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(10,10,10,0.5) 0%,
+        transparent 50%
+    );
+    opacity: 0;
+    transition: opacity var(--duration-normal);
+}
+
+.advertising-banner__picture:hover::after {
+    opacity: 1;
+}
+
 .advertising-banner__picture img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
-    border-radius: 10px;
-    overflow: hidden;
+    border-radius: var(--radius-md);
+    transition: transform var(--duration-slow) var(--ease-out);
 }
 
+.advertising-banner__picture:hover img {
+    transform: scale(1.06);
+}
+
+/* Navigation arrows */
 .advertising-banner__btn {
     display: none;
     position: absolute;
-    width: 40px;
-    height: 40px;
-    background-color: white;
+    width: 44px;
+    height: 44px;
+    background: rgba(20, 20, 20, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-gold);
     border-radius: 50%;
+    align-items: center;
     justify-content: center;
-    align-self: center;
     cursor: pointer;
-    border: 1px solid var(--lightGray-color);
-    box-shadow: rgba(3, 18, 26, 0.2) 0px 8px 16px;
-    color: #0a9af2;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 5;
+    color: var(--gold);
+    transition: all var(--duration-fast);
+    box-shadow: var(--shadow-md);
 }
+
+.advertising-banner__btn:hover {
+    background: var(--bg-elevated);
+    border-color: var(--gold);
+    box-shadow: var(--shadow-gold);
+    transform: translateY(-50%) scale(1.05);
+}
+
 .advertising-banner__btn i {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     margin: auto;
 }
 
 .advertising-banner__btn-next {
     display: flex;
-    right: -20px;
+    right: -16px;
 }
 
 .advertising-banner__btn-previous {
-    left: -20px;
+    left: -16px;
 }
 
+/* Dot indicators */
+.advertising-banner__dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.advertising-banner__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border-medium);
+    cursor: pointer;
+    transition: all var(--duration-normal);
+}
+
+.advertising-banner__dot.active {
+    background: var(--gold);
+    width: 20px;
+    border-radius: 3px;
+}

@@ -1,64 +1,185 @@
+/* ============================================================
+   HEADER – Glassmorphism Dark Luxury
+   ============================================================ */
+
 .header {
-    background-color: var(--navyBlue-color);
     position: fixed;
-    right: 0;
-    left: 0;
     top: 0;
-    z-index: 100;
-}
-.header__navbar {
-    display: flex;
-    width: 100%;
-    height: 60px;
-    justify-content: space-between ;
-    align-items: center;
-}
-.header__navbar-page-transition {
-    border-top: 1px solid white;
-    height: 40px;
-}
-.header__navbar-list {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: end;
-    align-items: center;
-}
-.header__navbar-link {
-    display: flex;
-    height: 90%;
-    width: 100px;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.6rem;
-    font-weight: bold;
-    border-radius: 5px;
-}
-.header__navbar-link:hover {
-    cursor: pointer;
-    background-color: var(--navyBlue-color);
-    filter: brightness(200%);
-}
-.header__navbar-item {
-    color: white;
-}
-.header__navbar-logo {
-    height: 46px;
-    width: 90px;
-    background-color: white;
-}
-.header__navbar-logo-img {
-    width: 100%;
-    height: 100%;
-}
-.header__navbar-title {
-    color: var(--ivoryWhite-color);
-    font-size: 4.6rem;
-    line-height: 4.6rem;
-    font-weight: bold;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(10, 10, 10, 0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background var(--duration-normal) var(--ease-in-out),
+                box-shadow var(--duration-normal) var(--ease-in-out);
 }
 
+.header.scrolled {
+    background: rgba(10, 10, 10, 0.95);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ---- Navbar ---- */
+.header__navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+    width: 100%;
+}
+
+/* ---- Logo ---- */
+.header__navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.header__navbar-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header__navbar-logo-img {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    border: 1px solid var(--border-gold);
+}
+
+/* ---- Brand title ---- */
+.header__navbar-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.0rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+}
+
+/* ---- Nav page-transition strip (hidden now) ---- */
+.header__navbar-page-transition {
+    display: none;
+}
+
+/* ---- User section ---- */
+.header__navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header__navbar-list {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ---- Language ---- */
+.header__navbar-language {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: background var(--duration-fast);
+    color: var(--text-secondary);
+}
+
+.header__navbar-language:hover {
+    background: var(--bg-glass-hover);
+    color: var(--text-primary);
+}
+
+.header__navbar-select-language-img {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+}
+
+.header__navbar-language i {
+    font-size: 1.0rem;
+    transition: transform var(--duration-fast);
+}
+
+/* ---- My Bookings button (logged in) ---- */
+.header__navbar-extras {
+    display: none;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-full);
+    transition: all var(--duration-normal) var(--ease-out);
+    cursor: pointer;
+}
+
+.header__navbar-extras:hover {
+    background: var(--bg-glass-hover);
+    border-color: var(--border-gold-hover);
+    box-shadow: var(--shadow-gold);
+}
+
+.header__navbar-extras-booking {
+    display: block;
+    color: var(--gold);
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding: 8px 20px;
+    letter-spacing: 0.02em;
+}
+
+/* ---- Auth buttons (logged out) ---- */
+.auth__btn-login {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-full);
+    font-size: 1.3rem;
+    font-weight: 500;
+    padding: 8px 20px;
+    height: 38px;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.auth__btn-login:hover {
+    border-color: var(--border-gold-hover);
+    color: var(--gold);
+}
+
+.auth__btn-regist {
+    background: var(--gold-gradient);
+    color: var(--text-inverse);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: 1.3rem;
+    font-weight: 600;
+    padding: 8px 20px;
+    height: 38px;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+    box-shadow: var(--shadow-gold);
+}
+
+.auth__btn-regist:hover {
+    box-shadow: var(--gold-glow);
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+/* ---- User Info (avatar + name dropdown) ---- */
 .header__navbar-user-auth {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     height: 46px;
 }
 
@@ -66,141 +187,116 @@
     height: 100%;
     display: flex;
     align-items: center;
-}
-
-.header__navbar-extras {
-    background-color: var(--ivoryWhite-color);
-    border: 2px solid #0a9af2;
-    border-radius: 30px;
-    margin-right: 4px;
-    display: none;
-}
-
-.header__navbar-extras:hover {
-    cursor: pointer;
-    filter: brightness(80%);
-}
-
-.header__navbar-extras-booking {
-    color: var(--navyBlue-color);
-    font-size: 1.4rem;
-    font-weight: bold;
-    padding: 12px 24px;
-    display: block;
-}
-.header__navbar-language {
-    display: flex;
-    height: 20px;
-    width: 30px;
-    margin: 0 4px;
-}
-.header__navbar-language i {
-    color: var(--ivoryWhite-color);
-    margin: auto 2px;
-}
-.header__navbar-select-language-img {
-    width: 20px;
-    height: 20px;
-}
-
-
-
-.auth__btn-regist {
-    background-color: #0a9af2;
-    color: var(--ivoryWhite-color);
-    font-weight: bold;
-}
-.auth__btn-login {
-    background-color: #d1f0ff;
-    color: var(--navyBlue-color);
-    font-weight: bold;
+    gap: 8px;
 }
 
 .user__info {
-    position: relative;
     display: none;
-    height: 100%;
-    color: var(--ivoryWhite-color);
+    position: relative;
     align-items: center;
-    margin: 0 4px;
-    border-radius: 10px;
-    padding: 5px 5px;
+    gap: 10px;
+    height: 100%;
+    padding: 0 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background var(--duration-fast);
+    color: var(--text-primary);
 }
 
 .user__info:hover {
-    cursor: pointer;
-    background-color: #00000040;
+    background: var(--bg-glass-hover);
 }
-.user__info-extra {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: var(--navyBlue-color);
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid white;
-    z-index: 999;
-}
-.user__info-extra-wrap {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    font-size: 1.4rem;
-    font-weight: bold;
-}
-
-.line::after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 95%;
-    border-top: 1px solid white;
-    top: 26px;
-    left: 4px;
-}
-.user__info-extra.has-management .line::after {
-    top: 56px;
-}
-.extra__item-setting,
-.extra__item-manage,
-.extra__item-sign-out {
-    padding: 5px;
-    border-radius: 5px;
-}
-.extra__item-setting:hover,
-.extra__item-manage:hover,
-.extra__item-sign-out:hover {
-    cursor: pointer;
-    background-color: var(--navyBlue-color);
-    filter: brightness(200%);
-}
-
 
 .user__info-avatar {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
 
 .user__info-avatar-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    margin-right: 4px;
-}
-.user__info-name {
-    font-size: 1.4rem;
-    font-weight: bold;
+    border: 2px solid var(--border-gold);
+    object-fit: cover;
+    transition: border-color var(--duration-normal);
 }
 
-.logged-in .header__navbar-extras {
-    display: block;
+.user__info:hover .user__info-avatar-icon {
+    border-color: var(--gold);
 }
-.logged-in .user__info {
-    display: flex;
+
+.user__info-name {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.logged-in .btn {
+
+/* ---- Dropdown ---- */
+.user__info-extra {
     display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 180px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 8px;
+    box-shadow: var(--shadow-lg);
+    animation: fadeInDown var(--duration-fast) var(--ease-out);
+    z-index: 999;
 }
+
+.user__info-extra-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.extra__item-setting,
+.extra__item-manage,
+.extra__item-sign-out {
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.extra__item-setting:hover,
+.extra__item-manage:hover {
+    background: var(--bg-glass-hover);
+    color: var(--text-primary);
+}
+
+.extra__item-sign-out {
+    color: var(--error);
+    margin-top: 4px;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 12px;
+}
+
+.extra__item-sign-out:hover {
+    background: var(--error-bg);
+    color: var(--error);
+}
+
+/* Remove old .line pseudo-element */
+.line::after { display: none; }
+.user__info-extra.has-management .line::after { display: none; }
+
+/* ---- Logged-in state ---- */
+.logged-in .header__navbar-extras  { display: block; }
+.logged-in .user__info             { display: flex; }
+.logged-in .auth__btn-login,
+.logged-in .auth__btn-regist       { display: none; }

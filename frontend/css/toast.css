@@ -1,32 +1,69 @@
+/* ============================================================
+   TOAST NOTIFICATION – Glass Dark
+   ============================================================ */
+
 .toast {
     display: none;
     position: fixed;
-    padding: 10px;
-    bottom: 20px;
-    right: 20px;
-    z-index: 999;
-    background: #2ecc71;
-    border-radius: 10px;
-}
-.toast__body {
-    font-size: 1.6rem;
-    font-weight: bold;
-    line-height: 2rem;
-    color: var(--ivoryWhite-color);
-    width: 200px;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
-    animation: slideRight linear 0.2s;
-}
-.toast.show  {
-    display: flex;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    min-width: 260px;
+    max-width: 360px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--success);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    overflow: hidden;
+    animation: slideRight var(--duration-normal) var(--ease-out);
 }
 
-.toast.error {
-    background: #e74c3c;
+.toast.show {
+    display: flex;
+    align-items: center;
 }
-.toast.warning {
-    background: #f39c12;
+
+.toast.error   { border-left-color: var(--error); }
+.toast.warning { border-left-color: var(--warning); }
+
+.toast__body {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.5;
+    width: 100%;
+    animation: none;
+}
+
+.toast__body::before {
+    flex-shrink: 0;
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 1.6rem;
+}
+
+.toast.show:not(.error):not(.warning) .toast__body::before {
+    content: '\f058';
+    color: var(--success);
+}
+
+.toast.error .toast__body::before {
+    content: '\f057';
+    color: var(--error);
+}
+
+.toast.warning .toast__body::before {
+    content: '\f06a';
+    color: var(--warning);
+}
+
+.toast__body span {
+    flex: 1;
 }

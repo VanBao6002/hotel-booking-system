@@ -1,37 +1,95 @@
+/* ============================================================
+   BOOKING HISTORY – Dark Luxury
+   ============================================================ */
+
 .booking-history__head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
-    border-radius: 10px;
-    background-color: #0a9af2;
-    /* margin-top: calc(var(--header-height) + 24px); */
+    padding: 20px 28px;
+    border-radius: var(--radius-xl);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
 }
+
+.booking-history__head::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gold-gradient);
+}
+
 .booking-history-title {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: white;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
+    letter-spacing: -0.02em;
 }
-.booking-history-title span {
-    display: inline-block;
-}
+
+/* ---- History Table ---- */
 .history-table {
-    margin-top: 20px;
+    margin-top: 0;
     width: 100%;
-    font-size: 1.6rem;
-    border-collapse: collapse;
+    font-size: 1.4rem;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
 }
-.history-table th,
-.history-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-}
+
 .history-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+    background: var(--bg-surface);
+    color: var(--gold);
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 14px 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-subtle);
 }
+
+.history-table td {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    padding: 14px 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background var(--duration-fast), color var(--duration-fast);
+}
+
+.history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.history-table tbody tr:hover td {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.status-badge.pending  { background: var(--warning-bg); color: var(--warning); }
+.status-badge.success  { background: var(--success-bg); color: var(--success); }
+.status-badge.error    { background: var(--error-bg);   color: var(--error);   }
+.status-badge.canceled { background: var(--bg-surface);  color: var(--text-muted); border: 1px solid var(--border-subtle); }
