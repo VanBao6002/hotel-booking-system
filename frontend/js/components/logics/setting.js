@@ -2,26 +2,28 @@ import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber, saf
 
 const userData = safeJsonParse(localStorage.getItem("userData"), {});
 
-const oldProfile = {
-    fullName : userData.fullName ?? "",
-    username : userData.userName ?? "",
-    email : userData.email ?? "",
-    dateOfBirth : userData.dateOfBirth ?? "",
-    gender : userData.gender ?? "",
-    phoneNumber : userData.phoneNumber ?? "",
-    address : userData.currentAddress ?? "",  
-}
-
-const newProfile = {
-    fullName : userData.fullName ?? "",
-    username : userData.userName ?? "",
-    email : userData.email ?? "",
-    dateOfBirth : userData.dateOfBirth ?? "",
-    gender : userData.gender ?? "",
-    phoneNumber : userData.phoneNumber ?? "",
-    address : userData.currentAddress ?? "",  
-}
-
+// if(userData) {
+    const oldProfile = {
+        fullName : userData.fullName ?? "",
+        username : userData.userName ?? "",
+        email : userData.email ?? "",
+        dateOfBirth : userData.dateOfBirth ?? "",
+        gender : userData.gender ?? "",
+        phoneNumber : userData.phoneNumber ?? "",
+        address : userData.currentAddress ?? "",  
+    }
+    
+    const newProfile = {
+        fullName : userData.fullName ?? "",
+        username : userData.userName ?? "",
+        email : userData.email ?? "",
+        dateOfBirth : userData.dateOfBirth ?? "",
+        gender : userData.gender ?? "",
+        phoneNumber : userData.phoneNumber ?? "",
+        address : userData.currentAddress ?? "",  
+    }
+    
+// }
 function isValidProfile() {
     let isValid = true;
 
@@ -175,12 +177,11 @@ function editProfile() {
     });
 
 }
-
-
-
 export function initSetting() {
     editProfile();
     attachValidation();
     attachChangeHighlight();
-
 }
+
+
+

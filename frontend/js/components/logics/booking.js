@@ -1,6 +1,6 @@
 import { navigation } from "../../router/router.js";
 import { bookingRoom, getReviewsHotel } from "../../services/hotel.js";
-import { HotelService, safeJsonParse } from "../../utils/utils.js";
+import { formatDateToDisplay, HotelService, safeJsonParse } from "../../utils/utils.js";
 
 let isShowRoomDetailInit = false;
 
@@ -86,6 +86,20 @@ function renderService(services) {
 
 }
 
+
+
+function calculateDuring() {
+    const searchInfoData = safeJsonParse(localStorage.getItem("searchInfoData"), {});
+
+    const checkIn = new Date(searchInfoData.checkInDate);
+    const checkOut = new Date(searchInfoData.checkOutDate);
+
+    const timeDiff = checkOut.getTime() - checkIn.getTime();
+    const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    return dayDiff;
+}
+
 let confirmDetail = {
     singleRoomsId: [],
     doubleRoomsId: [],
@@ -94,6 +108,7 @@ let confirmDetail = {
 
 
 function updateConfirmTable() {
+
     const confirmTable = document.querySelector(".booking__info-confirm .booking__info-room-table");
     const cells = confirmTable.querySelectorAll("td");
     
@@ -106,7 +121,7 @@ function updateConfirmDetail(roomId, typeCode, roomPrice , choice = true){
     if(choice) {
         if(typeCode === "SINGLE") confirmDetail.singleRoomsId.push(roomId);
         else confirmDetail.doubleRoomsId.push(roomId);
-        confirmDetail.totalPrice += roomPrice;
+        confirmDetail.totalPrice += roomPrice*calculateDuring();
     }
     else {
         if(typeCode === "SINGLE") {
@@ -115,8 +130,9 @@ function updateConfirmDetail(roomId, typeCode, roomPrice , choice = true){
         else {
             confirmDetail.doubleRoomsId = confirmDetail.doubleRoomsId.filter(id => id !== roomId);
         }
-        confirmDetail.totalPrice -= roomPrice;
+        confirmDetail.totalPrice -= roomPrice*calculateDuring();
     }
+    console.log(confirmDetail);
 }
 
 function renderConfirm() {
@@ -328,7 +344,7 @@ function renderReviews() {
                                     <span>${review.rating}</span><i class="fa-solid fa-star star"></i>
                                 </div>
                                 <div class="convervation__chat-time">
-                                    ${review.createdAt}
+                                    ${formatDateToDisplay(review.createdAt)}
                                 </div>
                             </div>
                             <div class="convervation__chat-content">
@@ -389,7 +405,7 @@ function handleBooking() {
             notificationTitle.innerText = "Xác nhận đặt phòng";
             notificationText.innerHTML = `
                 Bạn đã đặt <strong>${confirmDetail.singleRoomsId.length} phòng đơn</strong> và <strong>${confirmDetail.doubleRoomsId.length} phòng đôi</strong> 
-                với tổng số tiền cần thanh toán là <strong>${confirmDetail.totalPrice.toLocaleString("vi-VN")} VND</strong>. 
+                với tổng số tiền cần thanh toán là <strong>${confirmDetail.totalPrice.toLocaleString("vi-VN")} VND</strong>. Thời gian check in: <strong>${formatDateToDisplay(JSON.parse(localStorage.getItem("searchInfoData")).checkInDate)}</strong>, check out: <strong>${formatDateToDisplay(JSON.parse(localStorage.getItem("searchInfoData")).checkOutDate)}</strong>. <br> 
                 Vui lòng xác nhận nếu thông tin trên là chính xác.
             `;
             nextButton.innerText = "Thanh toán";
@@ -415,11 +431,11 @@ function handleBooking() {
                             notificationText.innerText = "Cảm ơn bạn đã đặt phòng của chúng tôi";
 
 
-                            const during = safeJsonParse(localStorage.getItem("DuringBooking"), {});
+                            const searchInfoData = safeJsonParse(localStorage.getItem("searchInfoData"), {});
                             const currentUser = safeJsonParse(localStorage.getItem("userData"), {});
                             const bookingData  = {
-                                checkInDate: during.checkInDate,
-                                checkOutDate: during.checkOutDate,
+                                checkInDate: searchInfoData.checkInDate,
+                                checkOutDate: searchInfoData.checkOutDate,
                                 bookingPrice: confirmDetail.totalPrice,
                                 userId: currentUser.id,
                                 hotelBranchId : Number(localStorage.getItem("choicedHotelId")),

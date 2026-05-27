@@ -35,3 +35,24 @@
     background-color: #f2f2f2;
     font-weight: bold;
 }
+.rating-btn {
+    padding: 6px 12px;
+    /* background-color: #ff5e1f; */
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.rating-btn.active {
+    color: white;
+    background-color: #ff5e1f;
+    cursor: pointer;
+}
+.rating-btn.reviewed {
+    color: var(--success-color);
+    cursor: default;
+    background-color: transparent;
+}
+.rating-btn.active:hover {
+    background-color: #ff5e1f;
+    filter: brightness(80%);
+}

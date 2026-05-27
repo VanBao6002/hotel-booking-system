@@ -111,7 +111,7 @@ function userExtra() {
         document.querySelector(".header__navbar-user").classList.remove("logged-in");
         localStorage.setItem("role", "guest");
         localStorage.setItem("token", "");
-        localStorage.removeItem("userData");
+        localStorage.setItem("userData", "");
         navigation("#home");
     });
 }

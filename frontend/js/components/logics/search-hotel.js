@@ -1,5 +1,6 @@
 import { navigation } from "../../router/router.js";
-import {  HotelService } from "../../utils/utils.js";
+import {  HotelService, safeJsonParse } from "../../utils/utils.js";
+import { initBookingSearch } from "../logics/booking-search.js";
 
 function extraOption() {
 
@@ -162,8 +163,20 @@ function renderHotel() {
   applyFilters();
 }
 
+function initSearchInfoData() {
+    const searchInfoData = safeJsonParse(localStorage.getItem("searchInfoData"), {}); 
+    setTimeout(() => {
+        document.querySelector("#hotel-location").value = searchInfoData.location;
+        document.querySelector("#start-date").value = searchInfoData.checkInDate;
+        document.querySelector("#end-date").value = searchInfoData.checkOutDate;
+        document.querySelector("#rooms").value = searchInfoData.singleRoomQuantity + " Phòng đơn, " + searchInfoData.doubleRoomQuantity + " Phòng đôi";
+    }, 0);
+}
+
 export function initSearchHotel() {
+    initBookingSearch();
     extraOption();
     renderHotel();
     choiceHotel();
+    initSearchInfoData();
 }

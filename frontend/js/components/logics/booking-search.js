@@ -2,6 +2,8 @@
 
 import { navigation } from "../../router/router.js";
 import { searchHotel } from "../../services/hotel.js";
+import { searchHoteltemplate } from "../templates/search-hotel.template.js";
+import { initSearchHotel } from "../logics/search-hotel.js";
 
 var textLocation = "";
 
@@ -51,7 +53,7 @@ function initLocation(element) {
     const input = element.querySelector("input");
     const searchInputWrap = element.querySelector(".booking-search__dropdown");
     
-    input.value = "";
+    // input.value = "";
     
 
     element.addEventListener("click", () => showWrap(input, searchInputWrap));
@@ -266,15 +268,22 @@ export function initBookingSearch() {
                 doubleRoomQuantity: count.coupleRoom
             };
             console.log(searchInfoData);
-            localStorage.setItem("DuringBooking", JSON.stringify({
-                checkInDate: `${startDate.year}-${startDate.month}-${startDate.day}`,
-                checkOutDate: `${endDate.year}-${endDate.month}-${endDate.day}`,
-            }));
+
+            localStorage.setItem("searchInfoData", JSON.stringify(searchInfoData));
+            
             searchHotel(searchInfoData)
                 .then(data => {
-                    navigation("#search-hotel");
-                    console.log(data);
                     localStorage.setItem("hotelData", JSON.stringify(data));
+                    if(window.location.hash !== "#search-hotel") {
+                        navigation("#search-hotel");
+                    }
+                    else {
+                        const main = document.querySelector(".main");
+                        main.innerHTML = searchHoteltemplate();
+                        initSearchHotel();
+                        console.log("Check input:", document.querySelector("#hotel-location"));
+                    }
+                    console.log(data);
                 })
                 .catch(errorData => {
                     console.log("fail(searchbooking)");
