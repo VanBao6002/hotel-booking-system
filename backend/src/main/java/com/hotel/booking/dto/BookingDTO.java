@@ -12,10 +12,11 @@ public class BookingDTO {
     private LocalDateTime bookedAt;
 
     // Fields chung
-    private String roomImg;
+    // private String roomImg;
     private Integer roomId;
     private Integer hotelBranchId;
     private Integer bookingId;
+    private Boolean reviewed; 
 
     // Danh sách phòng thuộc booking này
     private List<BookingRoomDTO> bookingRooms;
@@ -37,7 +38,7 @@ public class BookingDTO {
 
     public BookingDTO(int id, LocalDate checkInDate, LocalDate checkOutDate,
                   LocalDateTime bookedAt, Long bookingPrice,
-                  Integer userId, Integer hotelBranchId,
+                  Integer userId, Integer hotelBranchId,Boolean reviewed,
                   List<BookingRoomDTO> bookingRooms) {
         this.id = "B-" + id;
         this.bookingId = id;
@@ -47,6 +48,7 @@ public class BookingDTO {
         this.bookingPrice = bookingPrice;
         this.userId = userId;
         this.hotelBranchId = hotelBranchId;
+        this.reviewed = reviewed;
         this.bookingRooms = bookingRooms;
         this.numberOfNights = daysBetween(checkInDate, checkOutDate);
     }
@@ -124,4 +126,7 @@ public class BookingDTO {
 
     public String getBookingStatus() { return bookingStatus; }
     public void setBookingStatus(String bookingStatus) { this.bookingStatus = bookingStatus; }
+
+    public Boolean getReviewed() { return reviewed; }
+    public void setReviewed(Boolean reviewed) { this.reviewed = reviewed; }
 }

@@ -149,6 +149,7 @@ public class BookingRepository {
                 rs.getObject("booking_price") != null ? rs.getLong("booking_price") : null,
                 rs.getObject("user_id") != null ? rs.getInt("user_id") : null,
                 rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
+                rs.getBoolean("reviewed"),
                 List.of()
             );
 
@@ -190,8 +191,9 @@ public class BookingRepository {
 
     // Lấy booking theo UserID (frontend)
     public List<BookingDTO> getBookingsByUserId(int userId) {
-        String sql = "SELECT id, check_in_date, check_out_date, booked_at, hotel_branch_id, user_id, booking_price FROM booking WHERE user_id = ?";
-        List<BookingDTO> bookings = jdbcTemplate.query(
+    String sql = "SELECT id, check_in_date, check_out_date, booked_at, " +
+                 "hotel_branch_id, user_id, booking_price, reviewed " +
+                 "FROM booking WHERE user_id = ?";        List<BookingDTO> bookings = jdbcTemplate.query(
             sql,
             (rs, rowNum) -> new BookingDTO(
                 rs.getInt("id"),
@@ -201,6 +203,7 @@ public class BookingRepository {
                 rs.getLong("booking_price"),
                 rs.getInt("user_id"),
                 rs.getInt("hotel_branch_id"),
+                rs.getBoolean("reviewed"),
                 List.of()
             ),
             userId
@@ -233,6 +236,10 @@ public class BookingRepository {
         }
 
         return bookings;
+    }
+    public void markBookingReviewed(int bookingId) {
+        String sql = "UPDATE booking SET reviewed = TRUE WHERE id = ?";
+        jdbcTemplate.update(sql, bookingId);
     }
 
 }

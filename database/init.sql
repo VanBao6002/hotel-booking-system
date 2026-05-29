@@ -165,6 +165,7 @@ CREATE TABLE IF NOT EXISTS booking (
     hotel_branch_id INT NOT NULL,
     user_id INT NOT NULL,
     booking_price BIGINT NOT NULL,
+    reviewed BOOLEAN NOT NULL DEFAULT FALSE, -- đã đánh giá hay chưa
     CONSTRAINT fk_booking_branch FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE CASCADE,
     CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
