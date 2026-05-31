@@ -230,7 +230,7 @@ VALUES
 
 
 
-INSERT INTO staff (UserID, HotelBranchID) VALUES (2, 1);
+INSERT INTO staff (UserID, HotelBranchID) VALUES (3, 1);
 
 
 INSERT INTO booking (
@@ -356,7 +356,6 @@ VALUES ('Phòng sạch sẽ, dịch vụ tốt', 5, NOW(), 3, 1);
 
 INSERT INTO receipt (paymentMethod, amount, paymentDate, BookingID)
 VALUES ('Cash', 400000, '2026-04-05', 1);
-
 
 
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -53,7 +54,9 @@ public class BookingManagementController {
         List<BookingDTO> results = bookingService.searchBookings(
             request.getSearchId(),
             request.getGuestName(),
-            request.getHotel()
+            request.getHotel(),
+            request.getStartDate(),
+            request.getEndDate()
         );
         return ResponseEntity.ok(results);
     }
@@ -65,6 +68,8 @@ public class BookingManagementController {
         private String searchId;
         private String guestName;
         private String hotel;
+        private LocalDate startDate;
+        private LocalDate endDate;
 
         public SearchBookingRequest() {}
 
@@ -76,5 +81,11 @@ public class BookingManagementController {
 
         public String getHotel() { return hotel; }
         public void setHotel(String hotel) { this.hotel = hotel; }
+
+        public LocalDate getStartDate() { return startDate; }
+        public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+
+        public LocalDate getEndDate() { return endDate; }
+        public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
     }
 }

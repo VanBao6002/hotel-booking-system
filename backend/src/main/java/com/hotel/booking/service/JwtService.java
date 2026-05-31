@@ -66,12 +66,20 @@ public class JwtService {
 			throw new UnauthorizedException("Access token role is missing");
 		}
 
-		String roleName = role.toString();
+		String roleName = normalizeAuthorityRole(role.toString());
 		if (!roleName.startsWith("ROLE_")) {
 			throw new UnauthorizedException("Invalid role claim in access token");
 		}
 
 		return roleName;
+	}
+
+	private String normalizeAuthorityRole(String roleName) {
+		return switch (roleName) {
+			case "ROLE_USER" -> "ROLE_CUSTOMER";
+			case "ROLE_ADMIN" -> "ROLE_MANAGER";
+			default -> roleName;
+		};
 	}
 
 	private Claims parseAccessClaims(String token) {

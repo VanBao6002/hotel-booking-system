@@ -90,17 +90,33 @@ function userExtra() {
     const userInfo = document.querySelector(".user__info");
     const userSignOut = userInfo.querySelector(".extra__item-sign-out");
     const userSetting = userInfo.querySelector(".extra__item-setting");
+    const userManage = userInfo.querySelector(".extra__item-manage");
+    
+    updateManageMenuVisibility();
+    
 
 
     userSetting.onmousedown = (e) => {
         navigation("#setting");
     };
 
+    userManage?.addEventListener("click", () => {
+        userInfoExtra.style.display = "none";
+        const role = localStorage.getItem("role");
+        if (role === "manager") {
+            navigation("#home-manager");
+        } else if (role === "staff") {
+            navigation("#home-staff");
+        }
+    });
+
+    
     userSignOut.onclick = () => {
         document.querySelector(".header__navbar-user").classList.remove("logged-in");
         localStorage.setItem("role", "guest");
         localStorage.setItem("token", "");
         localStorage.setItem("userData", "");
+        updateManageMenuVisibility();
         localStorage.setItem("choicedHotelId", "");
         localStorage.setItem("searchInfoData", "");
         localStorage.setItem("hotelData", "");
@@ -117,6 +133,17 @@ function userExtra() {
         localStorage.setItem("currentHotelData", "");
         navigation("#home");
     };
+}
+
+function updateManageMenuVisibility() {
+    const manageItem = document.querySelector(".extra__item-manage");
+    const extraMenu = document.querySelector(".user__info-extra");
+    const role = localStorage.getItem("role");
+    const canManage = role === "manager" || role === "staff";
+    if (manageItem) {
+        manageItem.style.display = canManage ? "block" : "none";
+    }
+    extraMenu?.classList.toggle("has-management", canManage);
 }
 
 export function hideAllForm() {
@@ -218,7 +245,7 @@ function submitForm(){
             userLogin(userData)
                 .then(data => {
                     console.log("Success(login)");
-                    const role = (data?.user?.role || "USER").toString().toUpperCase();
+                    const role = (data?.user?.role || "customer").toString().toLowerCase();
                     localStorage.setItem("role", role);
                     localStorage.setItem("token", data.accessToken);
                     // localStorage.setItem("userData", JSON.stringify(data.user));
@@ -226,6 +253,7 @@ function submitForm(){
                     console.log(localStorage.getItem("token"));
                     document.querySelector(".header__navbar-user").classList.add("logged-in");
                     document.querySelector(".user__info-name span").innerText = data.user.fullName;
+                    updateManageMenuVisibility();
                     showToast("Đăng nhập thành công");
                     navigation(role === "ADMIN" || role === "STAFF" ? "#home-manager" : "#home");
                     getMe()

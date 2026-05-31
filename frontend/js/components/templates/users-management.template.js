@@ -4,7 +4,7 @@
 //       <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom: 16px;">
 //         <div>
 //           <h2 style="margin:0;">Quản lý người dùng</h2>
-//           <div style="color:#666; margin-top:4px;">Chỉ dành cho Admin</div>
+//           <div style="color:#666; margin-top:4px;">Chỉ dành cho Manager</div>
 //         </div>
 //         <button class="btn users-management__back-btn" type="button">Quay lại</button>
 //       </div>
@@ -36,7 +36,7 @@ export function usersManagementTemplate() {
     <div class="users-management__container" style="padding: 24px 0;">
       <div style="margin-bottom: 16px;">
         <h2 style="margin:0; font-size: 18px; font-weight: 500;">Quản lý người dùng</h2>
-        <div style="color:#999; margin-top:4px; font-size: 13px;">Chỉ dành cho Admin</div>
+        <div style="color:#999; margin-top:4px; font-size: 13px;">Chỉ dành cho Manager</div>
       </div>
 
       <div class="users-management__status" style="display:none; padding: 12px 14px; border-radius: 8px; background:#fff; border: 1px solid #eee; margin-bottom: 12px;"></div>
@@ -50,7 +50,7 @@ export function usersManagementTemplate() {
               <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Email</th>
               <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Họ tên</th>
               <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Vai trò</th>
-              <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Khóa đến</th>
+              <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Trạng thái</th>
               <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Thao tác</th>
             </tr>
           </thead>

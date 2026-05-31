@@ -56,7 +56,7 @@ public class AuthService {
         user.setFullName(request.getFullName());
         user.setPhoneNumber(request.getPhoneNumber());
 
-        user.setRole(Role.USER);
+        user.setRole(Role.CUSTOMER);
         user.setIsActive(true);
         user.setFailedLoginAttempts(0);
 

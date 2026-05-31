@@ -37,6 +37,7 @@ export function headerTemplate() {
                             <div class="user__info-extra">
                                 <div class="user__info-extra-wrap">
                                     <div class="extra__item-setting"><span>Cài đặt</span></div>
+                                    <div class="extra__item-manage"><span>Quản Lý</span></div>
                                     <div class="extra__item-sign-out"><span>Đăng xuất</span></div>
                                     <div class="line"></div>
                                 </div>

@@ -26,6 +26,7 @@ public final class UserMapper {
         dto.setDateOfBirth(user.getDateOfBirth());
         dto.setCurrentAddress(user.getCurrentAddress());
         dto.setLockedUntil(user.getLockedUntil());
+        dto.setActive(user.getIsActive());
         dto.setRole(user.getRole().toApiRole());
             // Map genderId sang gender string
             Integer genderId = user.getGenderId();
@@ -40,4 +41,4 @@ public final class UserMapper {
             dto.setGender(gender);
         return dto;
     }
-}  
+}

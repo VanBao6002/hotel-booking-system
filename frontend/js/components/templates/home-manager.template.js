@@ -26,14 +26,6 @@ export function homeManagerTemplate() {
                     ${renderSidebarItem("Cài Đặt", "", "manager__btn-settings")}
                 </nav>
 
-                <!-- Admin User -->
-                <div style="padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 30px; height: 30px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #1a1a2e; flex-shrink: 0;">A</div>
-                    <div>
-                        <div style="font-size: 12px; font-weight: 500; color: #e2e8f0;">Admin</div>
-                        <div style="font-size: 10px; color: #64748b;">admin@aethelgard.com</div>
-                    </div>
-                </div>
             </div>
 
             <!-- MAIN CONTENT -->
@@ -62,10 +54,10 @@ function renderDashboardContent() {
         
         <!-- Stats Grid -->
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
-            ${renderStatCard("Total Revenue", "$1.2M", "Gold trend $1.2M", "revenue")}
-            ${renderStatCard("Active Bookings", "350", "Gold trend on 350", "bookings")}
-            ${renderStatCard("Avg Occupancy Rate", "85%", "Avg trend on: 85%", "occupancy")}
-            ${renderStatCard("New User Registrations", "45", "Avg trend on: 45", "users")}
+            ${renderStatCard("Total Revenue", "Loading...", "From paid receipts", "revenue", "manager-stat-revenue", "manager-stat-revenue-sub")}
+            ${renderStatCard("Active Bookings", "Loading...", "Current open stays", "bookings", "manager-stat-active-bookings", "manager-stat-active-bookings-sub")}
+            ${renderStatCard("Occupancy Rate", "Loading...", "Booked rooms over total rooms", "occupancy", "manager-stat-occupancy", "manager-stat-occupancy-sub")}
+            ${renderStatCard("Total Users", "Loading...", "Accounts in database", "users", "manager-stat-users", "manager-stat-users-sub")}
         </div>
 
         <!-- Chart + Right Panel -->
@@ -73,57 +65,26 @@ function renderDashboardContent() {
             <!-- Revenue vs Bookings Chart -->
             <div style="background: white; border-radius: 12px; padding: 24px; border: 1px solid #e8e4dc;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #1a1a2e;">Revenue vs Bookings</h3>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #1a1a2e;">Monthly Revenue</h3>
                     <div style="display: flex; gap: 16px; font-size: 12px; color: #8892a4;">
                         <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 20px; height: 2px; background: #c9a84c; display: inline-block; border-radius: 1px;"></span>Revenue</span>
-                        <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 20px; height: 2px; background: #1a1a2e; display: inline-block; border-radius: 1px;"></span>Bookings</span>
                     </div>
                 </div>
-                <svg viewBox="0 0 600 200" style="width: 100%; height: auto;">
-                    <defs>
-                        <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.25"/>
-                            <stop offset="100%" stop-color="#c9a84c" stop-opacity="0.02"/>
-                        </linearGradient>
-                    </defs>
-                    <!-- Y axis labels -->
-                    <text x="0" y="16" fill="#bbb" font-size="10">\$1.0M</text>
-                    <text x="0" y="66" fill="#bbb" font-size="10">75M</text>
-                    <text x="0" y="116" fill="#bbb" font-size="10">50M</text>
-                    <text x="0" y="166" fill="#bbb" font-size="10">\$25M</text>
-                    <text x="10" y="198" fill="#bbb" font-size="10">0</text>
-                    <!-- X axis labels -->
-                    <text x="42" y="198" fill="#bbb" font-size="10">Jan</text>
-                    <text x="105" y="198" fill="#bbb" font-size="10">Feb</text>
-                    <text x="168" y="198" fill="#bbb" font-size="10">Mar</text>
-                    <text x="231" y="198" fill="#bbb" font-size="10">Apr</text>
-                    <text x="294" y="198" fill="#bbb" font-size="10">May</text>
-                    <text x="357" y="198" fill="#bbb" font-size="10">Jun</text>
-                    <text x="420" y="198" fill="#bbb" font-size="10">Jul</text>
-                    <text x="483" y="198" fill="#bbb" font-size="10">Aug</text>
-                    <text x="546" y="198" fill="#bbb" font-size="10">Sep</text>
-                    <!-- Gold fill area -->
-                    <polygon points="42,185 105,150 168,130 231,110 294,55 357,80 420,60 483,70 546,45 546,185 42,185" fill="url(#goldGrad)"/>
-                    <!-- Gold revenue line -->
-                    <polyline points="42,185 105,150 168,130 231,110 294,55 357,80 420,60 483,70 546,45" fill="none" stroke="#c9a84c" stroke-width="2.5" stroke-linejoin="round"/>
-                    <!-- Dark bookings line -->
-                    <polyline points="42,185 105,165 168,150 231,140 294,115 357,130 420,120 483,110 546,105" fill="none" stroke="#1a1a2e" stroke-width="2" stroke-linejoin="round" stroke-dasharray="0"/>
-                </svg>
+                <canvas id="manager-revenue-chart" style="width: 100%; height: 220px;"></canvas>
             </div>
 
             <!-- Quick Actions + Top Hotels -->
             <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e8e4dc;">
                     <h4 style="margin: 0 0 14px; font-size: 14px; font-weight: 600; color: #1a1a2e;">Quick Actions</h4>
-                    <button style="width: 100%; padding: 10px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 8px; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Add Hotel</button>
-                    <button style="width: 100%; padding: 10px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">View Reports</button>
+                    <button class="manager-dashboard-action manager-dashboard-action-hotels" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 8px; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Add Hotel</button>
+                    <button class="manager-dashboard-action manager-dashboard-action-finance" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">View Finance</button>
                 </div>
                 <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e8e4dc; flex: 1; overflow: hidden;">
                     <h4 style="margin: 0 0 14px; font-size: 14px; font-weight: 600; color: #1a1a2e;">Top Performing Hotels</h4>
-                    ${renderTopHotel("The Oceanfront Villa", "$1.2M", "350", "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=60&h=45&fit=crop")}
-                    ${renderTopHotel("The Presidential Suite", "$3.0M", "85%", "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=60&h=45&fit=crop")}
-                    ${renderTopHotel("The Sunset Hilltop Retreat", "$3.0M", "99%", "https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=60&h=45&fit=crop")}
-                    ${renderTopHotel("The Presidenting Retreat", "$3.5M", "41%", "https://images.unsplash.com/photo-1571896349842-34886015ae0f?w=60&h=45&fit=crop")}
+                    <div id="manager-top-hotels">
+                        <div style="font-size: 13px; color: #8892a4;">Loading hotels...</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,10 +102,10 @@ function renderDashboardContent() {
                         <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Status</th>
                     </tr>
                 </thead>
-                <tbody>
-                    ${renderBookingRow("Josan Maram", "Dir-oceanfront Hotel", "06/28/2023–05/26", "$1,300.00", "Confirmed", "#dcfce7", "#166534")}
-                    ${renderBookingRow("Janes Morine", "Deccoiman Hotel", "06/28/2023–05/26", "$250.00", "Pending", "#fef9c3", "#a16207")}
-                    ${renderBookingRow("Sterya Smith", "The Guernton Hotel", "06/29/2023–05/24", "$110.00", "Cancelled", "#fee2e2", "#b91c1c")}
+                <tbody id="manager-recent-bookings">
+                    <tr>
+                        <td colspan="5" style="padding: 14px 12px; font-size: 13px; color: #8892a4;">Loading bookings...</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -180,7 +141,7 @@ function renderBookingRow(guest, hotel, dates, amount, status, statusBg, statusC
     `;
 }
 
-function renderStatCard(title, value, sub, type) {
+function renderStatCard(title, value, sub, type, valueId = "", subId = "") {
     const sparkColors = { revenue: "#c9a84c", bookings: "#c9a84c", occupancy: "#c9a84c", users: "#c9a84c" };
     const color = sparkColors[type] || "#c9a84c";
     // Mini sparkline SVG
@@ -195,8 +156,8 @@ function renderStatCard(title, value, sub, type) {
             <div style="font-size: 12px; color: #8892a4; margin-bottom: 8px; font-weight: 400;">${title}</div>
             <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                 <div>
-                    <div style="font-size: 26px; font-weight: 700; color: #1a1a2e; line-height: 1;">${value}</div>
-                    <div style="font-size: 11px; color: ${color}; margin-top: 6px;">${sub}</div>
+                    <div ${valueId ? `id="${valueId}"` : ""} style="font-size: 26px; font-weight: 700; color: #1a1a2e; line-height: 1;">${value}</div>
+                    <div ${subId ? `id="${subId}"` : ""} style="font-size: 11px; color: ${color}; margin-top: 6px;">${sub}</div>
                 </div>
                 <svg viewBox="0 0 60 24" width="70" height="36" style="opacity: 0.8;">
                     <polyline points="${sparklines[type]}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>

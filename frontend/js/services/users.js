@@ -7,7 +7,7 @@ export const getAllUsers = () => {
   });
 };
 
-// Delete a user permanently
+// Soft delete a user by disabling the account.
 export const deleteUser = (userId) => {
   return apiClient(`/api/v1/users/${userId}`, {
     method: "DELETE",
@@ -37,13 +37,14 @@ export const warnUser = (userId, message = "") => {
   });
 };
 
-// Grant STAFF role to a user
-export const grantStaffRole = (userId) => {
+// Grant staff role to a user
+export const grantStaffRole = (userId, hotelBranchId = null) => {
   return apiClient(`/api/v1/users/${userId}/role`, {
     method: "PUT",
     skipAuth: false,
     body: JSON.stringify({
-      role: "STAFF",
+      role: "staff",
+      hotelBranchId,
     }),
   });
 };

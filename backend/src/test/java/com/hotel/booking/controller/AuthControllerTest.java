@@ -77,7 +77,7 @@ public class AuthControllerTest {
         normalUser.setFullName(validRegisterRequest.getFullName());
         normalUser.setPhoneNumber(validRegisterRequest.getPhoneNumber());
 
-        normalUser.setRole(Role.USER);
+        normalUser.setRole(Role.CUSTOMER);
         normalUser.setIsActive(true);
         normalUser.setFailedLoginAttempts(0);
 
@@ -110,7 +110,7 @@ public class AuthControllerTest {
         adminUser.setFullName(validAdminRegisterRequest.getFullName());
         adminUser.setPhoneNumber(validAdminRegisterRequest.getPhoneNumber());
 
-        adminUser.setRole(Role.ADMIN);
+        adminUser.setRole(Role.MANAGER);
         adminUser.setIsActive(true);
         adminUser.setFailedLoginAttempts(0);
 
@@ -140,7 +140,7 @@ public class AuthControllerTest {
         .andExpect(jsonPath("$.accessToken").exists())
         .andExpect(jsonPath("$.tokenType").value("Bearer"))
         .andExpect(jsonPath("$.expiresIn").exists())
-        .andExpect(jsonPath("$.user.role").value("USER"));
+        .andExpect(jsonPath("$.user.role").value("customer"));
     }
 
     @SuppressWarnings("null")
@@ -244,7 +244,7 @@ public class AuthControllerTest {
         mockMvc.perform(get("/api/v1/auth/me")
             .header("Authorization", "Bearer " + token))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.role").value("ADMIN"));
+        .andExpect(jsonPath("$.role").value("manager"));
     }
 
     @SuppressWarnings("null")

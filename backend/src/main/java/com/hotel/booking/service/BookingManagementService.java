@@ -6,8 +6,8 @@ import com.hotel.booking.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BookingManagementService {
@@ -33,26 +33,7 @@ public class BookingManagementService {
     /**
      * Tìm kiếm đặt phòng
      */
-    public List<BookingDTO> searchBookings(String searchId, String guestName, String hotel) {
-        return bookingRepository.getAllBookings().stream()
-            .filter(b -> {
-                boolean idMatch = isBlank(searchId)
-                    || b.getId().toLowerCase().contains(searchId.toLowerCase())
-                    || b.getId().replace("B-", "").contains(searchId.replace("B-", ""));
-                boolean guestMatch = isBlank(guestName)
-                    || valueOf(b.getGuestName()).toLowerCase().contains(guestName.toLowerCase());
-                boolean hotelMatch = isBlank(hotel)
-                    || valueOf(b.getHotelName()).toLowerCase().contains(hotel.toLowerCase());
-                return idMatch && guestMatch && hotelMatch;
-            })
-            .collect(Collectors.toList());
-    }
-
-    private boolean isBlank(String value) {
-        return value == null || value.isBlank();
-    }
-
-    private String valueOf(String value) {
-        return value == null ? "" : value;
+    public List<BookingDTO> searchBookings(String searchId, String guestName, String hotel, LocalDate startDate, LocalDate endDate) {
+        return bookingRepository.searchBookings(searchId, guestName, hotel, startDate, endDate);
     }
 }
