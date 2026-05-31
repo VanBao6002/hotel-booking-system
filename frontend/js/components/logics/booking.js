@@ -1,6 +1,6 @@
 import { navigation } from "../../router/router.js";
 import { bookingRoom, getReviewsHotel } from "../../services/hotel.js";
-import { HotelService } from "../../utils/utils.js";
+import { formatDateToDisplay, HotelService, safeJsonParse } from "../../utils/utils.js";
 
 let isShowRoomDetailInit = false;
 
@@ -86,6 +86,20 @@ function renderService(services) {
 
 }
 
+
+
+function calculateDuring() {
+    const searchInfoData = safeJsonParse(localStorage.getItem("searchInfoData"), {});
+
+    const checkIn = new Date(searchInfoData.checkInDate);
+    const checkOut = new Date(searchInfoData.checkOutDate);
+
+    const timeDiff = checkOut.getTime() - checkIn.getTime();
+    const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    return dayDiff;
+}
+
 let confirmDetail = {
     singleRoomsId: [],
     doubleRoomsId: [],
@@ -94,6 +108,7 @@ let confirmDetail = {
 
 
 function updateConfirmTable() {
+
     const confirmTable = document.querySelector(".booking__info-confirm .booking__info-room-table");
     const cells = confirmTable.querySelectorAll("td");
     
@@ -106,7 +121,7 @@ function updateConfirmDetail(roomId, typeCode, roomPrice , choice = true){
     if(choice) {
         if(typeCode === "SINGLE") confirmDetail.singleRoomsId.push(roomId);
         else confirmDetail.doubleRoomsId.push(roomId);
-        confirmDetail.totalPrice += roomPrice;
+        confirmDetail.totalPrice += roomPrice*calculateDuring();
     }
     else {
         if(typeCode === "SINGLE") {
@@ -115,14 +130,15 @@ function updateConfirmDetail(roomId, typeCode, roomPrice , choice = true){
         else {
             confirmDetail.doubleRoomsId = confirmDetail.doubleRoomsId.filter(id => id !== roomId);
         }
-        confirmDetail.totalPrice -= roomPrice;
+        confirmDetail.totalPrice -= roomPrice*calculateDuring();
     }
+    console.log(confirmDetail);
 }
 
 function renderConfirm() {
     const choiceRoomButtons = document.querySelectorAll(".booking__info-room-body .room-choice__button");
     choiceRoomButtons.forEach((choice) => {
-        choice.addEventListener("click",() => {
+        choice.onclick = () => {
             const roomInfo = choice.closest("tr");
             const roomId = Number(roomInfo.dataset.roomId);
             const typeCode = roomInfo.dataset.typeCode;
@@ -139,7 +155,7 @@ function renderConfirm() {
 
             updateConfirmTable();
 
-        });
+        };
     })
 }
 
@@ -152,7 +168,7 @@ function showRoomDetail() {
     if(!isShowRoomDetailInit) {
         const showRoomChoiceButton = showRoomModal.querySelector(".choice-room__button");
         if(showRoomChoiceButton) {
-            showRoomChoiceButton.addEventListener("click", () => {
+            showRoomChoiceButton.onclick = () => {
     
                 if(!showRoomChoiceButton.classList.contains("active")) {
                     updateConfirmDetail(Number(showRoomModal.dataset.roomId), showRoomModal.dataset.typeCode, Number(showRoomModal.dataset.roomPrice), true);
@@ -165,14 +181,14 @@ function showRoomDetail() {
     
                 updateConfirmTable();
     
-            });
+            };
         }
         const showRoomExit = showRoomModal.querySelector(".show-room__exit");
         if(showRoomExit) {
-            showRoomExit.addEventListener("click", () => {
+            showRoomExit.onclick = () => {
                 showRoomModal.classList.remove("show");
                 modal.classList.remove("active");
-            })
+            };
         }
 
         isShowRoomDetailInit = true;
@@ -181,7 +197,7 @@ function showRoomDetail() {
 
 
     detailButtons.forEach(detail => {
-        detail.addEventListener("click", () => {
+        detail.onclick = () => {
             const roomInfo = detail.closest("tr");
             const roomId = Number(roomInfo.dataset.roomId);
             const typeCode = roomInfo.dataset.typeCode;
@@ -251,7 +267,7 @@ function showRoomDetail() {
                 btn.querySelector("div").innerText = "Thêm lựa chọn phòng";
             }
                 
-        }); 
+        }; 
     })
 }
 
@@ -328,7 +344,7 @@ function renderReviews() {
                                     <span>${review.rating}</span><i class="fa-solid fa-star star"></i>
                                 </div>
                                 <div class="convervation__chat-time">
-                                    ${review.createdAt}
+                                    ${formatDateToDisplay(review.createdAt)}
                                 </div>
                             </div>
                             <div class="convervation__chat-content">
@@ -371,7 +387,7 @@ function handleBooking() {
     const backButton = showNotification.querySelector(".show__notification-previous-button");
     const nextButton = showNotification.querySelector(".show__notification-next-button");
 
-    confirmButton.addEventListener("click", () => {
+    confirmButton.onclick = () => {
         if(confirmDetail.singleRoomsId.length === 0 && confirmDetail.doubleRoomsId.length === 0) {
             modal.classList.add("active");
             nextButton.innerText = "";
@@ -389,7 +405,7 @@ function handleBooking() {
             notificationTitle.innerText = "Xác nhận đặt phòng";
             notificationText.innerHTML = `
                 Bạn đã đặt <strong>${confirmDetail.singleRoomsId.length} phòng đơn</strong> và <strong>${confirmDetail.doubleRoomsId.length} phòng đôi</strong> 
-                với tổng số tiền cần thanh toán là <strong>${confirmDetail.totalPrice.toLocaleString("vi-VN")} VND</strong>. 
+                với tổng số tiền cần thanh toán là <strong>${confirmDetail.totalPrice.toLocaleString("vi-VN")} VND</strong>. Thời gian check in: <strong>${formatDateToDisplay(JSON.parse(localStorage.getItem("searchInfoData")).checkInDate)}</strong>, check out: <strong>${formatDateToDisplay(JSON.parse(localStorage.getItem("searchInfoData")).checkOutDate)}</strong>. <br> 
                 Vui lòng xác nhận nếu thông tin trên là chính xác.
             `;
             nextButton.innerText = "Thanh toán";
@@ -415,11 +431,13 @@ function handleBooking() {
                             notificationText.innerText = "Cảm ơn bạn đã đặt phòng của chúng tôi";
 
 
+                            const searchInfoData = safeJsonParse(localStorage.getItem("searchInfoData"), {});
+                            const currentUser = safeJsonParse(localStorage.getItem("userData"), {});
                             const bookingData  = {
-                                checkInDate: JSON.parse(localStorage.getItem("DuringBooking")).checkInDate,
-                                checkOutDate: JSON.parse(localStorage.getItem("DuringBooking")).checkOutDate,
+                                checkInDate: searchInfoData.checkInDate,
+                                checkOutDate: searchInfoData.checkOutDate,
                                 bookingPrice: confirmDetail.totalPrice,
-                                userId: JSON.parse(localStorage.getItem("userData")).id,
+                                userId: currentUser.id,
                                 hotelBranchId : Number(localStorage.getItem("choicedHotelId")),
                                 roomIds: [...confirmDetail.singleRoomsId, ...confirmDetail.doubleRoomsId]
                             }
@@ -432,22 +450,22 @@ function handleBooking() {
 
         }
 
-        backButton.addEventListener("click", ()=> {
+        backButton.onclick = () => {
             showNotification.classList.remove("show", "error", "warning", "success", "qrcode");
             notificationText.innerText = "";
             notificationTitle.innerText = "";
             modal.classList.remove("active");
-        })
-    })
+        };
+    };
 
 }
 
 
 export function initBooking() {
 
-    confirmDetail.singleRoomsId = [];
-    confirmDetail.doubleRoomsId = [];
-    confirmDetail.totalPrice = 0;
+    // confirmDetail.singleRoomsId = [];
+    // confirmDetail.doubleRoomsId = [];
+    // confirmDetail.totalPrice = 0;
 
     const modalBtn = document.querySelector(".show-room .choice-room__button");
     if (modalBtn) {
@@ -456,9 +474,9 @@ export function initBooking() {
     }   
 
     const main = document.querySelector(".main");
-    document.querySelector(".booking__info-genaral-button").addEventListener("click", () => {
+    document.querySelector(".booking__info-genaral-button").onclick = () => {
         main.querySelector(".booking__info-room").scrollIntoView({behavior: "smooth", block: "center"});
-    });
+    };
 
 
     renderBooking();

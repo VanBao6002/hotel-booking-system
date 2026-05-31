@@ -2,6 +2,8 @@
 
 import { navigation } from "../../router/router.js";
 import { searchHotel } from "../../services/hotel.js";
+import { searchHoteltemplate } from "../templates/search-hotel.template.js";
+import { initSearchHotel } from "../logics/search-hotel.js";
 
 var textLocation = "";
 
@@ -51,17 +53,17 @@ function initLocation(element) {
     const input = element.querySelector("input");
     const searchInputWrap = element.querySelector(".booking-search__dropdown");
     
-    input.value = "";
+    // input.value = "";
     
 
-    element.addEventListener("click", () => showWrap(input, searchInputWrap));
+    element.onclick = () => showWrap(input, searchInputWrap);
 
-    input.addEventListener("blur", () => hideWrap(input, searchInputWrap, textLocation));
+    input.onblur = () => hideWrap(input, searchInputWrap, textLocation);
 
     document.querySelectorAll(".location-item").forEach(item => {
-        item.addEventListener("mousedown", () => {
+        item.onmousedown = () => {
             textLocation = item.textContent;
-        });
+        };
     });
 
 }
@@ -121,14 +123,14 @@ function initDuration(element) {
         return false;
     };
 
-    inputEnd.addEventListener("change", () => {
+    inputEnd.onchange = () => {
         valueInputEnd = inputEnd.value.split("-");
         endDate = {
             year: valueInputEnd[0],
             month: valueInputEnd[1],
             day: valueInputEnd[2]
         }
-    });
+    };
     inputEnd.onkeydown = () => {
         return false;
     };
@@ -191,24 +193,24 @@ function initGuestsRooms(element) {
 
 
 
-    plusButtons[0].addEventListener("click", () => {
+    plusButtons[0].onclick = () => {
         count.singleRoom = updateCouter(0, count.singleRoom, countElement[0], Max.singleRoom, Min.singleRoom, true);
         updateInputer(count.singleRoom,count.coupleRoom);
-    });
-    minusButtons[0].addEventListener("click", () => {
+    };
+    minusButtons[0].onclick = () => {
         count.singleRoom = updateCouter(0, count.singleRoom, countElement[0], Max.singleRoom, Min.singleRoom, false);
         updateInputer(count.singleRoom,count.coupleRoom);
 
-    });
+    };
 
-    plusButtons[1].addEventListener("click", () => {
+    plusButtons[1].onclick = () => {
         count.coupleRoom = updateCouter(1, count.coupleRoom, countElement[1], Max.coupleRoom, Min.coupleRoom, true);
         updateInputer(count.singleRoom,count.coupleRoom);
-    });
-    minusButtons[1].addEventListener("click", () => {
+    };
+    minusButtons[1].onclick = () => {
         count.coupleRoom = updateCouter(1, count.coupleRoom, countElement[1], Max.coupleRoom, Min.coupleRoom, false);
         updateInputer(count.singleRoom,count.coupleRoom);
-    });
+    };
 
 
 
@@ -221,7 +223,7 @@ function initGuestsRooms(element) {
     }
 
 
-    element.addEventListener("click", () => showWrap(input, searchInputWrap));
+    element.onclick = () => showWrap(input, searchInputWrap);
 
     function clickOutSide(e) {
         if(!element.contains(e.target)) {
@@ -229,7 +231,7 @@ function initGuestsRooms(element) {
         }
     }
 
-    document.addEventListener("click", clickOutSide);
+    document.onclick = clickOutSide;
 }
 
 
@@ -255,7 +257,7 @@ export function initBookingSearch() {
     const searchButton = document.querySelector(".booking-search__submit");
     const locationInput = document.getElementById("hotel-location");
 
-    searchButton.addEventListener("click", () => {
+    searchButton.onclick = () => {
         if(locationInput.value !== "" && (count.singleRoom !== 0 || count.coupleRoom !== 0)) {
 
             const searchInfoData = {
@@ -266,22 +268,29 @@ export function initBookingSearch() {
                 doubleRoomQuantity: count.coupleRoom
             };
             console.log(searchInfoData);
-            localStorage.setItem("DuringBooking", JSON.stringify({
-                checkInDate: `${startDate.year}-${startDate.month}-${startDate.day}`,
-                checkOutDate: `${endDate.year}-${endDate.month}-${endDate.day}`,
-            }));
+
+            localStorage.setItem("searchInfoData", JSON.stringify(searchInfoData));
+            
             searchHotel(searchInfoData)
                 .then(data => {
-                    navigation("#search-hotel");
-                    console.log(data);
                     localStorage.setItem("hotelData", JSON.stringify(data));
+                    if(window.location.hash !== "#search-hotel") {
+                        navigation("#search-hotel");
+                    }
+                    else {
+                        const main = document.querySelector(".main");
+                        main.innerHTML = searchHoteltemplate();
+                        initSearchHotel();
+                        console.log("Check input:", document.querySelector("#hotel-location"));
+                    }
+                    console.log(data);
                 })
                 .catch(errorData => {
                     console.log("fail(searchbooking)");
                     console.log(errorData);
                 })
         }
-    });
+    };
 
 
 }

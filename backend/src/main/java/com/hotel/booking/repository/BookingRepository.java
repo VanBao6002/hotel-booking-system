@@ -442,6 +442,7 @@ public class BookingRepository {
                 totalPrice,
                 rs.getObject("user_id") != null ? rs.getInt("user_id") : null,
                 rs.getObject("hotel_branch_id") != null ? rs.getInt("hotel_branch_id") : null,
+                rs.getBoolean("reviewed"),
                 List.of()
             );
 
@@ -544,6 +545,51 @@ public class BookingRepository {
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
     }
+    // Lấy booking theo UserID (frontend)
+    public List<BookingDTO> getBookingsByUserId(int userId) {
+    String sql = "SELECT id, check_in_date, check_out_date, booked_at, " +
+                 "hotel_branch_id, user_id, booking_price, reviewed " +
+                 "FROM booking WHERE user_id = ?";        List<BookingDTO> bookings = jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> new BookingDTO(
+                rs.getInt("id"),
+                rs.getDate("check_in_date").toLocalDate(),
+                rs.getDate("check_out_date").toLocalDate(),
+                rs.getTimestamp("booked_at").toLocalDateTime(),
+                rs.getLong("booking_price"),
+                rs.getInt("user_id"),
+                rs.getInt("hotel_branch_id"),
+                rs.getBoolean("reviewed"),
+                List.of()
+            ),
+            userId
+        );
+
+        // Với mỗi booking, lấy danh sách phòng
+        for (BookingDTO booking : bookings) {
+            String roomSql = "SELECT br.id AS booking_room_id, br.booking_id, r.id AS room_id, " +
+                            "r.room_number, r.room_img, tr.name AS room_type, r.price " +
+                            "FROM booking_room br " +
+                            "JOIN room r ON br.room_id = r.id " +
+                            "JOIN typeroom tr ON r.type_room_id = tr.id " +
+                            "WHERE br.booking_id = ?";
+
+            List<BookingRoomDTO> bookingRooms = jdbcTemplate.query(
+                roomSql,
+                (rs, rowNum) -> new BookingRoomDTO(
+                    rs.getInt("booking_room_id"),
+                    rs.getInt("booking_id"),
+                    rs.getInt("room_id"),
+                    rs.getString("room_number"),
+                    rs.getString("room_img"),
+                    rs.getString("room_type"),
+                    rs.getLong("price")
+                ),
+                booking.getBookingId()
+            );
+
+            booking.setBookingRooms(bookingRooms);
+        }
 
     private BookingSchema bookingSchema() {
         return new BookingSchema(
@@ -552,6 +598,10 @@ public class BookingRepository {
             schemaInspector.columnExists("booking", "user_id"),
             schemaInspector.columnExists("booking", "room_id")
         );
+    }
+    public void markBookingReviewed(int bookingId) {
+        String sql = "UPDATE booking SET reviewed = TRUE WHERE id = ?";
+        jdbcTemplate.update(sql, bookingId);
     }
 
     private record BookingSchema(

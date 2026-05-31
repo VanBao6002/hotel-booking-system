@@ -7,10 +7,10 @@ export function popularDestinationsTemplate() {
               <div class="grid__column-three-columns">
                 <div class="popular-destinations__box">
                   <div class="popular-destinations__box-picture">
-                    <img src="assets/images/example-banner.jpeg" alt="example">
+                    <img src="assets/images/location/HaiChau.jpg" alt="example">
                   </div>
                   <div class="popular-destinations__box-title">
-                    <h3>Khach san view bien</h3>
+                    <h3>Hải Châu</h3>
                   </div>
                   <div class="modal__overlay popular-destinations__box-overlay">
                     <div class="popular-destinations__box-look-more-btn">
@@ -22,10 +22,10 @@ export function popularDestinationsTemplate() {
               <div class="grid__column-three-columns">
                 <div class="popular-destinations__box">
                   <div class="popular-destinations__box-picture">
-                    <img src="assets/images/example-banner.jpeg" alt="example">
+                    <img src="assets/images/location/ThanhKhe.jpg" alt="example">
                   </div>
                   <div class="popular-destinations__box-title">
-                    <h3>Khach san view bien</h3>
+                    <h3>Thanh Khê</h3>
                   </div>
                   <div class="modal__overlay popular-destinations__box-overlay">
                     <div class="popular-destinations__box-look-more-btn">
@@ -37,10 +37,10 @@ export function popularDestinationsTemplate() {
               <div class="grid__column-three-columns">
                 <div class="popular-destinations__box">
                   <div class="popular-destinations__box-picture">
-                    <img src="assets/images/example-banner.jpeg" alt="example">
+                    <img src="assets/images/location/LienChieu.jpg" alt="example">
                   </div>
                   <div class="popular-destinations__box-title">
-                    <h3>Khach san view bien</h3>
+                    <h3>Liên Chiểu</h3>
                   </div>
                   <div class="modal__overlay popular-destinations__box-overlay">
                     <div class="popular-destinations__box-look-more-btn">
@@ -52,10 +52,10 @@ export function popularDestinationsTemplate() {
               <div class="grid__column-three-columns">
                 <div class="popular-destinations__box">
                   <div class="popular-destinations__box-picture">
-                    <img src="assets/images/example-banner.jpeg" alt="example">
+                    <img src="assets/images/location/SonTra.jpg" alt="example">
                   </div>
                   <div class="popular-destinations__box-title">
-                    <h3>Khach san view bien</h3>
+                    <h3>Sơn Trà</h3>
                   </div>
                   <div class="modal__overlay popular-destinations__box-overlay">
                     <div class="popular-destinations__box-look-more-btn">
@@ -67,10 +67,10 @@ export function popularDestinationsTemplate() {
               <div class="grid__column-three-columns">
                 <div class="popular-destinations__box">
                   <div class="popular-destinations__box-picture">
-                    <img src="assets/images/example-banner.jpeg" alt="example">
+                    <img src="assets/images/location/NguHanhSon.jpg" alt="example">
                   </div>
                   <div class="popular-destinations__box-title">
-                    <h3>Khach san view bien</h3>
+                    <h3>Ngũ Hành Sơn</h3>
                   </div>
                   <div class="modal__overlay popular-destinations__box-overlay">
                     <div class="popular-destinations__box-look-more-btn">
@@ -82,10 +82,10 @@ export function popularDestinationsTemplate() {
               <div class="grid__column-three-columns">
                 <div class="popular-destinations__box">
                   <div class="popular-destinations__box-picture">
-                    <img src="assets/images/example-banner.jpeg" alt="example">
+                    <img src="assets/images/location/CamLe.jpg" alt="example">
                   </div>
                   <div class="popular-destinations__box-title">
-                    <h3>Khach san view bien</h3>
+                    <h3>Cẩm Lệ</h3>
                   </div>
                   <div class="modal__overlay popular-destinations__box-overlay">
                     <div class="popular-destinations__box-look-more-btn">

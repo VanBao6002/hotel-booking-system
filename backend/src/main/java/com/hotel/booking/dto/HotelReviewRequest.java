@@ -3,18 +3,20 @@ package com.hotel.booking.dto;
 import java.time.LocalDate;
 
 public class HotelReviewRequest {
+    private int bookingId;       // thêm để biết review thuộc booking nào
     private int hotelBranchId;
     private int userId;
     private int rating;
     private String comment;
-    private LocalDate createdAt;  // thêm ngày tạo
+    private LocalDate createdAt;
 
     // Constructor mặc định
     public HotelReviewRequest() {}
 
     // Constructor đầy đủ
-    public HotelReviewRequest(int hotelBranchId, int userId, int rating,
-                              String comment, LocalDate createdAt) {
+    public HotelReviewRequest(int bookingId, int hotelBranchId, int userId,
+                              int rating, String comment, LocalDate createdAt) {
+        this.bookingId = bookingId;
         this.hotelBranchId = hotelBranchId;
         this.userId = userId;
         this.rating = rating;
@@ -23,6 +25,9 @@ public class HotelReviewRequest {
     }
 
     // Getter & Setter
+    public int getBookingId() { return bookingId; }
+    public void setBookingId(int bookingId) { this.bookingId = bookingId; }
+
     public int getHotelBranchId() { return hotelBranchId; }
     public void setHotelBranchId(int hotelBranchId) { this.hotelBranchId = hotelBranchId; }
 

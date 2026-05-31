@@ -27,3 +27,11 @@ export const getBookingHistory = (userId) => {
         skipAuth: false
     })
 }
+
+export const submitReview = (hotelId, reviewData) => {
+    return apiClient(`/api/reviews/hotel/${hotelId}`, {
+        method: "POST",
+        body: JSON.stringify(reviewData),
+        skipAuth: false
+    })
+}

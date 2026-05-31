@@ -10,6 +10,7 @@ public class UserDTO {
     private String fullName;
     private String phoneNumber;
     private LocalDate dateOfBbirth;
+    private String gender;
     private String currentAddress;
     private LocalDateTime lockedUntil;
     private String lockReason;
@@ -34,6 +35,9 @@ public class UserDTO {
 
     public LocalDate getDateOfBirth() {return dateOfBbirth; }
     public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBbirth = dateOfBirth; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 
     public String getCurrentAddress() {return currentAddress; }
     public void setCurrentAddress(String currentAddress) { this.currentAddress = currentAddress; }

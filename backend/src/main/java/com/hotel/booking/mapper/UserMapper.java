@@ -28,6 +28,17 @@ public final class UserMapper {
         dto.setLockedUntil(user.getLockedUntil());
         dto.setActive(user.getIsActive());
         dto.setRole(user.getRole().toApiRole());
+            // Map genderId sang gender string
+            Integer genderId = user.getGenderId();
+            String gender = null;
+            if (genderId != null) {
+                switch (genderId) {
+                    case 1 -> gender = "Nam";
+                    case 2 -> gender = "Nữ";
+                    default -> gender = "Khác";
+                }
+            }
+            dto.setGender(gender);
         return dto;
     }
 }

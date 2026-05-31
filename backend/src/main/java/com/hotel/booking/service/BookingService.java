@@ -53,4 +53,7 @@ public class BookingService {
     public List<BookingDTO> getUserBookings(int userId) {
         return bookingRepository.getBookingsByUserId(userId);
     }
+    public void markBookingReviewed(int bookingId) {
+        bookingRepository.markBookingReviewed(bookingId);
+    }
 }

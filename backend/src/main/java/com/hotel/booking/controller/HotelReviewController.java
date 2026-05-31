@@ -1,23 +1,32 @@
 package com.hotel.booking.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hotel.booking.dto.ApiResponse;
 import com.hotel.booking.dto.HotelReviewDTO;
 import com.hotel.booking.dto.HotelReviewRequest;
 import com.hotel.booking.dto.HotelReviewResponse;
+import com.hotel.booking.service.BookingService;
 import com.hotel.booking.service.HotelReviewService;
-import com.hotel.booking.dto.ApiResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/reviews")
 public class HotelReviewController {
 
     private final HotelReviewService reviewService;
+    private final BookingService bookingService;
 
-    public HotelReviewController(HotelReviewService reviewService) {
+    public HotelReviewController(HotelReviewService reviewService, BookingService bookingService) {
         this.reviewService = reviewService;
+        this.bookingService = bookingService;
     }
 
     // Lấy tất cả review theo hotel_branch_id
@@ -47,6 +56,8 @@ public class HotelReviewController {
 
         int rows = reviewService.addReview(dto);
         if (rows > 0) {
+            // Sau khi thêm review thành công → đánh dấu booking đã được review
+            bookingService.markBookingReviewed(request.getBookingId());
             return ResponseEntity.ok(new ApiResponse(true, "Review added successfully"));
         } else {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Failed to add review"));

@@ -166,11 +166,11 @@ CREATE TABLE IF NOT EXISTS booking (
     hotel_branch_id INT NOT NULL,
     user_id INT NOT NULL,
     booking_price BIGINT NOT NULL,
-    CONSTRAINT fk_booking_hotelbranch FOREIGN KEY (hotel_branch_id)
-        REFERENCES hotelbranch(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_booking_user FOREIGN KEY (user_id)
-        REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    reviewed BOOLEAN NOT NULL DEFAULT FALSE, -- đã đánh giá hay chưa
+    CONSTRAINT fk_booking_branch FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE CASCADE,
+    CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 
 CREATE TABLE IF NOT EXISTS booking_room (
     id INT PRIMARY KEY AUTO_INCREMENT,

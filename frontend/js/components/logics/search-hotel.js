@@ -1,5 +1,6 @@
 import { navigation } from "../../router/router.js";
-import {  HotelService } from "../../utils/utils.js";
+import {  HotelService, safeJsonParse } from "../../utils/utils.js";
+import { initBookingSearch } from "../logics/booking-search.js";
 
 function extraOption() {
 
@@ -7,7 +8,7 @@ function extraOption() {
     const extraButton = document.querySelectorAll(".search-hotel-filter__item-icon");
 
     extraButton.forEach((e, i) => {
-        e.addEventListener("click", ()=> {
+        e.onclick = ()=> {
             if(window.getComputedStyle(stateBox[i]).display === "none") {
                 stateBox[i].style.display = "flex";
                 extraButton[i].style.transform = "rotate(180deg)";
@@ -16,18 +17,20 @@ function extraOption() {
                 stateBox[i].style.display = "none";
                 extraButton[i].style.transform = "rotate(0)";
             }
-        })
+        };
     });
 }
 
 function choiceHotel() {
-  document.querySelectorAll(".search-hotel-result__wrap").forEach(wrap => {
-    wrap.addEventListener("click", () => {
+  const container = document.querySelector(".search-hotel-result__body");
+  container.onclick = (e) => {
+    const wrap = e.target.closest(".search-hotel-result__wrap");
+    if (wrap) {
       const hotelId = wrap.id;
       localStorage.setItem("choicedHotelId", hotelId);
       navigation("#booking");
-    })
-  })
+    }
+  };
 }
 
 function hotelCard(id, address, averageStar, price) {
@@ -110,7 +113,7 @@ function renderHotel() {
     let filterRateCheckBoxs = filterRateEl.querySelectorAll(".search-hotel-filter__box-choice input");
 
     filterRateCheckBoxs.forEach((cb) => {
-      cb.addEventListener("change", () => {
+      cb.onclick = () => {
         const star = Number(cb.value);
 
         if(cb.checked) {
@@ -124,7 +127,7 @@ function renderHotel() {
         // console.log(currentFilters);
         applyFilters();
 
-      })
+      };
     });
   }
 
@@ -133,7 +136,7 @@ function renderHotel() {
     
     //xu ly chi checked 1 trong 2 nut
     filterPriceCheckBoxs.forEach((cb, index) => {
-      cb.addEventListener("change", () => {
+      cb.onchange = () => {
         filterPriceCheckBoxs.forEach((otherCb, otherIndex) => {
           if(otherIndex !== index) {
             otherCb.checked = false;
@@ -152,7 +155,7 @@ function renderHotel() {
         
         applyFilters();
         
-      });
+      };
     });
   }
   handleFilterRate();
@@ -160,8 +163,20 @@ function renderHotel() {
   applyFilters();
 }
 
+function initSearchInfoData() {
+    const searchInfoData = safeJsonParse(localStorage.getItem("searchInfoData"), {}); 
+    setTimeout(() => {
+        document.querySelector("#hotel-location").value = searchInfoData.location;
+        document.querySelector("#start-date").value = searchInfoData.checkInDate;
+        document.querySelector("#end-date").value = searchInfoData.checkOutDate;
+        document.querySelector("#rooms").value = searchInfoData.singleRoomQuantity + " Phòng đơn, " + searchInfoData.doubleRoomQuantity + " Phòng đôi";
+    }, 0);
+}
+
 export function initSearchHotel() {
+    initBookingSearch();
     extraOption();
     renderHotel();
     choiceHotel();
+    initSearchInfoData();
 }

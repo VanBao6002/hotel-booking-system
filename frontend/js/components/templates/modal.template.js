@@ -170,6 +170,32 @@ export function modalTemplate() {
               </div>
             </div>
           </div>
+          
+          <div class="show__write-review">
+            <div class="write-review__wrap">
+              <div class="write-review__head">
+                <span>Đánh giá của bạn</span>
+              </div>
+              <div class="write-review__body">
+                <div class="write-review__star">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="write-review__text">
+                  <textarea name="review" id="review" placeholder="Chia sẻ trải nghiệm của bạn về khách sạn này..."></textarea>
+                  <div class="write-review__text-error"></div>
+                </div>
+              </div>
+              <div class="write-review__footer">
+                <div class="confirm-btn write-review__cancel-button">Hủy</div>
+                <div class="confirm-btn write-review__submit-button">Gửi đánh giá</div>
+              </div>
+            </div>
+          </div>
+
 
         </div>
       </div>

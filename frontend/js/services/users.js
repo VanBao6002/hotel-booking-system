@@ -48,3 +48,11 @@ export const grantStaffRole = (userId, hotelBranchId = null) => {
     }),
   });
 };
+
+export const getMe = () => {
+  return apiClient("/api/v1/auth/me", {
+    method: "GET",
+    skipAuth: false
+  });
+};
+
