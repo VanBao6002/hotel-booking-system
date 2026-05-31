@@ -15,6 +15,11 @@ public class RoomRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public int updateRoomImage(int roomId, String roomImg) {
+        String sql = "UPDATE room SET room_img = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, roomImg, roomId);
+    }
+
     // Lấy tất cả phòng
 public List<RoomDTO> getAllRooms() {
     String sql = "SELECT r.id, r.room_number, r.floor, r.area, r.number_of_bed,r.price, r.description, r.room_img, " +
@@ -91,6 +96,10 @@ public List<RoomDTO> getAllRooms() {
         ),
         id // truyền trực tiếp varargs thay vì new Object[]{id}
     );
+
+    if (room == null) {
+        return null;
+    }
 
 
     // Lấy danh sách dịch vụ theo loại phòng

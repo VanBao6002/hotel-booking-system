@@ -17,7 +17,8 @@ public final class RequestAccessPolicy {
         "/api/v1/auth/forgot-password",
         "/api/v1/auth/reset-password",
         "/internal/debug/last-otp",
-        "/api/search/hotel"
+        "/api/search/hotel",
+        "/media/**"
     };
 
     private RequestAccessPolicy() {
