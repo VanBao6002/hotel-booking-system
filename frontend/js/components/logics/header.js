@@ -101,7 +101,7 @@ function userExtra() {
     };
 
     userManage?.addEventListener("click", () => {
-        userInfoExtra.style.display = "none";
+        // userInfoExtra.style.display = "none";
         const role = localStorage.getItem("role");
         if (role === "manager") {
             navigation("#home-manager");
@@ -255,7 +255,7 @@ function submitForm(){
                     document.querySelector(".user__info-name span").innerText = data.user.fullName;
                     updateManageMenuVisibility();
                     showToast("Đăng nhập thành công");
-                    navigation(role === "ADMIN" || role === "STAFF" ? "#home-manager" : "#home");
+                    // navigation("#home");
                     getMe()
                         .then(userData => {
                             localStorage.setItem("userData", JSON.stringify(userData));

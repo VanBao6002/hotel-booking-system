@@ -290,22 +290,22 @@ public class BookingRepository {
     }
 
     // Lay tat ca booking theo userId (frontend)
-    public List<BookingDTO> getBookingsByUserId(int userId) {
-        BookingSchema schema = bookingSchema();
-        String userFilter = schema.hasBookingUserColumn()
-            ? " WHERE b.user_id = ?"
-            : " WHERE review_summary.CustomerID = ?";
+    // public List<BookingDTO> getBookingsByUserId(int userId) {
+    //     BookingSchema schema = bookingSchema();
+    //     String userFilter = schema.hasBookingUserColumn()
+    //         ? " WHERE b.user_id = ?"
+    //         : " WHERE review_summary.CustomerID = ?";
 
-        List<BookingDTO> bookings = jdbcTemplate.query(
-            adminBookingSql(schema) + userFilter + " ORDER BY b.booked_at DESC, b.id DESC",
-            bookingMapper(),
-            userId
-        );
+    //     List<BookingDTO> bookings = jdbcTemplate.query(
+    //         adminBookingSql(schema) + userFilter + " ORDER BY b.booked_at DESC, b.id DESC",
+    //         bookingMapper(),
+    //         userId
+    //     );
 
-        hydrateBookingRooms(bookings, schema);
+    //     hydrateBookingRooms(bookings, schema);
 
-        return bookings;
-    }
+    //     return bookings;
+    // }
 
     // SQL cho admin panel
     private String adminBookingSql() {
@@ -547,23 +547,23 @@ public class BookingRepository {
     }
     // Lấy booking theo UserID (frontend)
     public List<BookingDTO> getBookingsByUserId(int userId) {
-    String sql = "SELECT id, check_in_date, check_out_date, booked_at, " +
-                 "hotel_branch_id, user_id, booking_price, reviewed " +
-                 "FROM booking WHERE user_id = ?";        List<BookingDTO> bookings = jdbcTemplate.query(
-            sql,
-            (rs, rowNum) -> new BookingDTO(
-                rs.getInt("id"),
-                rs.getDate("check_in_date").toLocalDate(),
-                rs.getDate("check_out_date").toLocalDate(),
-                rs.getTimestamp("booked_at").toLocalDateTime(),
-                rs.getLong("booking_price"),
-                rs.getInt("user_id"),
-                rs.getInt("hotel_branch_id"),
-                rs.getBoolean("reviewed"),
-                List.of()
-            ),
-            userId
-        );
+        String sql = "SELECT id, check_in_date, check_out_date, booked_at, " +
+                    "hotel_branch_id, user_id, booking_price, reviewed " +
+                    "FROM booking WHERE user_id = ?";        
+        List<BookingDTO> bookings = jdbcTemplate.query(sql,
+                (rs, rowNum) -> new BookingDTO(
+                    rs.getInt("id"),
+                    rs.getDate("check_in_date").toLocalDate(),
+                    rs.getDate("check_out_date").toLocalDate(),
+                    rs.getTimestamp("booked_at").toLocalDateTime(),
+                    rs.getLong("booking_price"),
+                    rs.getInt("user_id"),
+                    rs.getInt("hotel_branch_id"),
+                    rs.getBoolean("reviewed"),
+                    List.of()
+                ),
+                userId
+            );
 
         // Với mỗi booking, lấy danh sách phòng
         for (BookingDTO booking : bookings) {
@@ -590,7 +590,8 @@ public class BookingRepository {
 
             booking.setBookingRooms(bookingRooms);
         }
-
+        return bookings;
+    }
     private BookingSchema bookingSchema() {
         return new BookingSchema(
             schemaInspector.tableExists("booking_room"),
