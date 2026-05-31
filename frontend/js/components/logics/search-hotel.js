@@ -8,7 +8,7 @@ function extraOption() {
     const extraButton = document.querySelectorAll(".search-hotel-filter__item-icon");
 
     extraButton.forEach((e, i) => {
-        e.addEventListener("click", ()=> {
+        e.onclick = ()=> {
             if(window.getComputedStyle(stateBox[i]).display === "none") {
                 stateBox[i].style.display = "flex";
                 extraButton[i].style.transform = "rotate(180deg)";
@@ -17,20 +17,20 @@ function extraOption() {
                 stateBox[i].style.display = "none";
                 extraButton[i].style.transform = "rotate(0)";
             }
-        })
+        };
     });
 }
 
 function choiceHotel() {
   const container = document.querySelector(".search-hotel-result__body");
-  container.addEventListener("click", (e) => {
+  container.onclick = (e) => {
     const wrap = e.target.closest(".search-hotel-result__wrap");
     if (wrap) {
       const hotelId = wrap.id;
       localStorage.setItem("choicedHotelId", hotelId);
       navigation("#booking");
     }
-  });
+  };
 }
 
 function hotelCard(id, address, averageStar, price) {
@@ -113,7 +113,7 @@ function renderHotel() {
     let filterRateCheckBoxs = filterRateEl.querySelectorAll(".search-hotel-filter__box-choice input");
 
     filterRateCheckBoxs.forEach((cb) => {
-      cb.addEventListener("change", () => {
+      cb.onclick = () => {
         const star = Number(cb.value);
 
         if(cb.checked) {
@@ -127,7 +127,7 @@ function renderHotel() {
         // console.log(currentFilters);
         applyFilters();
 
-      })
+      };
     });
   }
 
@@ -136,7 +136,7 @@ function renderHotel() {
     
     //xu ly chi checked 1 trong 2 nut
     filterPriceCheckBoxs.forEach((cb, index) => {
-      cb.addEventListener("change", () => {
+      cb.onchange = () => {
         filterPriceCheckBoxs.forEach((otherCb, otherIndex) => {
           if(otherIndex !== index) {
             otherCb.checked = false;
@@ -155,7 +155,7 @@ function renderHotel() {
         
         applyFilters();
         
-      });
+      };
     });
   }
   handleFilterRate();

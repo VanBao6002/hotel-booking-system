@@ -88,32 +88,35 @@ export function showForm(type) {
 
 function userExtra() {
     const userInfo = document.querySelector(".user__info");
-    const userInfoExtra = userInfo.querySelector(".user__info-extra");
     const userSignOut = userInfo.querySelector(".extra__item-sign-out");
-    const userSetiing = userInfo.querySelector(".extra__item-setting");
+    const userSetting = userInfo.querySelector(".extra__item-setting");
 
-    userInfo.addEventListener("click", (e) => {
-        userInfoExtra.style.display = "block";
-    }); 
-    
-    document.addEventListener("click", (e) => {
-        if(!userInfo.contains(e.target)) {
-            userInfoExtra.style.display = "none";
-        }
-    });
 
-    userSetiing.addEventListener("click", () => {
-        userInfoExtra.style.display = "none";
+    userSetting.onmousedown = (e) => {
         navigation("#setting");
-    })
+    };
 
-    userSignOut.addEventListener("click", () => {
+    userSignOut.onclick = () => {
         document.querySelector(".header__navbar-user").classList.remove("logged-in");
         localStorage.setItem("role", "guest");
         localStorage.setItem("token", "");
         localStorage.setItem("userData", "");
+        localStorage.setItem("choicedHotelId", "");
+        localStorage.setItem("searchInfoData", "");
+        localStorage.setItem("hotelData", "");
+        localStorage.setItem("bookingHistoryData", "");
+        localStorage.setItem("bookingDetailData", "");
+        localStorage.setItem("paymentData", "");
+        localStorage.setItem("bookingData", "");
+        localStorage.setItem("currentBookingData", "");
+        localStorage.setItem("currentBookingDetailData", "");
+        localStorage.setItem("currentPaymentData", "");
+        localStorage.setItem("currentUserData", "");
+        localStorage.setItem("currentHotelData", "");
+        localStorage.setItem("currentSearchInfoData", "");
+        localStorage.setItem("currentHotelData", "");
         navigation("#home");
-    });
+    };
 }
 
 export function hideAllForm() {
@@ -132,7 +135,7 @@ function attachValidation(formID, rules) {
         const inputGroup = filed.closest(".form-group");
         const errorMessage = inputGroup.querySelector(".form-error");
 
-        filed.addEventListener("blur", () => {
+        filed.onblur = () => {
             if(!rule.validate(filed.value)) {
                 inputGroup.classList.add("invalid");
                 errorMessage.innerText = rule.message;
@@ -141,7 +144,7 @@ function attachValidation(formID, rules) {
                 inputGroup.classList.remove("invalid");
                 errorMessage.innerText = "";
             }
-        });
+        };
     })
 }
 
@@ -184,9 +187,9 @@ function showToast(message, type = "success") {
 }
 function showBookingHistory() {
     const bookingHistory = document.querySelector(".header__navbar-extras-booking");
-    bookingHistory.addEventListener("click", () => {
+    bookingHistory.onclick = () => {
         navigation("#booking-history");
-    });
+    };
 }
 
 
@@ -195,7 +198,7 @@ function submitForm(){
 
     // sign in
 
-    submitButton[0].addEventListener("click", (e)=> {
+    submitButton[0].onclick = (e)=> {
         e.preventDefault();
 
 
@@ -244,9 +247,9 @@ function submitForm(){
                 hideAllForm();
         }
 
-    });
+    };
     
-    submitButton[1].addEventListener("click", (e) => {
+    submitButton[1].onclick = (e) => {
         e.preventDefault();
         
 
@@ -289,7 +292,7 @@ function submitForm(){
                     }
                 })
         }
-    });
+    };
 
     console.log(getSignInForm().querySelectorAll(".form-input"));
 }
@@ -297,26 +300,26 @@ function submitForm(){
 
 
 export function initHeader() {
-    getModalOverlay().addEventListener("click", () => {
+    getModalOverlay().onclick = () => {
         turnOffModal();
         hideAllForm();
-    });
+    };
 
-    document.querySelector('.auth__btn-login').addEventListener("click", () => {
+    document.querySelector('.auth__btn-login').onclick = () => {
         turnOnModal();
         showForm("sign-in");
-    });
-    document.querySelector('.auth__btn-regist').addEventListener("click", () => {
+    };
+    document.querySelector('.auth__btn-regist').onclick = () => {
         turnOnModal();
         showForm("sign-up");
-    });
+    };
 
-    document.querySelector(".sign-in-btn").addEventListener("click", () => {
+    document.querySelector(".sign-in-btn").onclick = () => {
         showForm("sign-in");
-    });
-    document.querySelector(".sign-up-btn").addEventListener("click", () => {
+    };
+    document.querySelector(".sign-up-btn").onclick = () => {
         showForm("sign-up");
-    });
+    };
 
     userExtra();
     attachValidation("form-sign-in",[emailField,passwordField]);

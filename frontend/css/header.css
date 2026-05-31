@@ -131,6 +131,9 @@
     cursor: pointer;
     background-color: #00000040;
 }
+.user__info:hover .user__info-extra {
+    display: block;
+}
 .user__info-extra {
     display: none;
     position: absolute;

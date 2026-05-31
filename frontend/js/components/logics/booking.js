@@ -138,7 +138,7 @@ function updateConfirmDetail(roomId, typeCode, roomPrice , choice = true){
 function renderConfirm() {
     const choiceRoomButtons = document.querySelectorAll(".booking__info-room-body .room-choice__button");
     choiceRoomButtons.forEach((choice) => {
-        choice.addEventListener("click",() => {
+        choice.onclick = () => {
             const roomInfo = choice.closest("tr");
             const roomId = Number(roomInfo.dataset.roomId);
             const typeCode = roomInfo.dataset.typeCode;
@@ -155,7 +155,7 @@ function renderConfirm() {
 
             updateConfirmTable();
 
-        });
+        };
     })
 }
 
@@ -168,7 +168,7 @@ function showRoomDetail() {
     if(!isShowRoomDetailInit) {
         const showRoomChoiceButton = showRoomModal.querySelector(".choice-room__button");
         if(showRoomChoiceButton) {
-            showRoomChoiceButton.addEventListener("click", () => {
+            showRoomChoiceButton.onclick = () => {
     
                 if(!showRoomChoiceButton.classList.contains("active")) {
                     updateConfirmDetail(Number(showRoomModal.dataset.roomId), showRoomModal.dataset.typeCode, Number(showRoomModal.dataset.roomPrice), true);
@@ -181,14 +181,14 @@ function showRoomDetail() {
     
                 updateConfirmTable();
     
-            });
+            };
         }
         const showRoomExit = showRoomModal.querySelector(".show-room__exit");
         if(showRoomExit) {
-            showRoomExit.addEventListener("click", () => {
+            showRoomExit.onclick = () => {
                 showRoomModal.classList.remove("show");
                 modal.classList.remove("active");
-            })
+            };
         }
 
         isShowRoomDetailInit = true;
@@ -197,7 +197,7 @@ function showRoomDetail() {
 
 
     detailButtons.forEach(detail => {
-        detail.addEventListener("click", () => {
+        detail.onclick = () => {
             const roomInfo = detail.closest("tr");
             const roomId = Number(roomInfo.dataset.roomId);
             const typeCode = roomInfo.dataset.typeCode;
@@ -267,7 +267,7 @@ function showRoomDetail() {
                 btn.querySelector("div").innerText = "Thêm lựa chọn phòng";
             }
                 
-        }); 
+        }; 
     })
 }
 
@@ -387,7 +387,7 @@ function handleBooking() {
     const backButton = showNotification.querySelector(".show__notification-previous-button");
     const nextButton = showNotification.querySelector(".show__notification-next-button");
 
-    confirmButton.addEventListener("click", () => {
+    confirmButton.onclick = () => {
         if(confirmDetail.singleRoomsId.length === 0 && confirmDetail.doubleRoomsId.length === 0) {
             modal.classList.add("active");
             nextButton.innerText = "";
@@ -450,22 +450,22 @@ function handleBooking() {
 
         }
 
-        backButton.addEventListener("click", ()=> {
+        backButton.onclick = () => {
             showNotification.classList.remove("show", "error", "warning", "success", "qrcode");
             notificationText.innerText = "";
             notificationTitle.innerText = "";
             modal.classList.remove("active");
-        })
-    })
+        };
+    };
 
 }
 
 
 export function initBooking() {
 
-    confirmDetail.singleRoomsId = [];
-    confirmDetail.doubleRoomsId = [];
-    confirmDetail.totalPrice = 0;
+    // confirmDetail.singleRoomsId = [];
+    // confirmDetail.doubleRoomsId = [];
+    // confirmDetail.totalPrice = 0;
 
     const modalBtn = document.querySelector(".show-room .choice-room__button");
     if (modalBtn) {
@@ -474,9 +474,9 @@ export function initBooking() {
     }   
 
     const main = document.querySelector(".main");
-    document.querySelector(".booking__info-genaral-button").addEventListener("click", () => {
+    document.querySelector(".booking__info-genaral-button").onclick = () => {
         main.querySelector(".booking__info-room").scrollIntoView({behavior: "smooth", block: "center"});
-    });
+    };
 
 
     renderBooking();

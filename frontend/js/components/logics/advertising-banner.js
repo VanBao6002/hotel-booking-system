@@ -4,19 +4,19 @@ export function initAdvertisingBanner() {
     const nextButton = document.querySelector(".advertising-banner__btn-next");
     const previousButton = document.querySelector(".advertising-banner__btn-previous");
 
-    nextButton.addEventListener("click", () => {
+    nextButton.onclick = () => {
         nextButton.style.display = "none";
         previousButton.style.display = "flex";
         container.scrollLeft = 1223.86669921875;
-    });
+    };
 
-    previousButton.addEventListener("click", () => {
+    previousButton.onclick = () => {
         nextButton.style.display = "flex";
         previousButton.style.display = "none";
         container.scrollLeft = 0;
-    });
+    };
 
-    container.addEventListener("scroll", () => {
+    container.onscroll = () => {
         if(container.scrollLeft === 1223.86669921875) {
             nextButton.style.display = "none";
             previousButton.style.display = "flex";
@@ -29,5 +29,5 @@ export function initAdvertisingBanner() {
             nextButton.style.display = "flex";
             previousButton.style.display = "flex";
         }
-    });
+    };
 }

@@ -30,12 +30,14 @@ function handleData(rawData) {
         checkInDate: formatDate(rawData.checkInDate),
         checkOutDate: formatDate(rawData.checkOutDate),
         bookingPrice: rawData.bookingPrice,
-        bookedAt: formatDateTime(rawData.bookedAt)
+        bookedAt: formatDateTime(rawData.bookedAt),
+        reviewed: rawData.reviewed
     };
     return formattedData;
 }
 
 let selectedRating = 0;
+let reviewText = "";
 
 function renderBooking(userId){
     
@@ -50,18 +52,17 @@ function renderBooking(userId){
         const modal = document.querySelector(".modal");
 
         const userId = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData")).id : null;
-        const hotelBranchId = Number(document.querySelector("tr td:nth-child(2)").textContent.replace("Khách sạn ", ""));
+        let hotelBranchId = null;
 
         console.log("User ID:", userId);
-        console.log("Hotel Branch ID:", hotelBranchId);
 
         const reviewButtons = document.querySelectorAll(".rating-btn");
         const showWriteReview = modal.querySelector(".show__write-review");
-        const reviewText = modal.querySelector(".write-review__text textarea");
         const reviewStars = modal.querySelectorAll(".write-review__star i");
         const submitReviewButton = modal.querySelector(".write-review__submit-button");
         const cancelReviewButton = modal.querySelector(".write-review__cancel-button");        
-
+        let currentBookingId = null;
+       
         
         const now = new Date();
         
@@ -70,7 +71,7 @@ function renderBooking(userId){
             const checkOutDate = button.closest("tr").querySelector("td:nth-child(5)").textContent;            
             const checkOut = new Date(checkOutDate.split("/").reverse().join("-"));
             
-            if(checkOut > now) {
+            if(checkOut > now && !button.classList.contains("reviewed")) {
                 button.classList.remove("active");
                 button.textContent = "Chưa thể đánh giá";
             }
@@ -89,65 +90,76 @@ function renderBooking(userId){
 
         reviewButtons.forEach(button => {
             if(button.classList.contains("active")) {
-                button.addEventListener("click", () => {
+                button.onclick = () => {
                     modal.classList.add("active");
-                    showWriteReview.classList.add("active");    
-                });
+                    showWriteReview.classList.add("active");  
+                    currentBookingId = button.dataset.bookingId;  
+                    hotelBranchId = button.closest("tr").querySelector("td:nth-child(2)").textContent.replace("Khách sạn ", "").trim();
+                    console.log("Current Booking ID:", currentBookingId);
+                    console.log("Hotel Branch ID on Click:", hotelBranchId);
+                };
             }
         });
 
         reviewStars.forEach((star, index) => {
-            star.addEventListener("click", () => {
+            star.onclick = () => {
                 selectedRating = index + 1;
                 reviewStars.forEach((s, i) => {
                     s.style.color = i < selectedRating ? "#FFD700" : "#ccc";
                 });
-            });
+            };
         });
 
         function resetReview() {
+            const reviewTextEl = document.querySelector(".write-review__text textarea");
             modal.classList.remove("active");
             showWriteReview.classList.remove("active");
-            reviewText.value = "";
+            reviewTextEl.value = "";
+            reviewText = "";
+            selectedRating = 0;
             reviewStars.forEach(s => s.style.color = "#ccc");
         }
         function isValidReview() {
-            if(selectedRating === 0 && reviewText.value.trim() === "") {
+            const reviewTextEl = document.querySelector(".write-review__text textarea").value;
+            if(selectedRating === 0 || (reviewTextEl.trim() ?? "") === "") {
+                console.log("false", selectedRating, reviewText);
                 return false;
             }
+            reviewText = reviewTextEl.trim();
+            console.log("true", selectedRating, reviewText);
             return true;
         }
 
         
 
-        cancelReviewButton.addEventListener("click", () => {
+        cancelReviewButton.onclick = () => {
             resetReview();
             const errorMessageEl = modal.querySelector(".write-review__text-error");
             errorMessageEl.style.display = "none";
-        });
+        };
 
 
 
-        submitReviewButton.addEventListener("click", () => {
+        submitReviewButton.onclick = () => {
 
             if(isValidReview()) {
 
                 submitReview(hotelBranchId, {
+                    bookingId: Number(currentBookingId.replace("B-", "")),
                     userId: userId,
                     rating: selectedRating,
-                    comment: reviewText.value.trim(),
+                    comment: reviewText.trim(),
                     createdAt: new Date().toISOString().split("T")[0]
                 })
                     .then(() => {
 
-                        const activeButton = document.querySelector(".rating-btn.active");
+                        const activeButton = document.querySelector(`.rating-btn.active[data-booking-id="${currentBookingId}"]`);
                         if(activeButton) {
                             activeButton.classList.remove("active");
                             activeButton.classList.add("reviewed");
                             activeButton.textContent = "Đã đánh giá";
                         }
-                        
-                        activeButton.replaceWith(activeButton.cloneNode(true));
+                        activeButton.onclick = null;
                     })
                 resetReview();
             }
@@ -156,7 +168,7 @@ function renderBooking(userId){
                 errorMessageEl.style.display = "block";
                 errorMessageEl.textContent = "Vui lòng chọn số sao và viết đánh giá.";
             }
-        });
+        };
 
     }
     
@@ -179,7 +191,11 @@ function renderBooking(userId){
                         <th>Đánh giá</th>
                     </tr>`;
             response.forEach(rawData => {
+                let reviewed = "";
                 const bookingData = handleData(rawData);
+                if(bookingData.reviewed) {
+                    reviewed = "reviewed";
+                }
 
                 tableBody.innerHTML += `
                     <tr>
@@ -190,13 +206,14 @@ function renderBooking(userId){
                         <td>${bookingData.checkOutDate}</td>
                         <td>${bookingData.bookingPrice.toLocaleString("vi-VN")} VND</td>
                         <td>${bookingData.bookedAt}</td>
-                        <td><div class="rating-btn"></div></td>
+                        <td><div class="rating-btn ${reviewed}" data-booking-id="${bookingData.bookingId}"></div></td>
                     </tr>
                 `;
+                // console.log(bookingData);
             });
         writeReview();
     })
-    .catch(err => console.error("Lỗi khi lấy booking:", err));
+    // .catch(err => console.error("Lỗi khi lấy booking:", err));
 
     
 
@@ -205,10 +222,10 @@ function renderBooking(userId){
 
 function validateReview() {
     const modal = document.querySelector(".modal");
-    const reviewText = modal.querySelector(".write-review__text textarea");
+    const reviewTextEl = modal.querySelector(".write-review__text textarea");
     const errorMessageEl = modal.querySelector(".write-review__text-error");
-    reviewText.addEventListener("blur", () => {
-        if(reviewText.value.trim() !== "" && selectedRating !== 0) {
+    reviewTextEl.onblur = () => {
+        if(reviewTextEl.value.trim() !== "" && selectedRating !== 0) {
             errorMessageEl.style.display = "none";
         }
         else {
@@ -216,7 +233,7 @@ function validateReview() {
             errorMessageEl.textContent = "Vui lòng chọn số sao và viết đánh giá.";  
         }
     }
-)};
+};
 
 export function initBookingHistory() {
     const user = safeJsonParse(localStorage.getItem("userData"), {});

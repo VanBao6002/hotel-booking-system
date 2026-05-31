@@ -7,7 +7,7 @@ import { initSearchHotel } from "../logics/search-hotel.js";
 function choicePopularDestinations() {
     const popularDestinationsOverlay = document.querySelectorAll(".popular-destinations__box-overlay");
     popularDestinationsOverlay.forEach(destinationOverlay => {
-        destinationOverlay.addEventListener('mousedown', () => {
+        destinationOverlay.onclick = () => {
             
             const destination = destinationOverlay.closest(".popular-destinations__box");
             const destinationName = destination.querySelector(".popular-destinations__box-title h3").textContent;
@@ -40,10 +40,9 @@ function choicePopularDestinations() {
                     console.log("fail(searchbooking)");
                     console.log(errorData);
                 })
-        });
+        };
     });
 
-    
 }
 
 export function initPopularDestinations() {

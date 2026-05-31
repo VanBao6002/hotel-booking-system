@@ -56,14 +56,14 @@ function initLocation(element) {
     // input.value = "";
     
 
-    element.addEventListener("click", () => showWrap(input, searchInputWrap));
+    element.onclick = () => showWrap(input, searchInputWrap);
 
-    input.addEventListener("blur", () => hideWrap(input, searchInputWrap, textLocation));
+    input.onblur = () => hideWrap(input, searchInputWrap, textLocation);
 
     document.querySelectorAll(".location-item").forEach(item => {
-        item.addEventListener("mousedown", () => {
+        item.onmousedown = () => {
             textLocation = item.textContent;
-        });
+        };
     });
 
 }
@@ -123,14 +123,14 @@ function initDuration(element) {
         return false;
     };
 
-    inputEnd.addEventListener("change", () => {
+    inputEnd.onchange = () => {
         valueInputEnd = inputEnd.value.split("-");
         endDate = {
             year: valueInputEnd[0],
             month: valueInputEnd[1],
             day: valueInputEnd[2]
         }
-    });
+    };
     inputEnd.onkeydown = () => {
         return false;
     };
@@ -193,24 +193,24 @@ function initGuestsRooms(element) {
 
 
 
-    plusButtons[0].addEventListener("click", () => {
+    plusButtons[0].onclick = () => {
         count.singleRoom = updateCouter(0, count.singleRoom, countElement[0], Max.singleRoom, Min.singleRoom, true);
         updateInputer(count.singleRoom,count.coupleRoom);
-    });
-    minusButtons[0].addEventListener("click", () => {
+    };
+    minusButtons[0].onclick = () => {
         count.singleRoom = updateCouter(0, count.singleRoom, countElement[0], Max.singleRoom, Min.singleRoom, false);
         updateInputer(count.singleRoom,count.coupleRoom);
 
-    });
+    };
 
-    plusButtons[1].addEventListener("click", () => {
+    plusButtons[1].onclick = () => {
         count.coupleRoom = updateCouter(1, count.coupleRoom, countElement[1], Max.coupleRoom, Min.coupleRoom, true);
         updateInputer(count.singleRoom,count.coupleRoom);
-    });
-    minusButtons[1].addEventListener("click", () => {
+    };
+    minusButtons[1].onclick = () => {
         count.coupleRoom = updateCouter(1, count.coupleRoom, countElement[1], Max.coupleRoom, Min.coupleRoom, false);
         updateInputer(count.singleRoom,count.coupleRoom);
-    });
+    };
 
 
 
@@ -223,7 +223,7 @@ function initGuestsRooms(element) {
     }
 
 
-    element.addEventListener("click", () => showWrap(input, searchInputWrap));
+    element.onclick = () => showWrap(input, searchInputWrap);
 
     function clickOutSide(e) {
         if(!element.contains(e.target)) {
@@ -231,7 +231,7 @@ function initGuestsRooms(element) {
         }
     }
 
-    document.addEventListener("click", clickOutSide);
+    document.onclick = clickOutSide;
 }
 
 
@@ -257,7 +257,7 @@ export function initBookingSearch() {
     const searchButton = document.querySelector(".booking-search__submit");
     const locationInput = document.getElementById("hotel-location");
 
-    searchButton.addEventListener("click", () => {
+    searchButton.onclick = () => {
         if(locationInput.value !== "" && (count.singleRoom !== 0 || count.coupleRoom !== 0)) {
 
             const searchInfoData = {
@@ -290,7 +290,7 @@ export function initBookingSearch() {
                     console.log(errorData);
                 })
         }
-    });
+    };
 
 
 }

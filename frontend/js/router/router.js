@@ -226,61 +226,61 @@ function attachNavEvents() {
 
 
     if(homeEl) {
-        homeEl.addEventListener("click", () => {
+        homeEl.onclick = () => {
             console.log(window.location.hash)
             navigation("#home");
-        })
+        };
     }
 
     if(searchHotelEl) {
-        searchHotelEl.addEventListener("click", () => {
+        searchHotelEl.onclick = () => {
             main.querySelector(".booking-search").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(discountEl) {
-        discountEl.addEventListener("click", () => {
+        discountEl.onclick = () => {
             main.querySelector(".advertising-banner").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(guessEl) {
-        guessEl.addEventListener("click", () => {
+        guessEl.onclick = () => {
             main.querySelector(".popular-destinations").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(genaralEl) {
-        genaralEl.addEventListener("click", () => {
+        genaralEl.onclick = () => {
             main.querySelector(".booking__info-genaral").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(roomEl) {
-        roomEl.addEventListener("click", () => {
+        roomEl.onclick = () => {
             main.querySelector(".booking__info-room").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(confirmEl) {
-        confirmEl.addEventListener("click", () => {
+        confirmEl.onclick = () => {
             main.querySelector(".booking__info-confirm").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(serviceEl) {
-        serviceEl.addEventListener("click", () => {
+        serviceEl.onclick = () => {
             main.querySelector(".booking__info-service").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(rateEl) {
-        rateEl.addEventListener("click", () => {
+        rateEl.onclick = () => {
             main.querySelector(".booking__info-rate").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(profileEl) {
-        profileEl.addEventListener("click", () => {
+        profileEl.onclick = () => {
             main.querySelector(".setting").innerHTML = profileTemplate();
-        })
+        };
     }
     if(changePasswordEl) {
-        changePasswordEl.addEventListener("click", () => {
+        changePasswordEl.onclick = () => {
             main.querySelector(".setting").innerHTML = changePasswordTemplate();
-        })
+        };
     }
 
 }
@@ -293,12 +293,12 @@ function attachNavEvents() {
 
 export function initRouter() {
 
-    window.addEventListener("hashchange", () => {
+    window.onhashchange = () => {
         currentPath = window.location.hash;
         renderRoute(window.location.hash);
         renderNav(window.location.hash);
         attachNavEvents();
-    });
+    };
 
     if(!window.location.hash) {
         window.location.hash = "#home";
