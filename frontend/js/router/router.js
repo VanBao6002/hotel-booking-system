@@ -32,7 +32,7 @@ const rules = [
     },
     {
         path: ["#booking"],
-        roles: ["customer"],
+        roles: ["customer","staff", "manager"],
         item: ["genaral","room","location","service","rate"]
     },
     {
@@ -42,7 +42,7 @@ const rules = [
     },
     {
         path: ["#booking-history"],
-        roles: ["customer"],
+        roles: ["customer","staff", "manager"],
         item: ["home"]
     },
     {
