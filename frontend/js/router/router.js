@@ -1,6 +1,8 @@
 import { errorTemplate } from "../components/templates/error.template.js";
 import { profileTemplate } from "../components/templates/profile.template.js"
 import { changePasswordTemplate } from "../components/templates/change-password.template.js"
+import { initProfile } from "../components/logics/profile.js";
+import { initChangePassword } from "../components/logics/change-password.js";
 const routers = {};
 let currentPath = null;
 
@@ -280,11 +282,13 @@ function attachNavEvents() {
     if(profileEl) {
         profileEl.onclick = () => {
             main.querySelector(".setting").innerHTML = profileTemplate();
+            initProfile();
         };
     }
     if(changePasswordEl) {
         changePasswordEl.onclick = () => {
             main.querySelector(".setting").innerHTML = changePasswordTemplate();
+            initChangePassword();
         };
     }
 

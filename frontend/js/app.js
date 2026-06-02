@@ -26,7 +26,8 @@ import { modalTemplate } from "./components/templates/modal.template.js";
 import { initBooking } from "./components/logics/booking.js";
 import { bookingHistoryTemplate } from "./components/templates/booking-history.template.js";
 import { initBookingHistory } from "./components/logics/booking-history.js";
-import { initSetting } from "./components/logics/setting.js";
+// import { initSetting } from "./components/logics/setting.js";
+import { initProfile } from "./components/logics/profile.js";
 
 
 
@@ -119,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     addRoute("#setting", () => {
         main.innerHTML = profileTemplate();
-        initSetting();
+        initProfile();
     });
 
     addRoute("#booking-history", () => {

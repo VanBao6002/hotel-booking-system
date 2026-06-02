@@ -6,16 +6,18 @@ export function changePasswordTemplate() {
             <div class="change-password__title">Thông Tin Cá Nhân</div>
             <div class="change-password__wrap">
               <div class="group-info">
-                <label for="fullname">Mật khẩu hiện tại</label>
-                <input type="password" name="fullname" id="fullname" readonly>
+                <label for="currentPassword">Mật khẩu hiện tại</label>
+                <input type="password" name="currentPassword" id="currentPassword" >
               </div>
               <div class="group-info">
-                <label for="fullname">Mật khẩu mới</label>
-                <input type="password" name="username" id="username" readonly>
+                <label for="newPassword">Mật khẩu mới</label>
+                <input type="password" name="newPassword" id="newPassword" >
+                <div class="error-message" id="newPasswordError"></div>
               </div>
               <div class="group-info">
-                <label for="fullname">Xác nhận mật khẩu mới</label>
-                <input type="password" name="email" id="email" readonly>
+                <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+                <input type="password" name="confirmPassword" id="confirmPassword" >
+                <div class="error-message" id="confirmPasswordError"></div>
               </div>
               <div class="save-info__btn">
                 <span>Xác nhận</span>
