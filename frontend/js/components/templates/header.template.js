@@ -13,7 +13,7 @@ export function headerTemplate() {
                     </a>
                 </div>
 
-                <div class="header__navbar-title">
+                <div class="header__navbar-title" style="cursor:pointer;">
                     <span>PTBL Booking Hotel</span>
                 </div>
 
@@ -36,7 +36,7 @@ export function headerTemplate() {
                             </div>
                             <div class="user__info-extra">
                                 <div class="user__info-extra-wrap">
-                                    <div class="extra__item-setting"><span>Cài đặt</span></div>
+                                    <div class="extra__item-setting"><span>Thông Tin Cá Nhân</span></div>
                                     <div class="extra__item-manage"><span>Quản Lý</span></div>
                                     <div class="extra__item-sign-out"><span>Đăng xuất</span></div>
                                     <div class="line"></div>

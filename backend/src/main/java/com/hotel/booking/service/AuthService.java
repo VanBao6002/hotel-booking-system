@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.hotel.booking.dto.LoginRequest;
 import com.hotel.booking.dto.LoginResponse;
+import com.hotel.booking.dto.ProfileUpdateRequest;
 import com.hotel.booking.dto.RegisterRequest;
 import com.hotel.booking.dto.ChangePasswordRequest;
 import com.hotel.booking.dto.ForgotPasswordRequest;
@@ -143,9 +144,84 @@ public class AuthService {
         return UserMapper.toDto(user);
     }
 
+    public UserDTO updateProfile(String authorizationHeader, ProfileUpdateRequest request) {
+        String userName = extractUserNameFromAuthHeader(authorizationHeader);
+        User user = userRepository.findByUserName(userName)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userName));
+
+        if (request.getFullName() != null) {
+            user.setFullName(requiredText(request.getFullName(), "Full name is required"));
+        }
+
+        if (request.getEmail() != null) {
+            String email = requiredText(request.getEmail(), "Email is required");
+            ensureEmailAvailable(email, user.getId());
+            user.setEmail(email);
+        }
+
+        if (request.getPhoneNumber() != null) {
+            String phoneNumber = requiredText(request.getPhoneNumber(), "Phone number is required");
+            ensurePhoneNumberAvailable(phoneNumber, user.getId());
+            user.setPhoneNumber(phoneNumber);
+        }
+
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setGenderId(resolveGenderId(request.getGender()));
+        user.setCurrentAddress(blankToNull(request.getCurrentAddress()));
+        user.setUpdatedAt(LocalDateTime.now());
+
+        return UserMapper.toDto(userRepository.save(user));
+    }
+
     private String extractUserNameFromAuthHeader(String authorizationHeader) {
         String token = jwtService.extractBearerToken(authorizationHeader);
         return jwtService.extractSubject(token);
+    }
+
+    private void ensureEmailAvailable(String email, Integer currentUserId) {
+        userRepository.findByEmail(email)
+            .filter(existing -> !existing.getId().equals(currentUserId))
+            .ifPresent(existing -> {
+                throw new ConflictException("Email already exists");
+            });
+    }
+
+    private void ensurePhoneNumberAvailable(String phoneNumber, Integer currentUserId) {
+        userRepository.findByPhoneNumber(phoneNumber)
+            .filter(existing -> !existing.getId().equals(currentUserId))
+            .ifPresent(existing -> {
+                throw new ConflictException("Phonenumber is claimed");
+            });
+    }
+
+    private String requiredText(String value, String message) {
+        String normalized = value == null ? "" : value.trim();
+        if (normalized.isBlank()) {
+            throw new IllegalArgumentException(message);
+        }
+        return normalized;
+    }
+
+    private String blankToNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
+    }
+
+    private Integer resolveGenderId(String gender) {
+        if (gender == null || gender.isBlank()) {
+            return null;
+        }
+
+        String normalized = gender.trim().toLowerCase();
+        if ("nam".equals(normalized) || "male".equals(normalized)) {
+            return 1;
+        }
+        if ("nữ".equals(normalized) || "nu".equals(normalized) || "female".equals(normalized)) {
+            return 2;
+        }
+        return 3;
     }
 
     private void handleFailedLogin(User user) {

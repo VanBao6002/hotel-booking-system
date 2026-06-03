@@ -1,4 +1,5 @@
 import { getAllUsers, deleteUser, banUser, warnUser, grantStaffRole } from "../../services/users.js";
+import { getHotels } from "../../services/admin.js";
 import { showConfirmDialog } from "./admin-confirm.js";
 import { safeJsonParse } from "../../utils/utils.js";
 
@@ -283,21 +284,37 @@ async function handleWarnUser(userId, userName) {
 
 // Handle grant staff role action
 async function handleGrantStaffRole(userId, userName) {
-  showConfirmDialog("promote", userId, userName, async (reason) => {
+  let hotels = [];
+  updateRowStatus(userId, "loading", "Đang tải danh sách khách sạn...");
+  try {
+    hotels = await getHotels() || [];
+  } catch (err) {
+    const message = err?.data?.message || "Không thể tải danh sách khách sạn";
+    updateRowStatus(userId, "error", "✗ " + message);
+    return;
+  }
+
+  if (!hotels.length) {
+    updateRowStatus(userId, "error", "✗ Chưa có khách sạn trong database");
+    return;
+  }
+
+  updateRowStatus(userId, "success", "Chọn khách sạn để thăng cấp");
+  showConfirmDialog("promote", userId, userName, async (hotelBranchId) => {
     updateRowStatus(userId, "loading", "Đang nâng cấp...");
     try {
       if (MOCK_MODE) {
         simulateActionSuccess(userId, "promote");
         return;
       }
-      await grantStaffRole(userId);
+      await grantStaffRole(userId, Number(hotelBranchId));
       updateRowStatus(userId, "success", "✓ Nâng cấp thành công");
       setTimeout(loadUsers, 1500);
     } catch (err) {
       const message = err?.data?.message || "Nâng cấp thất bại";
       updateRowStatus(userId, "error", "✗ " + message);
     }
-  });
+  }, { hotels });
 }
 
 // Setup toolbar (search, filter, page size) and wire events

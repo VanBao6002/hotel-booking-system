@@ -56,3 +56,10 @@ export const getMe = () => {
   });
 };
 
+export const updateMe = (profile) => {
+  return apiClient("/api/v1/auth/me", {
+    method: "PUT",
+    skipAuth: false,
+    body: JSON.stringify(profile),
+  });
+};
