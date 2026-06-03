@@ -1,0 +1,40 @@
+On branch merge_FE_Quanly
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Changes to be committed:
+	new file:   backend/src/main/java/com/hotel/booking/dto/ProfileUpdateRequest.java
+	modified:   backend/src/main/java/com/hotel/booking/exception/GlobalExceptionHandler.java
+	modified:   backend/src/main/java/com/hotel/booking/repository/BookingRepository.java
+	modified:   backend/src/main/java/com/hotel/booking/repository/HotelBranchRepository.java
+	modified:   backend/src/main/java/com/hotel/booking/repository/UserRepository.java
+	modified:   backend/src/main/java/com/hotel/booking/service/UserService.java
+	new file:   database/add-hotel-image-url.sql
+	modified:   database/init.sql
+	modified:   frontend/css/hotels-management.css
+	modified:   frontend/css/profile.css
+	modified:   frontend/css/users-management.css
+	modified:   frontend/js/components/logics/admin-confirm.js
+	modified:   frontend/js/components/logics/header.js
+	modified:   frontend/js/components/logics/home-manager.js
+	modified:   frontend/js/components/logics/home-staff.js
+	modified:   frontend/js/components/logics/hotels-management.js
+	modified:   frontend/js/components/logics/users-management.js
+	modified:   frontend/js/components/templates/admin-confirm.template.js
+	modified:   frontend/js/components/templates/header.template.js
+	modified:   frontend/js/components/templates/home-manager.template.js
+	modified:   frontend/js/components/templates/home-staff.template.js
+	modified:   frontend/js/components/templates/profile.template.js
+	modified:   frontend/js/services/users.js
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+	both modified:   backend/src/main/java/com/hotel/booking/controller/AuthController.java
+	both modified:   backend/src/main/java/com/hotel/booking/service/AuthService.java
+	both modified:   frontend/js/components/logics/setting.js
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	status.txt
+

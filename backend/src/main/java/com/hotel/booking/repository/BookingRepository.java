@@ -319,6 +319,7 @@ public class BookingRepository {
     private String adminBookingSql(BookingSchema schema) {
         String userIdExpression = schema.hasBookingUserColumn() ? "b.user_id" : "review_summary.CustomerID";
         String bookingPriceExpression = schema.hasBookingPriceColumn() ? "b.booking_price" : "NULL";
+        String reviewedExpression = schema.hasBookingReviewedColumn() ? "b.reviewed" : "FALSE";
         String bookingUserJoin = schema.hasBookingUserColumn()
             ? "LEFT JOIN users booking_user ON booking_user.id = b.user_id"
             : "";
@@ -366,6 +367,7 @@ public class BookingRepository {
                    b.hotel_branch_id,
                    %s AS user_id,
                    %s AS booking_price,
+                   %s AS reviewed,
                    %s AS nightly_price,
                    hb.address AS hotel_name,
                    receipt_summary.amount AS paid_amount,
@@ -397,6 +399,7 @@ public class BookingRepository {
             """.formatted(
                 userIdExpression,
                 bookingPriceExpression,
+                reviewedExpression,
                 nightlyPriceExpression,
                 guestNameExpression,
                 guestEmailExpression,
@@ -601,7 +604,8 @@ public class BookingRepository {
             schemaInspector.tableExists("booking_room"),
             schemaInspector.columnExists("booking", "booking_price"),
             schemaInspector.columnExists("booking", "user_id"),
-            schemaInspector.columnExists("booking", "room_id")
+            schemaInspector.columnExists("booking", "room_id"),
+            schemaInspector.columnExists("booking", "reviewed")
         );
     }
     public void markBookingReviewed(int bookingId) {
@@ -613,6 +617,7 @@ public class BookingRepository {
         boolean hasBookingRoomTable,
         boolean hasBookingPriceColumn,
         boolean hasBookingUserColumn,
-        boolean hasBookingRoomColumn
+        boolean hasBookingRoomColumn,
+        boolean hasBookingReviewedColumn
     ) {}
 }

@@ -219,6 +219,17 @@ function showBookingHistory() {
     };
 }
 
+function attachHomeBrandNavigation() {
+    document.querySelector(".header__navbar-logo-link")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        navigation("#home");
+    });
+
+    document.querySelector(".header__navbar-title")?.addEventListener("click", () => {
+        navigation("#home");
+    });
+}
+
 
 function submitForm(){
     const submitButton = getModal().querySelectorAll(".confirm-btn");
@@ -248,7 +259,7 @@ function submitForm(){
                     const role = (data?.user?.role || "customer").toString().toLowerCase();
                     localStorage.setItem("role", role);
                     localStorage.setItem("token", data.accessToken);
-                    // localStorage.setItem("userData", JSON.stringify(data.user));
+                    localStorage.setItem("userData", JSON.stringify(data.user || {}));
                     console.log(localStorage.getItem("role"));
                     console.log(localStorage.getItem("token"));
                     document.querySelector(".header__navbar-user").classList.add("logged-in");
@@ -354,4 +365,5 @@ export function initHeader() {
     attachValidation("form-sign-up",[fullnameField,usernameField,emailField,phoneNumberField,passwordFieldSIgnUp,confirmPasswordField]);
     submitForm();
     showBookingHistory();
+    attachHomeBrandNavigation();
 }

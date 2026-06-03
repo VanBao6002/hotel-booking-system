@@ -2,6 +2,7 @@ import { renderStaffDashboardContent } from "../templates/home-staff.template.js
 import { bookingsManagementTemplate } from "../templates/bookings-management.template.js";
 import { profileTemplate } from "../templates/profile.template.js";
 import { initBookingsManagement } from "./bookings-management.js";
+import { initSetting } from "./setting.js";
 import {
     getStaffDashboard,
     getStaffHotel,
@@ -307,9 +308,9 @@ export function initHomeStaff() {
             initFn: initStaffBookings,
         },
         "staff__btn-settings": {
-            title: "Cài Đặt",
+            title: "Thông Tin Cá Nhân",
             html: profileTemplate,
-            initFn: null,
+            initFn: initSetting,
         },
     };
 

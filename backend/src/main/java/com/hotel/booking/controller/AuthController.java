@@ -14,6 +14,7 @@ import com.hotel.booking.dto.ForgotPasswordRequest;
 import com.hotel.booking.dto.ForgotPasswordResponse;
 import com.hotel.booking.dto.LoginRequest;
 import com.hotel.booking.dto.LoginResponse;
+import com.hotel.booking.dto.ProfileUpdateRequest;
 import com.hotel.booking.dto.RegisterRequest;
 import com.hotel.booking.dto.ResetPasswordRequest;
 import com.hotel.booking.dto.UserDTO;
@@ -68,6 +69,15 @@ public class AuthController {
     public ResponseEntity<UserDTO> getUser(@RequestHeader("Authorization") String authorizationHeader
     ){
         UserDTO user = authService.me(authorizationHeader);
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/update-profile")
+    public ResponseEntity<UserDTO> updateProfile(
+        @RequestHeader("Authorization") String authorizationHeader,
+        @RequestBody ProfileUpdateRequest request
+    ) {
+        UserDTO user = authService.updateProfile(authorizationHeader, request);
         return ResponseEntity.ok(user);
     }
 
