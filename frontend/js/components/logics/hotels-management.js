@@ -79,6 +79,13 @@ function roomStatusLabel(status) {
   return labels[status] || status || "-";
 }
 
+function roomTypeLabel(typeCode) {
+  const normalized = String(typeCode || "").trim().toUpperCase();
+  if (normalized === "SINGLE" || normalized === "SINGLE ROOM") return "Phòng đơn";
+  if (normalized === "DOUBLE" || normalized === "DOUBLE ROOM") return "Phòng đôi";
+  return typeCode || "-";
+}
+
 function normalizeLocation(location = {}) {
   return {
     id: location.id,
@@ -430,8 +437,8 @@ function openRoomForm({ hotelId, mode, defaults = {}, existingRooms = [], onSubm
         <label>
           <span>Loại phòng</span>
           <select name="typeCode">
-            ${option("SINGLE", room.typeCode)}
-            ${option("DOUBLE", room.typeCode)}
+            ${option("SINGLE", room.typeCode, roomTypeLabel("SINGLE"))}
+            ${option("DOUBLE", room.typeCode, roomTypeLabel("DOUBLE"))}
           </select>
         </label>
         <label>
@@ -550,7 +557,7 @@ function renderRoomRows(rooms) {
                   <strong>${escapeHtml(room.roomNumber || "-")}</strong>
                   <span>Tầng ${escapeHtml(room.floor || "-")} | ${escapeHtml(room.area || "-")}</span>
                 </td>
-                <td>${escapeHtml(room.typeCode || "-")}</td>
+                <td>${escapeHtml(roomTypeLabel(room.typeCode))}</td>
                 <td><span class="hotel-room-status">${escapeHtml(roomStatusLabel(room.roomStatus))}</span></td>
                 <td>${Number(room.price || 0).toLocaleString("vi-VN")} VND</td>
                 <td>

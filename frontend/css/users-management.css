@@ -213,7 +213,7 @@
   width: 100%; padding: 8px 12px; border: 0.5px solid #d1d5db;
   border-radius: 6px; font-size: 13px; box-sizing: border-box; transition: border-color 0.2s;
 }
-.form-input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+.form-input:focus { outline: none; border-color: var(--slate-blue); box-shadow: 0 0 0 3px rgba(91, 143, 185, 0.15); }
 .modal-footer {
   display: flex; gap: 8px; justify-content: flex-end;
   padding: 14px 20px; border-top: 0.5px solid #e5e7eb; background: #f9fafb;
@@ -225,10 +225,10 @@
 }
 .btn-cancel:hover { background: #f3f4f6; }
 .btn-confirm {
-  padding: 7px 14px; border: none; background: #6366f1;
+  padding: 7px 14px; border: none; background: var(--slate-blue);
   color: white; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;
 }
-.btn-confirm:hover { background: #4f46e5; }
+.btn-confirm:hover { background: #3D6F91; }
 
 /* Animations */
 @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }

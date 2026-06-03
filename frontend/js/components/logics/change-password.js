@@ -24,12 +24,7 @@ function setMessage(message, type = "success") {
         return;
     }
 
-    // Choose icon
-    const icon = type === "success"
-        ? `<span class="cp-success-icon"><i class="fa-solid fa-circle-check"></i></span>`
-        : `<i class="fa-solid fa-circle-exclamation"></i>`;
-
-    el.innerHTML = `${icon} ${message}`;
+    el.textContent = message;
     el.classList.remove("success", "error", "visible");
 
     // Force reflow so transition plays
@@ -224,7 +219,7 @@ async function submitChangePassword() {
         setError("confirmPasswordError", "");
         updateStrengthBar("");
 
-        setMessage("Đổi mật khẩu thành công! 🎉", "success");
+        setMessage("Đổi mật khẩu thành công.", "success");
 
     } catch (err) {
         setMessage(friendlyError(err), "error");

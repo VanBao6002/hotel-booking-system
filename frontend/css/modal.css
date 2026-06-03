@@ -299,11 +299,11 @@
     font-weight: bold;
     text-align: center;
     color: white;
-    background-color: #0a9af2;
+    background-color: var(--slate-blue);
     border-radius: 10px;
 }
 .choice-room__button.active div {
-    background-color: #00FF00;
+    background-color: var(--success-color);
 }
 .choice-room__button:hover {
     cursor: pointer;
@@ -468,7 +468,7 @@
     text-align: center;
 }
 .write-review__cancel-button {
-    background-color: #ff5e1f;
+    background-color: var(--terracotta);
 }
 .write-review__text-error {
     display: none;

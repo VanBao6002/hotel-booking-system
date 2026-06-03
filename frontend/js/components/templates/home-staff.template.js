@@ -17,6 +17,7 @@ export function homeStaffTemplate() {
                     ${renderStaffSidebarItem("Tổng Quan", "staff__btn-dashboard", true)}
                     ${renderStaffSidebarItem("Quản Lý Khách Sạn", "staff__btn-hotel")}
                     ${renderStaffSidebarItem("Quản Lý Đặt Phòng", "staff__btn-bookings")}
+                    ${renderStaffSidebarItem("Quản Lý Đánh Giá", "staff__btn-reviews")}
                     ${renderStaffSidebarItem("Thông Tin Cá Nhân", "staff__btn-settings")}
                 </nav>
             </aside>
@@ -109,6 +110,7 @@ const STAFF_SIDEBAR_ICONS = {
     "Tổng Quan": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor"/></svg>`,
     "Quản Lý Khách Sạn": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><path d="M1 14V7l7-5 7 5v7H1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><rect x="6" y="9" width="4" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/></svg>`,
     "Quản Lý Đặt Phòng": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 3V1.5M11 3V1.5M2 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5 10h2m2 0h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
+    "Quản Lý Đánh Giá": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><path d="M8 1.7l1.7 3.5 3.8.5-2.8 2.7.7 3.8L8 10.4l-3.4 1.8.7-3.8-2.8-2.7 3.8-.5L8 1.7z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>`,
     "Thông Tin Cá Nhân": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 14c.6-2.4 2.5-4 5-4s4.4 1.6 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
 };
 

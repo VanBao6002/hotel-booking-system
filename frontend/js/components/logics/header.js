@@ -56,6 +56,7 @@ import { navigation } from "../../router/router.js";
 import { userLogin, userRegister } from "../../services/authentication.js";
 import { getMe } from "../../services/users.js";
 import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
+import { showAppDialog } from "../../utils/app-dialog.js";
 
 const getModal = () => { return document.querySelector(".modal"); }
 const getSignInForm = () => { return document.querySelector("#form-sign-in");}
@@ -116,15 +117,27 @@ function userExtra() {
     });
 
     
-    userSignOut.onclick = () => {
+    userSignOut.onclick = async () => {
         const guard = window.__profileUnsavedGuard;
         if (guard?.hasChanges?.()) {
-            const shouldSave = window.confirm("Bạn có thay đổi chưa lưu. Bạn có muốn lưu lại thông tin mới trước khi đăng xuất không?");
-            if (shouldSave) {
-                guard.save?.();
+            const choice = await showAppDialog({
+                title: "Thông tin chưa được lưu",
+                message: "Bạn đã chỉnh sửa thông tin cá nhân nhưng chưa lưu. Bạn muốn lưu thay đổi trước khi đăng xuất không?",
+                actions: [
+                    { label: "Lưu rồi đăng xuất", value: "save", primary: true },
+                    { label: "Đăng xuất không lưu", value: "discard", danger: true },
+                    { label: "Ở lại", value: "stay" },
+                ],
+            });
+
+            if (choice === "save") {
+                const saved = await guard.save?.();
+                if (!saved) return;
+            } else if (choice === "discard") {
+                guard.clear?.();
+            } else {
                 return;
             }
-            guard.clear?.();
         }
         document.querySelector(".header__navbar-user").classList.remove("logged-in");
         localStorage.setItem("role", "guest");

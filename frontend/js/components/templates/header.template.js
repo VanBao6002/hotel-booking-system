@@ -9,7 +9,7 @@ export function headerTemplate() {
             <nav class="header__navbar">
                 <div class="header__navbar-logo header__navbar-box">
                     <a href="#" class="header__navbar-logo-link">
-                        <img src="assets/images/app-logo.jpg" alt="logo-app" class="header__navbar-logo-img">
+                        <img src="assets/images/app-logo-v2.jpg?v=20260604-2" alt="logo-app" class="header__navbar-logo-img">
                     </a>
                 </div>
 

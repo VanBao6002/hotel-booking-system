@@ -3,6 +3,7 @@ import { profileTemplate } from "../components/templates/profile.template.js"
 import { changePasswordTemplate } from "../components/templates/change-password.template.js"
 import { initProfile } from "../components/logics/profile.js";
 import { initChangePassword } from "../components/logics/change-password.js";
+import { showAppDialog } from "../utils/app-dialog.js";
 const routers = {};
 let currentPath = null;
 let isRevertingHash = false;
@@ -187,27 +188,40 @@ function renderRoute(path) {
 
 }
 
-function shouldBlockNavigation() {
+async function shouldBlockNavigation() {
     const guard = window.__profileUnsavedGuard;
     if (!guard || typeof guard.hasChanges !== "function" || !guard.hasChanges()) {
         return false;
     }
 
-    const shouldSave = window.confirm("Bạn có thay đổi chưa lưu. Bạn có muốn lưu lại thông tin mới trước khi chuyển trang không?");
-    if (shouldSave) {
-        guard.save?.();
-        return true;
+    const choice = await showAppDialog({
+        title: "Thông tin chưa được lưu",
+        message: "Bạn đã chỉnh sửa thông tin cá nhân nhưng chưa lưu. Bạn muốn xử lý thay đổi này như thế nào?",
+        actions: [
+            { label: "Lưu và tiếp tục", value: "save", primary: true },
+            { label: "Rời đi không lưu", value: "discard", danger: true },
+            { label: "Ở lại", value: "stay" },
+        ],
+    });
+
+    if (choice === "save") {
+        const saved = await guard.save?.();
+        return !saved;
     }
 
-    guard.clear?.();
-    return false;
+    if (choice === "discard") {
+        guard.clear?.();
+        return false;
+    }
+
+    return true;
 }
 
-export function navigation(path) {
+export async function navigation(path) {
     if(path === window.location.hash) {
         return;
     }
-    if (shouldBlockNavigation()) {
+    if (await shouldBlockNavigation()) {
         return;
     }
     window.location.hash = path;
@@ -328,14 +342,14 @@ function attachNavEvents() {
 
 export function initRouter() {
 
-    window.onhashchange = () => {
+    window.onhashchange = async () => {
         const nextPath = window.location.hash;
         if (isRevertingHash) {
             isRevertingHash = false;
             return;
         }
         if (nextPath === currentPath) return;
-        if (shouldBlockNavigation()) {
+        if (await shouldBlockNavigation()) {
             isRevertingHash = true;
             window.location.hash = currentPath || "#home";
             return;

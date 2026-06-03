@@ -31,10 +31,50 @@ function friendlyError(err, fallback) {
     return message;
 }
 
+function translateMonthText(value) {
+    const months = {
+        Jan: "Tháng 1",
+        Feb: "Tháng 2",
+        Mar: "Tháng 3",
+        Apr: "Tháng 4",
+        May: "Tháng 5",
+        Jun: "Tháng 6",
+        Jul: "Tháng 7",
+        Aug: "Tháng 8",
+        Sep: "Tháng 9",
+        Oct: "Tháng 10",
+        Nov: "Tháng 11",
+        Dec: "Tháng 12",
+    };
+    return String(value || "").replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/g, month => months[month] || month);
+}
+
+function formatDateVi(value) {
+    if (!value) return "";
+    const raw = String(value);
+    const normalized = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? `${raw}T00:00:00` : raw;
+    const date = new Date(normalized);
+    if (Number.isNaN(date.getTime())) return translateMonthText(raw);
+    return date.toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+    });
+}
+
 function formatDates(booking) {
-    if (booking.formattedDates) return booking.formattedDates;
-    if (!booking.checkInDate || !booking.checkOutDate) return "-";
-    return `${booking.checkInDate} - ${booking.checkOutDate}`;
+    const checkIn = formatDateVi(booking.checkInDate);
+    const checkOut = formatDateVi(booking.checkOutDate);
+    if (checkIn && checkOut) return `${checkIn} - ${checkOut}`;
+    if (booking.formattedDates) return translateMonthText(booking.formattedDates);
+    return "-";
+}
+
+function roomTypeLabel(type) {
+    const normalized = String(type || "").trim().toUpperCase();
+    if (normalized === "SINGLE" || normalized === "SINGLE ROOM") return "Phòng đơn";
+    if (normalized === "DOUBLE" || normalized === "DOUBLE ROOM") return "Phòng đôi";
+    return type || "-";
 }
 
 function mapBooking(booking) {
@@ -202,7 +242,7 @@ function showBookingDetails(booking) {
                         ${rooms.length ? rooms.map(room => `
                             <div class="bm-detail-room">
                                 <span>Phòng ${escapeHtml(room.roomNumber || room.roomId || "-")}</span>
-                                <strong>${escapeHtml(room.roomType || "-")} | ${formatMoney(room.roomPrice)}</strong>
+                                <strong>${escapeHtml(roomTypeLabel(room.roomType))} | ${formatMoney(room.roomPrice)}</strong>
                             </div>
                         `).join("") : `<div class="bm-detail-room bm-detail-room--empty">Chưa có chi tiết phòng</div>`}
                     </div>
