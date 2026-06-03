@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS hotelbranch (
     id INT PRIMARY KEY AUTO_INCREMENT,
     address VARCHAR(100) NOT NULL UNIQUE,
     phone_number VARCHAR(30) NOT NULL UNIQUE,
+    image_url TEXT,
     location_id INT,
     CONSTRAINT fk_hotelbranch_location FOREIGN KEY (location_id)
         REFERENCES location(id) ON DELETE SET NULL ON UPDATE CASCADE

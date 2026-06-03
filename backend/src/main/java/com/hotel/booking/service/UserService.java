@@ -106,7 +106,6 @@ public class UserService {
             jdbcTemplate.update(
                 "UPDATE staff SET HotelBranchID = ? WHERE UserID = ?",
                 resolvedHotelBranchId,
-                userId,
                 userId
             );
         } else {
@@ -178,6 +177,7 @@ public class UserService {
 
     private Integer resolveStaffHotelBranchId(Integer userId, Integer requestedHotelBranchId) {
         if (requestedHotelBranchId != null) {
+            ensureHotelBranchExists(requestedHotelBranchId);
             return requestedHotelBranchId;
         }
 
@@ -190,10 +190,18 @@ public class UserService {
             return existing.get(0);
         }
 
-        List<Integer> firstHotel = jdbcTemplate.query(
-            "SELECT id FROM hotelbranch ORDER BY id LIMIT 1",
-            (rs, rowNum) -> rs.getInt("id")
+        throw new IllegalArgumentException("Hotel branch is required when promoting a user to staff");
+    }
+
+    private void ensureHotelBranchExists(Integer hotelBranchId) {
+        Integer count = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM hotelbranch WHERE id = ?",
+            Integer.class,
+            hotelBranchId
         );
-        return firstHotel.isEmpty() ? null : firstHotel.get(0);
+
+        if (count == null || count == 0) {
+            throw new ResourceNotFoundException("Hotel not found with ID: " + hotelBranchId);
+        }
     }
 }

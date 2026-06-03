@@ -54,6 +54,7 @@ function normalizeHotel(hotel) {
     location: hotel.locationName || hotel.location || "-",
     rating: hotel.averageStar || hotel.rating || 0,
     roomCount: hotel.roomCount || hotel.rooms?.length || 0,
+    imageUrl: hotel.imageUrl || "",
     isOnline: hotel.isOnline !== false,
   };
 }
@@ -65,6 +66,10 @@ function normalizeRoom(room = {}) {
     typeCode: room.typeCode || "SINGLE",
     roomStatus: room.roomStatus || "Available",
   };
+}
+
+function placeholderImage(label = "No Image") {
+  return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23e5e7eb' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239ca3af' font-size='20'%3E${encodeURIComponent(label)}%3C/text%3E%3C/svg%3E`;
 }
 
 function generateStars(rating) {
@@ -83,12 +88,12 @@ function generateStars(rating) {
 
 function renderHotelCard(rawHotel) {
   const hotel = normalizeHotel(rawHotel);
-  const imageSrc = hotel.imageUrl || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23e5e7eb' width='400' height='300'/%3E%3Ctext x='50%' y='50%' text-anchor='middle' dy='.3em' fill='%239ca3af' font-size='20'%3ENo Image%3C/text%3E%3C/svg%3E";
+  const imageSrc = hotel.imageUrl || placeholderImage();
 
   return `
     <div class="hotel-card">
       <div class="hotel-card__image">
-        <img src="${imageSrc}" alt="${escapeHtml(hotel.hotelName)}" />
+        <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(hotel.hotelName)}" />
       </div>
       <div class="hotel-card__content">
         <h3 class="hotel-card__name">${escapeHtml(hotel.hotelName)}</h3>
@@ -230,12 +235,13 @@ function hotelPayloadFromForm(form) {
   const address = String(formData.get("address") || "").trim();
   const phoneNumber = String(formData.get("phoneNumber") || "").trim();
   const locationName = String(formData.get("locationName") || "").trim();
+  const imageUrl = String(formData.get("imageUrl") || "").trim();
 
   if (!address || !phoneNumber || !locationName) {
     throw new Error("Please fill in hotel name, phone number, and location.");
   }
 
-  return { address, phoneNumber, locationName };
+  return { address, phoneNumber, locationName, imageUrl };
 }
 
 function roomPayloadFromForm(form, defaults = {}) {
@@ -280,6 +286,10 @@ function openHotelForm({ mode, defaults = {}, onSubmit }) {
         <label>
           <span>Location</span>
           <input name="locationName" type="text" value="${escapeHtml(defaults.locationName || "")}" required>
+        </label>
+        <label>
+          <span>Representative image URL/filename</span>
+          <input name="imageUrl" type="text" value="${escapeHtml(defaults.imageUrl || "")}" placeholder="assets/images/example-banner.jpeg hoặc https://...">
         </label>
       </form>
     `,
@@ -359,7 +369,7 @@ function openRoomForm({ hotelId, mode, defaults = {}, onSubmit }) {
           </select>
         </label>
         <label>
-          <span>Image filename</span>
+          <span>Room image URL/filename</span>
           <input name="roomIMG" type="text" value="${escapeHtml(room.roomIMG)}">
         </label>
         <label class="hotel-admin-form__wide">
@@ -442,6 +452,7 @@ function renderRoomRows(rooms) {
       <table class="hotel-rooms-table">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Room</th>
             <th>Type</th>
             <th>Status</th>
@@ -452,8 +463,12 @@ function renderRoomRows(rooms) {
         <tbody>
           ${rooms.map(rawRoom => {
             const room = normalizeRoom(rawRoom);
+            const roomImage = room.roomIMG || placeholderImage("Room");
             return `
               <tr>
+                <td>
+                  <img class="hotel-room-thumb" src="${escapeHtml(roomImage)}" alt="Room ${escapeHtml(room.roomNumber || "-")}">
+                </td>
                 <td>
                   <strong>${escapeHtml(room.roomNumber || "-")}</strong>
                   <span>Floor ${escapeHtml(room.floor || "-")} | ${escapeHtml(room.area || "-")}</span>

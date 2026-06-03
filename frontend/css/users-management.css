@@ -97,7 +97,15 @@
 .modal-body { padding: 20px; }
 .modal-body p { margin: 0 0 14px; color: #4b5563; font-size: 14px; line-height: 1.6; }
 .form-group { margin-bottom: 14px; }
-.form-group label { display: block; margin-bottom: 5px; font-size: 12px; font-weight: 500; color: #374151; }
+.modal-container .form-group label {
+  display: block;
+  position: static;
+  margin-bottom: 5px;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+}
 .form-input {
   width: 100%; padding: 8px 12px; border: 0.5px solid #d1d5db;
   border-radius: 6px; font-size: 13px; box-sizing: border-box; transition: border-color 0.2s;

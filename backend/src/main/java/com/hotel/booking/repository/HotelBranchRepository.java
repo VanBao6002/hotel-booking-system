@@ -16,13 +16,15 @@ import java.util.List;
 @Repository
 public class HotelBranchRepository {
     private final JdbcTemplate jdbcTemplate;
+    private final DatabaseSchemaInspector schemaInspector;
 
-    public HotelBranchRepository(JdbcTemplate jdbcTemplate) {
+    public HotelBranchRepository(JdbcTemplate jdbcTemplate, DatabaseSchemaInspector schemaInspector) {
         this.jdbcTemplate = jdbcTemplate;
+        this.schemaInspector = schemaInspector;
     }
 
-    private final RowMapper<HotelBranchDTO> hotelMapper = (rs, rowNum) ->
-        new HotelBranchDTO(
+    private final RowMapper<HotelBranchDTO> hotelMapper = (rs, rowNum) -> {
+        HotelBranchDTO hotel = new HotelBranchDTO(
             rs.getInt("id"),
             rs.getString("address"),
             rs.getString("phone_number"),
@@ -30,12 +32,16 @@ public class HotelBranchRepository {
             rs.getDouble("average_star"),
             rs.getInt("room_count")
         );
+        hotel.setImageUrl(rs.getString("image_url"));
+        return hotel;
+    };
 
     public List<HotelBranchDTO> getAllHotelBranches() {
         String sql = """
             SELECT hb.id,
                    hb.address,
                    hb.phone_number,
+                   %s AS image_url,
                    l.name AS location_name,
                    COALESCE(hrs.average_star, 0) AS average_star,
                    COUNT(r.id) AS room_count
@@ -45,7 +51,7 @@ public class HotelBranchRepository {
             LEFT JOIN room r ON r.hotel_branch_id = hb.id
             GROUP BY hb.id, hb.address, hb.phone_number, l.name, hrs.average_star
             ORDER BY hb.id
-            """;
+            """.formatted(hotelImageExpression());
 
         List<HotelBranchDTO> branches = jdbcTemplate.query(sql, hotelMapper);
         branches.forEach(this::loadBranchServices);
@@ -57,6 +63,7 @@ public class HotelBranchRepository {
             SELECT hb.id,
                    hb.address,
                    hb.phone_number,
+                   %s AS image_url,
                    l.name AS location_name,
                    COALESCE(hrs.average_star, 0) AS average_star,
                    COUNT(r.id) AS room_count
@@ -67,7 +74,7 @@ public class HotelBranchRepository {
             WHERE l.name LIKE ?
             GROUP BY hb.id, hb.address, hb.phone_number, l.name, hrs.average_star
             ORDER BY hb.id
-            """;
+            """.formatted(hotelImageExpression());
 
         List<HotelBranchDTO> branches = jdbcTemplate.query(sql, hotelMapper, "%" + locationName + "%");
         branches.forEach(this::loadBranchServices);
@@ -79,6 +86,7 @@ public class HotelBranchRepository {
             SELECT hb.id,
                    hb.address,
                    hb.phone_number,
+                   %s AS image_url,
                    l.name AS location_name,
                    COALESCE(hrs.average_star, 0) AS average_star,
                    COUNT(r.id) AS room_count
@@ -88,7 +96,7 @@ public class HotelBranchRepository {
             LEFT JOIN room r ON r.hotel_branch_id = hb.id
             WHERE hb.id = ?
             GROUP BY hb.id, hb.address, hb.phone_number, l.name, hrs.average_star
-            """;
+            """.formatted(hotelImageExpression());
 
         List<HotelBranchDTO> rows = jdbcTemplate.query(sql, hotelMapper, id);
         if (rows.isEmpty()) {
@@ -104,10 +112,14 @@ public class HotelBranchRepository {
     public HotelBranchDTO createHotelBranch(HotelBranchDTO hotel) {
         Integer locationId = resolveLocationId(hotel.getLocationName());
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        boolean hasImageColumn = hasHotelImageColumn();
+        String insertSql = hasImageColumn
+            ? "INSERT INTO hotelbranch(address, phone_number, location_id, image_url) VALUES (?, ?, ?, ?)"
+            : "INSERT INTO hotelbranch(address, phone_number, location_id) VALUES (?, ?, ?)";
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO hotelbranch(address, phone_number, location_id) VALUES (?, ?, ?)",
+                insertSql,
                 Statement.RETURN_GENERATED_KEYS
             );
             ps.setString(1, hotel.getAddress());
@@ -116,6 +128,9 @@ public class HotelBranchRepository {
                 ps.setObject(3, null);
             } else {
                 ps.setInt(3, locationId);
+            }
+            if (hasImageColumn) {
+                ps.setString(4, blankToNull(hotel.getImageUrl()));
             }
             return ps;
         }, keyHolder);
@@ -132,17 +147,29 @@ public class HotelBranchRepository {
 
         String address = hasText(hotel.getAddress()) ? hotel.getAddress() : existing.getAddress();
         String phoneNumber = hasText(hotel.getPhoneNumber()) ? hotel.getPhoneNumber() : existing.getPhoneNumber();
+        String imageUrl = hotel.getImageUrl() != null ? blankToNull(hotel.getImageUrl()) : existing.getImageUrl();
         Integer locationId = hasText(hotel.getLocationName())
             ? resolveLocationId(hotel.getLocationName())
             : resolveLocationId(existing.getLocationName());
 
-        jdbcTemplate.update(
-            "UPDATE hotelbranch SET address = ?, phone_number = ?, location_id = ? WHERE id = ?",
-            address,
-            phoneNumber,
-            locationId,
-            hotelId
-        );
+        if (hasHotelImageColumn()) {
+            jdbcTemplate.update(
+                "UPDATE hotelbranch SET address = ?, phone_number = ?, location_id = ?, image_url = ? WHERE id = ?",
+                address,
+                phoneNumber,
+                locationId,
+                imageUrl,
+                hotelId
+            );
+        } else {
+            jdbcTemplate.update(
+                "UPDATE hotelbranch SET address = ?, phone_number = ?, location_id = ? WHERE id = ?",
+                address,
+                phoneNumber,
+                locationId,
+                hotelId
+            );
+        }
 
         return getHotelBranchById(hotelId);
     }
@@ -260,5 +287,17 @@ public class HotelBranchRepository {
 
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private boolean hasHotelImageColumn() {
+        return schemaInspector.columnExists("hotelbranch", "image_url");
+    }
+
+    private String hotelImageExpression() {
+        return hasHotelImageColumn() ? "hb.image_url" : "NULL";
+    }
+
+    private String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
     }
 }
