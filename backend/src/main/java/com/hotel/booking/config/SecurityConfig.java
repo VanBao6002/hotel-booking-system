@@ -49,6 +49,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/rooms/*/media").hasRole("ADMIN")
                         .requestMatchers("/api/v1/users/profile").authenticated()
                         .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/staff/**").hasAnyRole("STAFF", "MANAGER")
+                        .requestMatchers("/api/v1/users/**").hasRole("MANAGER")
+                        .requestMatchers("/api/v1/hotels/**", "/api/v1/bookings/**", "/api/v1/finance/**", "/api/v1/dashboard/**").hasRole("MANAGER")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated())
                     .exceptionHandling(ex -> ex

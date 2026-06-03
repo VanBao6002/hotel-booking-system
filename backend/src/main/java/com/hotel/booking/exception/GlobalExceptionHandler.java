@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -71,6 +72,15 @@ public class GlobalExceptionHandler {
             return buildError(HttpStatus.UNAUTHORIZED, "Missing Authorization header", request.getRequestURI());
         }
         return buildError(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ApiErrorResponse> handleDataAccess(DataAccessException ex, HttpServletRequest request) {
+        return buildError(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            "Could not load data from database. Please check the database schema and try again.",
+            request.getRequestURI()
+        );
     }
 
     @ExceptionHandler(RuntimeException.class)

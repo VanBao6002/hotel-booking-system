@@ -11,7 +11,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "email", length = 255, nullable = true, unique = true)
+    @Column(name = "user_name", length = 50, unique = true)
+    private String userName;
+
+    @Column(name = "email", length = 255, nullable = false, unique = true)
     private String email;
 
     @Column(name = "password_hash", length = 255, nullable = false)
@@ -24,16 +27,13 @@ public class User {
     @Column(name = "full_name", length = 100)
     private String fullName;
 
-    @Column(name = "user_name", length = 100)
-    private String userName;
-
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     @Column(name = "gender_id")
     private Integer genderId;
 
-    @Column(name = "phone_number", length = 20, nullable = false, unique = true)
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
     @Column(name = "current_address", length = 255)
@@ -68,6 +68,14 @@ public class User {
         this.id = id;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -98,14 +106,6 @@ public class User {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public LocalDate getDateOfBirth() {

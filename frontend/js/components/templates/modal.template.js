@@ -84,7 +84,7 @@ export function modalTemplate() {
                   <span class="form-error"></span>
                 </div>
                 <button class="confirm-btn">
-                  <span class="confirm-btn-text">Đăng Ký</span>
+                  <span class="confirm-btn-text">Đăng Ký</span> 
                   <span class="confirm-btn-loading"></span>
                 </button>
               </div>
@@ -95,6 +95,108 @@ export function modalTemplate() {
               </div>
             </div>
           </form>
+
+
+          <div class="show-room">
+            <div class="show-room_head">
+              <div class="show-room__id">Phong xxx</div>
+              <div class="show-room__exit"><i class="fa-solid fa-xmark"></i></div>
+            </div>
+            <div class="show-room__detail">
+              
+              <div class="show-room__detail-picture">
+                <div class="show-room__detail-img"></div>
+              </div>
+
+              <div class="show-room__detail-info">
+                <div class="show-room__detail-info-wrap">
+                  <div class="show-room__detail-genaral">
+                    <div class="show-room__detail-genaral-head">
+                      <span>Thông tin phòng</span>
+                    </div>
+                    <div class="show-room__detail-genaral-body">
+                    </div>
+                  </div>
+                  <div class="show-room-detail-line"></div>
+                  <div class="show-room__detail-services">
+                    <div class="show-room__detail-services-head">
+                      <span>Dịch vụ phòng</span>
+                    </div>
+                    <div class="show-room__detail-services-body">
+                    </div>
+                  </div>
+                  <div class="show-room-detail-line"></div>
+                  <div class="show-room__detail-description">
+                    <div class="show-room__detail-description-head">
+                      <span>Về phòng này</span>
+                    </div>
+                    <div class="show-room__detail-description-body">
+                    </div>
+                  </div>
+                </div>
+                <div class="choice-room">
+                  <div class="choice-room__price">
+                    <div>200.000 VND</div>
+                    <div> /phòng/đêm</div>
+                  </div>
+                  <div class="choice-room__button">
+                    <div>Thêm lựa chọn phòng</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="show__notification">
+            <div class="show__notification-wrap">
+              <div class="show__notification-head">
+                <div class="show__notification-icon">
+                  <i class="success__icon fa-solid fa-circle-check"></i>
+                  <i class="warning__icon fa-solid fa-circle-exclamation"></i>
+                  <i class="error__icon fa-solid fa-circle-xmark"></i>
+                </div>
+                <div class="show__notification-title">
+                  <span></span>
+                </div>
+              </div>
+              <div class="show__notification-body">
+                <div class="show__notification-text">
+
+                </div>
+              </div>
+              <div class="show__notification-footer">
+                <div class="confirm-btn show__notification-previous-button">Trở lại</div>
+                <div class="confirm-btn show__notification-next-button"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="show__write-review">
+            <div class="write-review__wrap">
+              <div class="write-review__head">
+                <span>Đánh giá của bạn</span>
+              </div>
+              <div class="write-review__body">
+                <div class="write-review__star">
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                  <i class="fa-solid fa-star"></i>
+                </div>
+                <div class="write-review__text">
+                  <textarea name="review" id="review" placeholder="Chia sẻ trải nghiệm của bạn về khách sạn này..."></textarea>
+                  <div class="write-review__text-error"></div>
+                </div>
+              </div>
+              <div class="write-review__footer">
+                <div class="confirm-btn write-review__cancel-button">Hủy</div>
+                <div class="confirm-btn write-review__submit-button">Gửi đánh giá</div>
+              </div>
+            </div>
+          </div>
+
+
         </div>
       </div>
     `;

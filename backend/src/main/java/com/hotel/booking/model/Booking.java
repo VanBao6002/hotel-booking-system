@@ -27,6 +27,9 @@ public class Booking {
     @Column(name = "booking_price", nullable = false)
     private Long bookingPrice = 0L;   // thêm trường mới
 
+    @Column(name = "reviewed", nullable = false)
+    private Boolean reviewed = false;
+
     @Column(name = "user_id")
     private Integer userId;           // thêm trường mới
 
@@ -81,6 +84,14 @@ public class Booking {
     }
     public void setBookingPrice(Long bookingPrice) {
         this.bookingPrice = bookingPrice;
+    }
+
+    public Boolean getReviewed() {
+        return reviewed;
+    }
+
+    public void setReviewed(Boolean reviewed) {
+        this.reviewed = reviewed;
     }
 
     public Integer getUserId() {

@@ -9,22 +9,22 @@ export function advertisingBannerTemplate() {
               
               <div class="advertising-banner__wrap">
                 <div class="advertising-banner__picture">
-                  <img src="assets/images/example-banner.jpeg" alt="example">
+                  <img src="assets/images/banner/banner_1.png" alt="example">
                 </div>
                 <div class="advertising-banner__picture">
-                  <img src="assets/images/example-banner.jpeg" alt="example">
+                  <img src="assets/images/banner/banner_2.png" alt="example">
                 </div>
                 <div class="advertising-banner__picture">
-                  <img src="assets/images/example-banner.jpeg" alt="example">
+                  <img src="assets/images/banner/banner_3.png" alt="example">
                 </div>
                 <div class="advertising-banner__picture">
-                  <img src="assets/images/example-banner.jpeg" alt="example">
+                  <img src="assets/images/banner/banner_4.png" alt="example">
                 </div>
                 <div class="advertising-banner__picture">
-                  <img src="assets/images/example-banner.jpeg" alt="example">
+                  <img src="assets/images/banner/banner_5.png" alt="example">
                 </div>
                 <div class="advertising-banner__picture">
-                  <img src="assets/images/example-banner.jpeg" alt="example">
+                  <img src="assets/images/banner/banner_6.png" alt="example">
                 </div>
               </div>
 
