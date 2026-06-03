@@ -29,19 +29,19 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final OtpService otpService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, OtpService otpService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.otpService = otpService;
     }
 
     public UserDTO register(RegisterRequest request) {
-        if (userRepository.existsByUserName(request.getUserName())) {
-            throw new ConflictException("Username already exists");
-        }
+        String email = normalizeOptionalEmail(request.getEmail());
 
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (email != null && userRepository.existsByEmail(email)) {
             throw new ConflictException("Email already exists");
         }
 
@@ -50,8 +50,8 @@ public class AuthService {
         }
         
         User user = new User();
+        user.setEmail(email);
         user.setUserName(request.getUserName());
-        user.setEmail(request.getEmail());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setFullName(request.getFullName());
         user.setPhoneNumber(request.getPhoneNumber());
@@ -69,7 +69,7 @@ public class AuthService {
     }
     
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByUserNameOrEmail(request.getUserNameOrEmail(), request.getUserNameOrEmail()).orElseThrow(this::invalidCredentialsException);
+		User user = userRepository.findByPhoneNumberOrEmail(request.getPhoneNumberOrEmail(), request.getPhoneNumberOrEmail()).orElseThrow(this::invalidCredentialsException);
         
         if (user.getLockedUntil() != null && user.getLockedUntil().isAfter(LocalDateTime.now())) {
             throw new UnauthorizedException("Account is locked. Please try again later");
@@ -93,10 +93,10 @@ public class AuthService {
     }
 
     public void changePassword(String authorizationHeader, ChangePasswordRequest request) {
-        String userName = extractUserNameFromAuthHeader(authorizationHeader);
+        Integer userId = extractUserIdFromAuthHeader(authorizationHeader);
 
-        User user = userRepository.findByUserName(userName)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userName));
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
             throw new UnauthorizedException("Current password is incorrect");
@@ -112,18 +112,24 @@ public class AuthService {
     }
 
     public ForgotPasswordResponse forgotPassword(ForgotPasswordRequest request) {
-        userRepository.findByEmail(request.getEmail())
-            .ifPresent(jwtService::generateResetPasswordToken);
-
-        return new ForgotPasswordResponse("If the email exists, a reset link has been sent.");
+        String phoneNumber = normalizeOptionalPhoneNumber(request.getPhoneNumber());
+        otpService.generateOtpForPhone(phoneNumber);
+        return new ForgotPasswordResponse("If the phone number exists, a reset OTP has been sent.");
     }
 
     public void resetPassword(ResetPasswordRequest request) {
-        String email = jwtService.extractEmailFromResetToken(request.getResetToken());
+        String phoneNumber = normalizeOptionalPhoneNumber(request.getPhoneNumber());
+        String resetOtp = normalizeOptionalPhoneNumber(request.getResetOtp());
 
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        User user;
+        boolean validOtp = otpService.verifyOtpAndConsume(phoneNumber, "RESET_PASSWORD", resetOtp);
+        if (!validOtp) {
+            throw new UnauthorizedException("Invalid or expired OTP");
+        }
 
+        user = userRepository.findByPhoneNumber(phoneNumber)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
         if (passwordEncoder.matches(request.getNewPassword(), user.getPasswordHash())) {
             throw new ConflictException("New password must be different from current password");
         }
@@ -133,19 +139,19 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public void logout(String authorizationHeader) {
-        extractUserNameFromAuthHeader(authorizationHeader);
-    }
-
     public UserDTO me(String authorizationHeader) {
-        String userName = extractUserNameFromAuthHeader(authorizationHeader);
-        User user = userRepository.findByUserName(userName).orElseThrow(() -> new ResourceNotFoundException("User not found: " + userName));
+		Integer userId = extractUserIdFromAuthHeader(authorizationHeader);
+		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return UserMapper.toDto(user);
     }
 
-    private String extractUserNameFromAuthHeader(String authorizationHeader) {
+    private Integer extractUserIdFromAuthHeader(String authorizationHeader) {
         String token = jwtService.extractBearerToken(authorizationHeader);
-        return jwtService.extractSubject(token);
+        try {
+            return Integer.valueOf(jwtService.extractSubject(token));
+        } catch (NumberFormatException ex) {
+            throw new UnauthorizedException("Invalid access token subject");
+        }
     }
 
     private void handleFailedLogin(User user) {
@@ -176,7 +182,25 @@ public class AuthService {
     }
 
     private UnauthorizedException invalidCredentialsException() {
-        return new UnauthorizedException("Username or password not match");
+        return new UnauthorizedException("Phone number or email or password not match");
+    }
+
+    private String normalizeOptionalEmail(String email) {
+        if (email == null) {
+            return null;
+        }
+
+        String normalizedEmail = email.trim();
+        return normalizedEmail.isEmpty() ? null : normalizedEmail;
+    }
+
+    private String normalizeOptionalPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null) {
+            return null;
+        }
+
+        String normalizedPhoneNumber = phoneNumber.trim();
+        return normalizedPhoneNumber.isEmpty() ? null : normalizedPhoneNumber;
     }
 
 }

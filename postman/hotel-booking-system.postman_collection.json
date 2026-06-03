@@ -1,0 +1,699 @@
+{
+  "info": {
+    "_postman_id": "2f8f7d5a-2d52-4d5f-8a8f-3d0dddb5b6a1",
+    "name": "Hotel Booking System API",
+    "description": "Postman collection generated from the current backend controllers. Public routes include /api/v1/auth/register, /api/v1/auth/login, /api/v1/auth/forgot-password, /api/v1/auth/reset-password, /api/search/hotel, /api/bookings/**, and /api/reviews/**. Protected folders use Bearer auth via {{token}}. Auth requests now match the current DTOs in source code: phoneNumberOrEmail login, phoneNumber forgot/reset.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    },
+    {
+      "key": "userName",
+      "value": "johndoe"
+    },
+    {
+      "key": "hotelId",
+      "value": "1"
+    },
+    {
+      "key": "roomId",
+      "value": "1"
+    },
+    {
+      "key": "bookingId",
+      "value": "1"
+    },
+    {
+      "key": "hotelBranchId",
+      "value": "1"
+    },
+    {
+      "key": "phone",
+      "value": "0123456789"
+    },
+    {
+      "key": "year",
+      "value": "2026"
+    },
+    {
+      "key": "page",
+      "value": "1"
+    },
+    {
+      "key": "pageSize",
+      "value": "10"
+    },
+    {
+      "key": "startDate",
+      "value": "2026-06-01"
+    },
+    {
+      "key": "endDate",
+      "value": "2026-06-30"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"johndoe\",\n  \"password\": \"Password123!\",\n  \"email\": \"john.doe@example.com\",\n  \"fullName\": \"John Doe\",\n  \"phoneNumber\": \"0123456789\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/register",
+            "description": "Public. Creates a new user and returns UserDTO."
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumberOrEmail\": \"0123456789\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login",
+            "description": "Public. Returns accessToken plus user details. Uses phoneNumberOrEmail."
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"0123456789\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/forgot-password",
+            "description": "Public. Generates a reset OTP internally. Uses phoneNumber."
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"0123456789\",\n  \"resetOtp\": \"123456\",\n  \"newPassword\": \"NewPassword123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/reset-password",
+            "description": "Public. Uses phoneNumber + resetOtp."
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/auth/me",
+            "description": "Requires Bearer token. Returns current user profile."
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Password123!\",\n  \"newPassword\": \"NewPassword123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/change-password",
+            "description": "Requires Bearer token."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/auth/logout",
+            "description": "Requires Bearer token. Stateless logout."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public Search",
+      "item": [
+        {
+          "name": "Search Available Hotels",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location\": \"Bangkok\",\n  \"checkInDate\": \"2026-06-10\",\n  \"checkOutDate\": \"2026-06-12\",\n  \"singleRoomQuantity\": 1,\n  \"doubleRoomQuantity\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/search/hotel",
+            "description": "Public search route. Returns SearchResponse with matching branches."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public Booking",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"checkInDate\": \"2026-06-10\",\n  \"checkOutDate\": \"2026-06-12\",\n  \"bookingPrice\": 2500000,\n  \"userId\": 1,\n  \"hotelBranchId\": 1,\n  \"roomIds\": [1, 2],\n  \"roomId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/bookings",
+            "description": "Public booking route. Uses BookingRequest."
+          }
+        },
+        {
+          "name": "Get User Bookings",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/bookings/user/{{userId}}",
+            "description": "Public booking route. Returns bookings for a user."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public Reviews",
+      "item": [
+        {
+          "name": "Get Review Summary",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reviews/hotel/{{hotelBranchId}}",
+            "description": "Public. Returns rating summary and embedded reviews."
+          }
+        },
+        {
+          "name": "Get Review List",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reviews/hotel/{{hotelBranchId}}/list",
+            "description": "Public. Returns review list only."
+          }
+        },
+        {
+          "name": "Add Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingId\": 1,\n  \"hotelBranchId\": 1,\n  \"userId\": 1,\n  \"rating\": 5,\n  \"comment\": \"Great stay, clean room and helpful staff.\",\n  \"createdAt\": \"2026-06-12\"\n}"
+            },
+            "url": "{{baseUrl}}/api/reviews/hotel/{{hotelBranchId}}",
+            "description": "Public. Marks the booking as reviewed after success."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hotel Management",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get All Hotels",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/hotels",
+            "description": "Manager-only."
+          }
+        },
+        {
+          "name": "Get Hotel By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/hotels/{{hotelId}}",
+            "description": "Manager-only."
+          }
+        },
+        {
+          "name": "Create Hotel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"Oceanfront Hotel\",\n  \"phoneNumber\": \"0281234567\",\n  \"locationName\": \"Bangkok\",\n  \"averageStar\": 4.5,\n  \"roomCount\": 120,\n  \"imageUrl\": \"https://example.com/hotel.jpg\",\n  \"isOnline\": true,\n  \"services\": [\"WiFi\", \"Breakfast\"]\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/hotels",
+            "description": "Manager-only. Body matches HotelBranchDTO."
+          }
+        },
+        {
+          "name": "Update Hotel",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": \"Oceanfront Hotel Updated\",\n  \"phoneNumber\": \"0287654321\",\n  \"locationName\": \"Bangkok\",\n  \"averageStar\": 4.7,\n  \"roomCount\": 125,\n  \"imageUrl\": \"https://example.com/hotel-updated.jpg\",\n  \"isOnline\": true,\n  \"services\": [\"WiFi\", \"Breakfast\", \"Pool\"]\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/hotels/{{hotelId}}",
+            "description": "Manager-only."
+          }
+        },
+        {
+          "name": "Delete Hotel",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/hotels/{{hotelId}}",
+            "description": "Manager-only."
+          }
+        },
+        {
+          "name": "Get Hotel Rooms",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/hotels/{{hotelId}}/rooms",
+            "description": "Manager-only."
+          }
+        },
+        {
+          "name": "Add Room To Hotel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 0,\n  \"roomNumber\": 101,\n  \"floor\": 1,\n  \"area\": \"32 sqm\",\n  \"numberOfBed\": 1,\n  \"price\": 1200000,\n  \"description\": \"Deluxe room\",\n  \"roomIMG\": \"https://example.com/room.jpg\",\n  \"hotelBranchAddress\": \"Oceanfront Hotel\",\n  \"typeCode\": \"DELUXE\",\n  \"roomStatus\": \"AVAILABLE\",\n  \"services\": [\"WiFi\", \"TV\"]\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/hotels/{{hotelId}}/rooms",
+            "description": "Manager-only. Body matches RoomDTO."
+          }
+        },
+        {
+          "name": "Update Room",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"roomNumber\": 102,\n  \"floor\": 1,\n  \"area\": \"34 sqm\",\n  \"numberOfBed\": 2,\n  \"price\": 1500000,\n  \"description\": \"Updated deluxe room\",\n  \"roomIMG\": \"https://example.com/room-updated.jpg\",\n  \"hotelBranchAddress\": \"Oceanfront Hotel\",\n  \"typeCode\": \"DELUXE\",\n  \"roomStatus\": \"AVAILABLE\",\n  \"services\": [\"WiFi\", \"TV\", \"Balcony\"]\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/hotels/{{hotelId}}/rooms/{{roomId}}",
+            "description": "Manager-only."
+          }
+        },
+        {
+          "name": "Delete Room",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/hotels/{{hotelId}}/rooms/{{roomId}}",
+            "description": "Manager-only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff Workspace",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/staff/dashboard",
+            "description": "Staff/manager. Uses authenticated user identity."
+          }
+        },
+        {
+          "name": "Assigned Hotel",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/staff/hotel",
+            "description": "Staff/manager."
+          }
+        },
+        {
+          "name": "Assigned Rooms",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/staff/rooms",
+            "description": "Staff/manager."
+          }
+        },
+        {
+          "name": "Update Assigned Room Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomStatus\": \"CLEANING\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/staff/rooms/{{roomId}}/status",
+            "description": "Staff/manager."
+          }
+        },
+        {
+          "name": "Assigned Bookings",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/staff/bookings",
+            "description": "Staff/manager."
+          }
+        },
+        {
+          "name": "Search Assigned Bookings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"searchId\": \"B-1\",\n  \"guestName\": \"John\",\n  \"startDate\": \"2026-06-01\",\n  \"endDate\": \"2026-06-30\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/staff/bookings/search",
+            "description": "Staff/manager."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Manager Dashboard",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get Manager Dashboard",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/dashboard/manager?year={{year}}",
+            "description": "Manager-only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Finance Management",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Finance Summary",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/finance/summary",
+            "description": "Manager-only."
+          }
+        },
+        {
+          "name": "Finance Transactions",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/finance/transactions?page={{page}}&pageSize={{pageSize}}&startDate={{startDate}}&endDate={{endDate}}",
+            "description": "Manager-only."
+          }
+        },
+        {
+          "name": "Monthly Revenue",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/finance/monthly-revenue?year={{year}}",
+            "description": "Manager-only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users Admin",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Get User By Username",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/users/by-username/{{userName}}",
+            "description": "Admin-only."
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/users",
+            "description": "Admin-only."
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/users/{{userId}}",
+            "description": "Admin-only. Soft delete / disable account."
+          }
+        },
+        {
+          "name": "Lock User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Violation of hotel policy\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/users/{{userId}}/lock",
+            "description": "Admin-only."
+          }
+        },
+        {
+          "name": "Warn User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Please update your profile information.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/users/{{userId}}/warn",
+            "description": "Admin-only."
+          }
+        },
+        {
+          "name": "Change User Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"staff\",\n  \"hotelBranchId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/users/{{userId}}/role",
+            "description": "Admin-only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Room Media",
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{token}}",
+            "type": "string"
+          }
+        ]
+      },
+      "item": [
+        {
+          "name": "Upload Room Media",
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/api/v1/rooms/{{roomId}}/media",
+            "description": "Admin-only. Use form-data and choose a file for key 'file'."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Debug",
+      "item": [
+        {
+          "name": "Last OTP",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/internal/debug/last-otp?phone={{phone}}",
+            "description": "Internal debug helper used by the forgot-password flow."
+          }
+        }
+      ]
+    }
+  ]
+}
