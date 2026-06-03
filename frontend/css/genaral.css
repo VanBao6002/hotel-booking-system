@@ -6,6 +6,8 @@
     --yellow-color: #FFFF00;
     --text-gray-color: #888888;
     --error-color: #FF0000;
+    --success-color: #22bb33;
+    --warning-color: #f0ad4e;
     --header-height: 100px;
 }
 
@@ -23,6 +25,10 @@ body {
     background-color: var(--ivoryWhite-color);
 }
 
+.main {
+    padding-top: calc(var(--header-height) + 20px);
+    min-height: calc(100vh - var(--header-height));
+}
 
 /* reponsive */
 
@@ -60,7 +66,10 @@ body {
     width: 83.33%;
     padding: 12px;
 }
-
+.grid__column-six-columns {
+    width: 50%;
+    padding: 12px;
+}
 
 
 .btn {
@@ -119,6 +128,19 @@ body {
     }
 }
 
+@keyframes slideRight {
+    0% {
+        transform: scaleX(0);
+        transform-origin: right;
+        opacity: 0;
+    }
+    100% {
+        transform: scaleX(1);
+        transform-origin: right;
+        opacity: 1;
+    }
+}
+
 @keyframes rotate180deg {
     0% {
         transform: rotate(0);
@@ -128,4 +150,12 @@ body {
     }
 }
 
+@keyframes spinner {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
 

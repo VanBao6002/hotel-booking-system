@@ -19,6 +19,7 @@ public final class UserMapper {
 
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
+        dto.setUserName(user.getUserName());
         dto.setEmail(user.getEmail());
         dto.setFullName(user.getFullName());
         dto.setUserName(user.getUserName());
@@ -26,7 +27,19 @@ public final class UserMapper {
         dto.setDateOfBirth(user.getDateOfBirth());
         dto.setCurrentAddress(user.getCurrentAddress());
         dto.setLockedUntil(user.getLockedUntil());
+        dto.setActive(user.getIsActive());
         dto.setRole(user.getRole().toApiRole());
+            // Map genderId sang gender string
+            Integer genderId = user.getGenderId();
+            String gender = null;
+            if (genderId != null) {
+                switch (genderId) {
+                    case 1 -> gender = "Nam";
+                    case 2 -> gender = "Nữ";
+                    default -> gender = "Khác";
+                }
+            }
+            dto.setGender(gender);
         return dto;
     }
-}  
+}

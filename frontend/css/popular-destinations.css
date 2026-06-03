@@ -19,6 +19,10 @@
     display: block;
     cursor: pointer;
 }
+.popular-destinations__box-picture {
+    width: 100%;
+    height: 100%;
+}
 .popular-destinations__box img {
     display: block;
     width: 100%;

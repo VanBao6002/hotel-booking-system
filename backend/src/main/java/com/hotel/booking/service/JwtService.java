@@ -40,7 +40,7 @@ public class JwtService {
 		Instant expiresAt = now.plusSeconds(accessTokenExpirationSeconds);
 
 		return Jwts.builder()
-			.subject(String.valueOf(user.getId()))
+			.subject(user.getUserName())
 			.claim("userId", user.getId())
 			.claim("email", user.getEmail())
 			.claim("role", user.getRole().toAuthorityRole())
@@ -51,7 +51,7 @@ public class JwtService {
 	}
 	
 	/** 
-	 * Validates an access token and returns its subject (user id).
+	 * Validates an access token and returns its subject (ex: username).
 	 */
 	public String extractSubject(String token) {
 		return parseAccessClaims(token).getSubject();
@@ -66,12 +66,20 @@ public class JwtService {
 			throw new UnauthorizedException("Access token role is missing");
 		}
 
-		String roleName = role.toString();
+		String roleName = normalizeAuthorityRole(role.toString());
 		if (!roleName.startsWith("ROLE_")) {
 			throw new UnauthorizedException("Invalid role claim in access token");
 		}
 
 		return roleName;
+	}
+
+	private String normalizeAuthorityRole(String roleName) {
+		return switch (roleName) {
+			case "ROLE_USER" -> "ROLE_CUSTOMER";
+			case "ROLE_ADMIN" -> "ROLE_MANAGER";
+			default -> roleName;
+		};
 	}
 
 	private Claims parseAccessClaims(String token) {

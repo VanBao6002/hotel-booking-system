@@ -1,31 +1,55 @@
 import { errorTemplate } from "../components/templates/error.template.js";
+import { profileTemplate } from "../components/templates/profile.template.js"
+import { changePasswordTemplate } from "../components/templates/change-password.template.js"
+import { initProfile } from "../components/logics/profile.js";
+import { initChangePassword } from "../components/logics/change-password.js";
 const routers = {};
 let currentPath = null;
 
 const rules = [
     {
         path: ["#home"],
-        roles: ["guest","customer"],
+        roles: ["guest", "customer", "staff", "manager"],
         item: ["searchHotel", "discount", "guess"]
     },
     {
         path: ["#home-manager"],
-        roles: ["staff","manager"],
+        roles: ["manager"],
+        item: []
+    },
+    {
+        path: ["#home-staff"],
+        roles: ["staff"],
+        item: []
+    },
+    {
+        path: ["#users-management"],
+        roles: ["manager"],
         item: []
     },
     {
         path: ["#search-hotel"],
-        roles: ["guest", "customer","staff", "manager"],
+        roles: ["guest", "customer", "staff", "manager"],
         item: ["home"]
     },
     {
         path: ["#booking"],
-        roles: ["customer"],
+        roles: ["customer","staff", "manager"],
         item: ["genaral","room","location","service","rate"]
     },
     {
+        path: ["#setting"],
+        roles: ["customer", "staff", "manager"],
+        item: ["profile","changePassword","home"]
+    },
+    {
+        path: ["#booking-history"],
+        roles: ["customer","staff", "manager"],
+        item: ["home"]
+    },
+    {
         path: ["#error"],
-        roles: ["guest","customer","staff","manager"],
+        roles: ["guest", "customer", "staff", "manager"],
         item: []
     }
 ]
@@ -75,10 +99,10 @@ const room = function navRoom() {
         </div>
     `;
 }
-const location = function navLocation() {
+const confirm = function navConfirm() {
     return `
-        <div class="header__navbar-link header__navbar-link-location">
-            <div class="header__navbar-item">Địa điểm</div>
+        <div class="header__navbar-link header__navbar-link-confirm">
+            <div class="header__navbar-item">Xác nhận</div>
         </div>
     `;
 }
@@ -96,6 +120,20 @@ const rate = function navRate() {
         </div>
     `;
 }
+const profile = function navProfile() {
+    return `
+        <div class="header__navbar-link header__navbar-link-profile">
+            <div class="header__navbar-item">Cá nhân</div>
+        </div>
+    `;
+}
+const changePassword = function navChangePassword() {
+    return `
+        <div class="header__navbar-link header__navbar-link-change-password">
+            <div class="header__navbar-item">Đổi mật khẩu</div>
+        </div>
+    `;
+}
 const navComponents = {
   searchHotel,
   discount,
@@ -103,9 +141,11 @@ const navComponents = {
   home,
   genaral,
   room,
-  location,
+  confirm,
   service,
-  rate
+  rate,
+  profile,
+  changePassword
 };
 
 export function addRoute(path, handler) {
@@ -141,7 +181,7 @@ function renderRoute(path) {
 
 }
 
-function navigation(path) {
+export function navigation(path) {
     if(path === window.location.hash) {
         return;
     }
@@ -182,30 +222,75 @@ function attachNavEvents() {
     const searchHotelEl = document.querySelector(".header__navbar-link-search");
     const discountEl = document.querySelector(".header__navbar-link-discount");
     const guessEl = document.querySelector(".header__navbar-link-guess");
+    const genaralEl = document.querySelector(".header__navbar-link-genaral");
+    const roomEl = document.querySelector(".header__navbar-link-room");
+    const confirmEl = document.querySelector(".header__navbar-link-confirm");
+    const serviceEl = document.querySelector(".header__navbar-link-service");
+    const rateEl = document.querySelector(".header__navbar-link-rate");
+    const profileEl = document.querySelector(".header__navbar-link-profile");
+    const changePasswordEl = document.querySelector(".header__navbar-link-change-password");
+
+
 
     if(homeEl) {
-        homeEl.addEventListener("click", () => {
+        homeEl.onclick = () => {
             console.log(window.location.hash)
             navigation("#home");
-        })
+        };
     }
 
     if(searchHotelEl) {
-        searchHotelEl.addEventListener("click", () => {
+        searchHotelEl.onclick = () => {
             main.querySelector(".booking-search").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(discountEl) {
-        discountEl.addEventListener("click", () => {
+        discountEl.onclick = () => {
             main.querySelector(".advertising-banner").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
     if(guessEl) {
-        guessEl.addEventListener("click", () => {
+        guessEl.onclick = () => {
             main.querySelector(".popular-destinations").scrollIntoView({behavior: "smooth", block: "center"});
-        })
+        };
     }
-
+    if(genaralEl) {
+        genaralEl.onclick = () => {
+            main.querySelector(".booking__info-genaral").scrollIntoView({behavior: "smooth", block: "center"});
+        };
+    }
+    if(roomEl) {
+        roomEl.onclick = () => {
+            main.querySelector(".booking__info-room").scrollIntoView({behavior: "smooth", block: "center"});
+        };
+    }
+    if(confirmEl) {
+        confirmEl.onclick = () => {
+            main.querySelector(".booking__info-confirm").scrollIntoView({behavior: "smooth", block: "center"});
+        };
+    }
+    if(serviceEl) {
+        serviceEl.onclick = () => {
+            main.querySelector(".booking__info-service").scrollIntoView({behavior: "smooth", block: "center"});
+        };
+    }
+    if(rateEl) {
+        rateEl.onclick = () => {
+            main.querySelector(".booking__info-rate").scrollIntoView({behavior: "smooth", block: "center"});
+        };
+    }
+    if(profileEl) {
+        profileEl.onclick = () => {
+            main.querySelector(".setting").innerHTML = profileTemplate();
+            initProfile();
+        };
+    }
+    if(changePasswordEl) {
+        changePasswordEl.onclick = () => {
+            main.querySelector(".setting").innerHTML = changePasswordTemplate();
+            initChangePassword();
+        };
+    }
 
 }
 
@@ -217,12 +302,12 @@ function attachNavEvents() {
 
 export function initRouter() {
 
-    window.addEventListener("hashchange", () => {
+    window.onhashchange = () => {
         currentPath = window.location.hash;
         renderRoute(window.location.hash);
         renderNav(window.location.hash);
         attachNavEvents();
-    });
+    };
 
     if(!window.location.hash) {
         window.location.hash = "#home";
