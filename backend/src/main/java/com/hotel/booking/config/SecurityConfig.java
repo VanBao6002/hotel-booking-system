@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hotel.booking.exception.ApiErrorResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,6 +20,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hotel.booking.exception.ApiErrorResponse;
 import com.hotel.booking.security.JwtAuthenticationFilter;
 
 @Configuration
@@ -48,9 +48,8 @@ public class SecurityConfig {
                         .requestMatchers("/media/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/rooms/*/media").hasRole("ADMIN")
                         .requestMatchers("/api/v1/users/profile").authenticated()
-                        .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/users/**").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers("/api/v1/staff/**").hasAnyRole("STAFF", "MANAGER")
-                        .requestMatchers("/api/v1/users/**").hasRole("MANAGER")
                         .requestMatchers("/api/v1/hotels/**", "/api/v1/bookings/**", "/api/v1/finance/**", "/api/v1/dashboard/**").hasRole("MANAGER")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated())

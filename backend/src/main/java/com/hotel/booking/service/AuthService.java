@@ -5,15 +5,12 @@ import java.time.LocalDateTime;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.hotel.booking.dto.LoginRequest;
-import com.hotel.booking.dto.LoginResponse;
-import com.hotel.booking.dto.ProfileUpdateRequest;
-import com.hotel.booking.dto.RegisterRequest;
 import com.hotel.booking.dto.ChangePasswordRequest;
 import com.hotel.booking.dto.ForgotPasswordRequest;
 import com.hotel.booking.dto.ForgotPasswordResponse;
 import com.hotel.booking.dto.LoginRequest;
 import com.hotel.booking.dto.LoginResponse;
+import com.hotel.booking.dto.ProfileUpdateRequest;
 import com.hotel.booking.dto.RegisterRequest;
 import com.hotel.booking.dto.ResetPasswordRequest;
 import com.hotel.booking.dto.UserDTO;
@@ -281,10 +278,6 @@ public class AuthService {
 
     private Integer extractUserIdFromAuthHeader(String authorizationHeader) {
         String token = jwtService.extractBearerToken(authorizationHeader);
-        try {
-            return Integer.valueOf(jwtService.extractSubject(token));
-        } catch (NumberFormatException ex) {
-            throw new UnauthorizedException("Invalid access token subject");
-        }
+        return jwtService.extractUserId(token);
     }
 }
