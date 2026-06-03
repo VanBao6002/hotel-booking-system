@@ -1,19 +1,21 @@
 package com.hotel.booking.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public class ForgotPasswordRequest {
+    @NotBlank(message = "Phone number cannot be blank")
+    @Pattern(
+        regexp = "^\\+?[0-9]{9,15}$",
+        message = "phoneNumber should be valid"
+    )
+    private String phoneNumber;
 
-    @NotBlank(message = "Email cannot be blank")
-    @Email(message = "Email should be valid")
-    private String email;
-
-    public String getEmail() {
-        return email;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

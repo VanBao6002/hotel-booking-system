@@ -53,7 +53,7 @@ public class AuthController {
     public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         authService.resetPassword(request);
         return ResponseEntity.noContent().build();
-    }
+    } 
 
     @PutMapping("/change-password")
     public ResponseEntity<Void> changePassword(
@@ -61,12 +61,6 @@ public class AuthController {
         @Valid @RequestBody ChangePasswordRequest request
     ) {
         authService.changePassword(authorizationHeader, request);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authorizationHeader) {
-        authService.logout(authorizationHeader);
         return ResponseEntity.noContent().build();
     }
 
