@@ -50,11 +50,27 @@ public class JwtService {
 			.compact();
 	}
 	
-	/** 
+	/**
 	 * Validates an access token and returns its subject (ex: username).
 	 */
 	public String extractSubject(String token) {
 		return parseAccessClaims(token).getSubject();
+	}
+
+	/**
+	 * Validates an access token and returns the userId claim.
+	 */
+	public Integer extractUserId(String token) {
+		Object userId = parseAccessClaims(token).get("userId");
+		if (userId == null) {
+			throw new UnauthorizedException("Access token userId claim is missing");
+		}
+
+		try {
+			return Integer.valueOf(userId.toString());
+		} catch (NumberFormatException ex) {
+			throw new UnauthorizedException("Invalid access token userId claim");
+		}
 	}
 
 	/**

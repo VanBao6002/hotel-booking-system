@@ -238,7 +238,7 @@ function submitForm(){
             const form = getSignInForm();
 
             const userData = {
-                userNameOrEmail: form.querySelector("#email").value,
+                phoneNumberOrEmail: form.querySelector("#email").value,
                 password: form.querySelector("#password").value
             }
 

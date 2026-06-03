@@ -463,9 +463,9 @@ function handleBooking() {
 
 export function initBooking() {
 
-    // confirmDetail.singleRoomsId = [];
-    // confirmDetail.doubleRoomsId = [];
-    // confirmDetail.totalPrice = 0;
+    confirmDetail.singleRoomsId = [];
+    confirmDetail.doubleRoomsId = [];
+    confirmDetail.totalPrice = 0;
 
     const modalBtn = document.querySelector(".show-room .choice-room__button");
     if (modalBtn) {

@@ -202,14 +202,18 @@ public class BookingRepository {
     }
 
     private int addModernBooking(BookingRequest request) {
+        Integer firstRoomId = firstRoomId(request);
+        String roomImg = resolveRoomImage(firstRoomId);
+
         String sql = """
-            INSERT INTO booking(check_in_date, check_out_date, hotel_branch_id, user_id, booking_price)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO booking(check_in_date, check_out_date, room_img, hotel_branch_id, user_id, booking_price)
+            VALUES (?, ?, ?, ?, ?, ?)
             """;
         jdbcTemplate.update(
             sql,
             request.getCheckInDate(),
             request.getCheckOutDate(),
+            roomImg,
             request.getHotelBranchId(),
             request.getUserId(),
             request.getBookingPrice()
