@@ -5,11 +5,13 @@ import {
   deleteRoom,
   getHotel,
   getHotels,
+  getLocations,
   updateHotel,
   updateRoom,
 } from "../../services/admin.js";
 
 let allHotels = [];
+let allLocations = [];
 
 function setStatus(message, type = "info") {
   const statusEl = document.querySelector(".hotels-management__status");
@@ -66,6 +68,36 @@ function normalizeRoom(room = {}) {
     typeCode: room.typeCode || "SINGLE",
     roomStatus: room.roomStatus || "Available",
   };
+}
+
+function normalizeLocation(location = {}) {
+  return {
+    id: location.id,
+    name: location.location || location.name || location.locationName || "",
+  };
+}
+
+async function loadLocations() {
+  if (allLocations.length) return allLocations;
+  const locations = await getLocations() || [];
+  allLocations = locations
+    .map(normalizeLocation)
+    .filter(location => location.name);
+  return allLocations;
+}
+
+async function ensureLocationsLoaded() {
+  try {
+    const locations = await loadLocations();
+    if (!locations.length) {
+      setStatus("No locations found in database.", "error");
+      return null;
+    }
+    return locations;
+  } catch (err) {
+    setStatus(friendlyError(err, "Could not load locations from database."), "error");
+    return null;
+  }
 }
 
 function placeholderImage(label = "No Image") {
@@ -246,6 +278,7 @@ function hotelPayloadFromForm(form) {
 
 function roomPayloadFromForm(form, defaults = {}) {
   const formData = new FormData(form);
+  const typeCode = String(formData.get("typeCode") || "SINGLE").trim().toUpperCase();
   const room = {
     roomNumber: Number(formData.get("roomNumber")),
     floor: Number(formData.get("floor")),
@@ -254,7 +287,7 @@ function roomPayloadFromForm(form, defaults = {}) {
     price: Number(formData.get("price")),
     description: String(formData.get("description") || "").trim() || "No description",
     roomIMG: String(formData.get("roomIMG") || "").trim() || defaults.roomIMG || "default-room.jpg",
-    typeCode: String(formData.get("typeCode") || "SINGLE").trim(),
+    typeCode,
     roomStatus: String(formData.get("roomStatus") || "Available").trim(),
   };
 
@@ -262,10 +295,41 @@ function roomPayloadFromForm(form, defaults = {}) {
     throw new Error("Please fill in room number, floor, area, beds, and price.");
   }
 
+  if (!["SINGLE", "DOUBLE"].includes(room.typeCode)) {
+    throw new Error("Room type must be SINGLE or DOUBLE.");
+  }
+
   return room;
 }
 
-function openHotelForm({ mode, defaults = {}, onSubmit }) {
+function renderLocationOptions(locations, currentLocation) {
+  const current = String(currentLocation || "").trim();
+  const hasCurrent = locations.some(location => location.name === current);
+  const options = locations.map(location => `
+    <option value="${escapeHtml(location.name)}" ${location.name === current ? "selected" : ""}>
+      ${escapeHtml(location.name)}
+    </option>
+  `);
+
+  if (current && !hasCurrent) {
+    options.unshift(`
+      <option value="${escapeHtml(current)}" selected>
+        ${escapeHtml(current)}
+      </option>
+    `);
+  }
+
+  return `<option value="">Select location</option>${options.join("")}`;
+}
+
+function roomNumberExists(roomNumber, rooms, currentRoomId = null) {
+  return rooms.some(room => (
+    Number(room.roomNumber) === Number(roomNumber)
+    && String(room.id) !== String(currentRoomId ?? "")
+  ));
+}
+
+function openHotelForm({ mode, defaults = {}, locations = [], onSubmit }) {
   const isEdit = mode === "edit";
   const title = isEdit ? "Edit Property" : "Add Property";
   const submitLabel = isEdit ? `<i class="fa fa-save"></i> Save Changes` : `<i class="fa fa-plus"></i> Add Property`;
@@ -285,7 +349,9 @@ function openHotelForm({ mode, defaults = {}, onSubmit }) {
         </label>
         <label>
           <span>Location</span>
-          <input name="locationName" type="text" value="${escapeHtml(defaults.locationName || "")}" required>
+          <select name="locationName" required>
+            ${renderLocationOptions(locations, defaults.locationName)}
+          </select>
         </label>
         <label>
           <span>Representative image URL/filename</span>
@@ -320,7 +386,7 @@ function option(value, current) {
   return `<option value="${value}" ${value === current ? "selected" : ""}>${value}</option>`;
 }
 
-function openRoomForm({ hotelId, mode, defaults = {}, onSubmit }) {
+function openRoomForm({ hotelId, mode, defaults = {}, existingRooms = [], onSubmit }) {
   const room = normalizeRoom(defaults);
   const isEdit = mode === "edit";
   const title = isEdit ? `Edit Room ${room.roomNumber || ""}` : "Add Room";
@@ -357,7 +423,6 @@ function openRoomForm({ hotelId, mode, defaults = {}, onSubmit }) {
           <select name="typeCode">
             ${option("SINGLE", room.typeCode)}
             ${option("DOUBLE", room.typeCode)}
-            ${option("SUITE", room.typeCode)}
           </select>
         </label>
         <label>
@@ -389,6 +454,9 @@ function openRoomForm({ hotelId, mode, defaults = {}, onSubmit }) {
         event.preventDefault();
         try {
           const payload = roomPayloadFromForm(form, room);
+          if (roomNumberExists(payload.roomNumber, existingRooms, room.id)) {
+            throw new Error(`Room number ${payload.roomNumber} already exists in this hotel.`);
+          }
           setButtonLoading(submitBtn, true, submitLabel);
           await onSubmit(payload);
           close();
@@ -519,6 +587,7 @@ function openRoomsModal(hotel) {
         openRoomForm({
           hotelId: hotel.id,
           mode: "add",
+          existingRooms: rooms,
           onSubmit: async (room) => {
             await createRoom(hotel.id, room);
             await loadHotels({ preserveStatus: true });
@@ -538,6 +607,7 @@ function openRoomsModal(hotel) {
               hotelId: hotel.id,
               mode: "edit",
               defaults: room,
+              existingRooms: rooms,
               onSubmit: async (payload) => {
                 await updateRoom(hotel.id, roomId, payload);
                 await loadHotels({ preserveStatus: true });
@@ -567,8 +637,12 @@ function openRoomsModal(hotel) {
 }
 
 async function handleAddHotel() {
+  const locations = await ensureLocationsLoaded();
+  if (!locations) return;
+
   openHotelForm({
     mode: "add",
+    locations,
     onSubmit: async (hotel) => {
       await createHotel(hotel);
       await loadHotels({ preserveStatus: true });
@@ -578,10 +652,14 @@ async function handleAddHotel() {
 }
 
 async function handleEditHotel(hotelId) {
+  const locations = await ensureLocationsLoaded();
+  if (!locations) return;
+
   const current = allHotels.find(h => String(h.id) === String(hotelId));
   openHotelForm({
     mode: "edit",
     defaults: current,
+    locations,
     onSubmit: async (hotel) => {
       await updateHotel(hotelId, hotel);
       await loadHotels({ preserveStatus: true });

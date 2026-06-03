@@ -3,12 +3,10 @@ import { usersManagementTemplate } from "../templates/users-management.template.
 import { hotelsManagementTemplate } from "../templates/hotels-management.template.js";
 import { financeManagementTemplate } from "../templates/finance-management.template.js";
 import { bookingsManagementTemplate } from "../templates/bookings-management.template.js";
-import { profileTemplate } from "../templates/profile.template.js";
 import { initUsersManagement } from "./users-management.js";
 import { initHotelsManagement } from "./hotels-management.js";
 import { initFinanceManagement } from "./finance-management.js";
 import { initBookingsManagement } from "./bookings-management.js";
-import { initSetting } from "./setting.js";
 import { getManagerDashboard } from "../../services/admin.js";
 // Swap nội dung vào #manager-content
 function loadManagerContent(html, initFn, title = "") {
@@ -138,14 +136,14 @@ function renderRevenueChart(monthlyData) {
 
     const width = canvas.width;
     const height = canvas.height;
-    const left = 60;
-    const right = 16;
-    const top = 18;
-    const bottom = 34;
+    const left = 64;
+    const right = 20;
+    const top = 34;
+    const bottom = 38;
     const chartWidth = width - left - right;
     const chartHeight = height - top - bottom;
     const maxValue = Math.max(...revenue, 100000);
-    const roundedMax = Math.ceil(maxValue / 100000) * 100000;
+    const roundedMax = Math.ceil((maxValue * 1.15) / 100000) * 100000;
 
     ctx.clearRect(0, 0, width, height);
     ctx.font = "11px Inter, sans-serif";
@@ -203,7 +201,7 @@ async function initManagerDashboard() {
         const summary = dashboard?.financeSummary || {};
 
         setText("manager-stat-revenue", formatMoney(summary?.totalEarnings));
-        setText("manager-stat-revenue-sub", `${formatMoney(summary?.pendingPayouts)} pending`);
+        setText("manager-stat-revenue-sub", "Includes booked revenue");
         setText("manager-stat-active-bookings", String(dashboard?.activeBookings || 0));
         setText("manager-stat-active-bookings-sub", `${dashboard?.totalBookings || 0} total bookings`);
         setText("manager-stat-occupancy", `${dashboard?.occupancyRate || 0}%`);
@@ -234,7 +232,6 @@ export function initHomeManager() {
         "manager__btn-properties":{ title: "Quản Lý Khách Sạn", getHTML: hotelsManagementTemplate, initFn: initHotelsManagement    },
         "manager__btn-bookings":  { title: "Quản Lý Đặt Phòng", getHTML: bookingsManagementTemplate, initFn: initBookingsManagement },
         "manager__btn-finance":   { title: "Quản Lý Tài Chính", getHTML: financeManagementTemplate, initFn: initFinanceManagement   },
-        "manager__btn-settings":  { title: "Thông Tin Cá Nhân", getHTML: profileTemplate, initFn: initSetting },
     };
 
     document.querySelectorAll(".sidebar-item").forEach(item => {

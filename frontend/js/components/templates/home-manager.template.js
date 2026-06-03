@@ -23,7 +23,6 @@ export function homeManagerTemplate() {
                     ${renderSidebarItem("Quản Lý Khách Sạn", "", "manager__btn-properties")}
                     ${renderSidebarItem("Quản Lý Đặt Phòng", "", "manager__btn-bookings")}
                     ${renderSidebarItem("Quản Lý Tài Chính", "", "manager__btn-finance")}
-                    ${renderSidebarItem("Thông Tin Cá Nhân", "", "manager__btn-settings")}
                 </nav>
 
             </div>
@@ -54,7 +53,7 @@ function renderDashboardContent() {
         
         <!-- Stats Grid -->
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
-            ${renderStatCard("Total Revenue", "Loading...", "From paid receipts", "revenue", "manager-stat-revenue", "manager-stat-revenue-sub")}
+            ${renderStatCard("Total Revenue", "Loading...", "Includes booked revenue", "revenue", "manager-stat-revenue", "manager-stat-revenue-sub")}
             ${renderStatCard("Active Bookings", "Loading...", "Current open stays", "bookings", "manager-stat-active-bookings", "manager-stat-active-bookings-sub")}
             ${renderStatCard("Occupancy Rate", "Loading...", "Booked rooms over total rooms", "occupancy", "manager-stat-occupancy", "manager-stat-occupancy-sub")}
             ${renderStatCard("Total Users", "Loading...", "Accounts in database", "users", "manager-stat-users", "manager-stat-users-sub")}
@@ -175,7 +174,6 @@ const SIDEBAR_ICONS = {
     "Quản Lý Khách Sạn":    `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><path d="M1 14V7l7-5 7 5v7H1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><rect x="6" y="9" width="4" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/></svg>`,
     "Quản Lý Đặt Phòng":  `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 3V1.5M11 3V1.5M2 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5 10h2m2 0h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
     "Quản Lý Tài Chính":    `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M4 4V3a1 1 0 011-1h6a1 1 0 011 1v1" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.3"/></svg>`,
-    "Thông Tin Cá Nhân":      `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 14c.6-2.4 2.5-4 5-4s4.4 1.6 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
 };
 
 function renderSidebarItem(text, status = "", className = "") {

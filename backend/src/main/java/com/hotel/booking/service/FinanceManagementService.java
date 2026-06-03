@@ -26,15 +26,96 @@ public class FinanceManagementService {
     }
 
     public FinanceSummaryDTO getFinanceSummary() {
-        Long totalEarnings = queryLong("SELECT COALESCE(SUM(amount), 0) FROM receipt");
-        Long expectedRevenue = queryExpectedRevenue();
-        long pendingPayouts = Math.max(0L, expectedRevenue - totalEarnings);
+        Long totalEarnings = queryExpectedRevenue();
         long taxSummary = Math.round(totalEarnings * 0.1);
 
-        return new FinanceSummaryDTO(totalEarnings, pendingPayouts, taxSummary, "VND");
+        return new FinanceSummaryDTO(totalEarnings, 0L, taxSummary, "VND");
     }
 
     public List<TransactionDTO> getTransactions(Integer page, Integer pageSize, LocalDate startDate, LocalDate endDate) {
+        if (!schemaInspector.columnExists("booking", "booking_price")) {
+            return getReceiptTransactions(page, pageSize, startDate, endDate);
+        }
+
+        StringBuilder sql = new StringBuilder("""
+            SELECT b.id,
+                   DATE(b.booked_at) AS booked_date,
+                   CONCAT('Booking ', b.id, ' - ', COALESCE(hb.address, 'Unknown hotel')) AS description,
+                   COALESCE(b.booking_price, 0) AS amount,
+                   COALESCE(receipt_summary.paid_amount, 0) AS paid_amount
+            FROM booking b
+            LEFT JOIN hotelbranch hb ON b.hotel_branch_id = hb.id
+            LEFT JOIN (
+                SELECT BookingID, SUM(amount) AS paid_amount
+                FROM receipt
+                GROUP BY BookingID
+            ) receipt_summary ON receipt_summary.BookingID = b.id
+            WHERE (? IS NULL OR DATE(b.booked_at) >= ?)
+              AND (? IS NULL OR DATE(b.booked_at) <= ?)
+            ORDER BY b.booked_at DESC, b.id DESC
+            """);
+
+        List<Object> params = new ArrayList<>();
+        params.add(startDate);
+        params.add(startDate);
+        params.add(endDate);
+        params.add(endDate);
+
+        if (pageSize != null && pageSize > 0) {
+            int safePage = page == null || page < 1 ? 1 : page;
+            sql.append(" LIMIT ? OFFSET ?");
+            params.add(pageSize);
+            params.add((safePage - 1) * pageSize);
+        }
+
+        return jdbcTemplate.query(
+            sql.toString(),
+            (rs, rowNum) -> new TransactionDTO(
+                rs.getInt("id"),
+                rs.getDate("booked_date").toLocalDate(),
+                rs.getString("description"),
+                rs.getLong("amount"),
+                rs.getLong("paid_amount") >= rs.getLong("amount") ? "Paid" : "Booked",
+                "revenue"
+            ),
+            params.toArray()
+        );
+    }
+
+    public MonthlyRevenueDTO getMonthlyRevenue(Integer year) {
+        int selectedYear = year != null ? year : Year.now().getValue();
+        List<MonthlyRevenueDTO.MonthDataDTO> monthlyData = new ArrayList<>();
+        for (Month month : Month.values()) {
+            monthlyData.add(new MonthlyRevenueDTO.MonthDataDTO(month.name().substring(0, 3), 0L, 0L));
+        }
+
+        String sql = schemaInspector.columnExists("booking", "booking_price")
+            ? """
+                SELECT MONTH(check_in_date) AS month_number,
+                       COALESCE(SUM(booking_price), 0) AS revenue
+                FROM booking
+                WHERE YEAR(check_in_date) = ?
+                GROUP BY MONTH(check_in_date)
+                """
+            : """
+                SELECT MONTH(paymentDate) AS month_number,
+                       COALESCE(SUM(amount), 0) AS revenue
+                FROM receipt
+                WHERE YEAR(paymentDate) = ?
+                GROUP BY MONTH(paymentDate)
+                """;
+
+        jdbcTemplate.query(sql, rs -> {
+            int monthIndex = rs.getInt("month_number") - 1;
+            if (monthIndex >= 0 && monthIndex < monthlyData.size()) {
+                monthlyData.get(monthIndex).setRevenue(rs.getLong("revenue"));
+            }
+        }, selectedYear);
+
+        return new MonthlyRevenueDTO(selectedYear, monthlyData);
+    }
+
+    private List<TransactionDTO> getReceiptTransactions(Integer page, Integer pageSize, LocalDate startDate, LocalDate endDate) {
         StringBuilder sql = new StringBuilder("""
             SELECT rc.id,
                    rc.paymentDate,
@@ -68,36 +149,11 @@ public class FinanceManagementService {
                 rs.getDate("paymentDate").toLocalDate(),
                 rs.getString("description"),
                 rs.getLong("amount"),
-                "Completed",
+                "Paid",
                 "revenue"
             ),
             params.toArray()
         );
-    }
-
-    public MonthlyRevenueDTO getMonthlyRevenue(Integer year) {
-        int selectedYear = year != null ? year : Year.now().getValue();
-        List<MonthlyRevenueDTO.MonthDataDTO> monthlyData = new ArrayList<>();
-        for (Month month : Month.values()) {
-            monthlyData.add(new MonthlyRevenueDTO.MonthDataDTO(month.name().substring(0, 3), 0L, 0L));
-        }
-
-        String sql = """
-            SELECT MONTH(paymentDate) AS month_number,
-                   COALESCE(SUM(amount), 0) AS revenue
-            FROM receipt
-            WHERE YEAR(paymentDate) = ?
-            GROUP BY MONTH(paymentDate)
-            """;
-
-        jdbcTemplate.query(sql, rs -> {
-            int monthIndex = rs.getInt("month_number") - 1;
-            if (monthIndex >= 0 && monthIndex < monthlyData.size()) {
-                monthlyData.get(monthIndex).setRevenue(rs.getLong("revenue"));
-            }
-        }, selectedYear);
-
-        return new MonthlyRevenueDTO(selectedYear, monthlyData);
     }
 
     private Long queryLong(String sql) {

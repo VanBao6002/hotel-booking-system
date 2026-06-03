@@ -16,10 +16,7 @@ INSERT INTO location (name) VALUES
 
 INSERT INTO typeroom (code, name, description) VALUES
 ('SINGLE', 'Single Room', 'Phòng đơn dành cho 1 người, 1 giường đơn'),
-('DOUBLE', 'Double Room', 'Phòng đôi dành cho 2 người, 1 giường đôi hoặc 2 giường đơn'),
-('SUITE', 'Suite Room', 'Phòng cao cấp với nhiều tiện nghi hơn');
-
-
+('DOUBLE', 'Double Room', 'Phòng đôi dành cho 2 người, 1 giường đôi hoặc 2 giường đơn');
 
 INSERT INTO hotelbranch (address, phone_number, location_id) VALUES
 -- Hải Châu (location_id = 1)
@@ -156,7 +153,7 @@ INSERT INTO hotel_services (hotel_id, service_id) VALUES
 (11, 4),
 (12, 5);
 
--- Dịch vụ riêng: Spa chỉ dành cho Suite
+-- Dịch vụ riêng theo loại phòng
 INSERT INTO room_type_services (room_type_id, service_id) VALUES 
 (1, 3),
 (1, 2),
@@ -356,8 +353,6 @@ VALUES ('Phòng sạch sẽ, dịch vụ tốt', 5, NOW(), 3, 1);
 
 INSERT INTO receipt (paymentMethod, amount, paymentDate, BookingID)
 VALUES ('Cash', 400000, '2026-04-05', 1);
-
-
 
 
 

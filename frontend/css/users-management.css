@@ -1,5 +1,108 @@
 /* Admin Users Management - Action Buttons and Modal Styling */
 
+.users-management__toolbar {
+  background: #fff;
+  border: 1px solid #e8e4dc;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.users-management__search {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e2e2da;
+  border-radius: 7px;
+  padding: 9px 14px;
+  background: #fafaf8;
+}
+
+.users-management__search i {
+  color: #9aa3b0;
+  font-size: 13px;
+}
+
+.users-management__search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1a1a2e;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.users-management__select-wrap {
+  min-width: 160px;
+  position: relative;
+}
+
+.users-management__select-wrap--compact {
+  min-width: 78px;
+}
+
+.users-management__select-wrap select {
+  width: 100%;
+  appearance: none;
+  border: 1px solid #e2e2da;
+  border-radius: 7px;
+  padding: 9px 34px 9px 14px;
+  background: #fafaf8;
+  color: #1a1a2e;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+.users-management__select-wrap i {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9aa3b0;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.users-management__page-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.users-management__page-size label {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.admin-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-top: 1px solid #e8e4dc;
+  background: #fafaf8;
+}
+
+#um-page-info {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+#um-page-buttons {
+  display: flex;
+  gap: 6px;
+}
+
 /* Action buttons container in each table row */
 .action-btn {
   padding: 6px 10px;

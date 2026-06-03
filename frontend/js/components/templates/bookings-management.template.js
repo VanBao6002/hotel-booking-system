@@ -53,13 +53,12 @@ export function bookingsManagementTemplate() {
                             <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Hotel Name</th>
                             <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Check-in / Check-out</th>
                             <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Total Price</th>
-                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Payment Status</th>
                             <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Booking Status</th>
                             <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="bm-tbody">
-                        <tr><td colspan="8" style="padding:24px;text-align:center;color:#6b7280;">Loading bookings...</td></tr>
+                        <tr><td colspan="7" style="padding:24px;text-align:center;color:#6b7280;">Loading bookings...</td></tr>
                     </tbody>
                 </table>
 
@@ -75,11 +74,7 @@ export function bookingsManagementTemplate() {
     `;
 }
 
-function renderBookingRow(id, guest, hotel, dates, price, payStatus, payTag, bookStatus, bookTag) {
-    const payStyle = payTag === "gold"
-        ? "background: linear-gradient(135deg,#c9a84c,#e8cc7a); color: #1a1a2e;"
-        : "background: #1a1a2e; color: #f0e6c8;";
-
+function renderBookingRow(id, guest, hotel, dates, price, bookStatus, bookTag) {
     const bookStyle = bookTag === "gold"
         ? "border: 1.5px solid #c9a84c; color: #c9a84c; background: transparent;"
         : "border: 1.5px solid #1a1a2e; color: #1a1a2e; background: transparent;";
@@ -91,9 +86,6 @@ function renderBookingRow(id, guest, hotel, dates, price, payStatus, payTag, boo
             <td style="padding: 13px 16px; font-size: 13px; color: #4b5563;">${hotel}</td>
             <td style="padding: 13px 16px; font-size: 13px; color: #4b5563;">${dates}</td>
             <td style="padding: 13px 16px; font-size: 13px; color: #1a1a2e; font-weight: 500;">${price}</td>
-            <td style="padding: 13px 16px;">
-                <span style="${payStyle} padding: 4px 12px; border-radius: 5px; font-size: 12px; font-weight: 600; white-space: nowrap;">${payStatus}</span>
-            </td>
             <td style="padding: 13px 16px;">
                 <span style="${bookStyle} padding: 4px 12px; border-radius: 5px; font-size: 12px; font-weight: 600; white-space: nowrap;">${bookStatus}</span>
             </td>

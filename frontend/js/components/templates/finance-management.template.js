@@ -3,9 +3,8 @@ export function financeManagementTemplate() {
         <div style="font-family: 'Inter', sans-serif; color: #1a1a2e;">
 
             <!-- Summary Cards -->
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px;">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 28px;">
                 ${renderFinanceCard("Total Earnings", "0 VND", "#c9a84c", "#1a1a2e", "finance-total-earnings")}
-                ${renderFinanceCard("Pending Payouts", "0 VND", "#1a1a2e", "#1a1a2e", "finance-pending-payouts")}
                 ${renderFinanceCard("Tax Summary", "0 VND", "#1a1a2e", "#1a1a2e", "finance-tax-summary")}
             </div>
 

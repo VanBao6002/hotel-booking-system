@@ -76,6 +76,21 @@ public class RoomRepository {
         return room;
     }
 
+    public boolean existsRoomNumberInHotel(Integer hotelId, Integer roomNumber, Integer excludingRoomId) {
+        String sql = "SELECT COUNT(*) FROM room WHERE hotel_branch_id = ? AND room_number = ?";
+        List<Object> params = new ArrayList<>();
+        params.add(hotelId);
+        params.add(roomNumber);
+
+        if (excludingRoomId != null) {
+            sql += " AND id <> ?";
+            params.add(excludingRoomId);
+        }
+
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, params.toArray());
+        return count != null && count > 0;
+    }
+
     public RoomDTO addRoom(Integer hotelId, RoomDTO room) {
         Integer typeRoomId = resolveTypeRoomId(room.getTypeCode());
         Integer roomStatusId = resolveRoomStatusId(room.getRoomStatus());

@@ -41,7 +41,6 @@ async function loadFinanceData() {
         ]);
 
         document.getElementById("finance-total-earnings").textContent = formatMoney(summary.totalEarnings);
-        document.getElementById("finance-pending-payouts").textContent = formatMoney(summary.pendingPayouts);
         document.getElementById("finance-tax-summary").textContent = formatMoney(summary.taxSummary);
 
         latestMonthlyData = monthlyRevenue?.data || [];
@@ -94,15 +93,15 @@ function renderFinanceBarChart(monthlyData) {
 
     const width = canvas.width;
     const height = canvas.height;
-    const paddingLeft = 70;
-    const paddingRight = 20;
-    const paddingTop = 20;
-    const paddingBottom = 40;
+    const paddingLeft = 76;
+    const paddingRight = 28;
+    const paddingTop = 38;
+    const paddingBottom = 46;
     const chartWidth = width - paddingLeft - paddingRight;
     const chartHeight = height - paddingTop - paddingBottom;
     const maxSeriesValue = Math.max(...revenueData, ...expensesData, 100000);
-    const maxValue = Math.ceil(maxSeriesValue / 100000) * 100000;
-    const ySteps = Array.from({ length: 7 }, (_, index) => Math.round((maxValue / 6) * index));
+    const maxValue = Math.ceil((maxSeriesValue * 1.15) / 100000) * 100000;
+    const ySteps = Array.from({ length: 6 }, (_, index) => Math.round((maxValue / 5) * index));
 
     ctx.clearRect(0, 0, width, height);
     ctx.font = "11px Inter, sans-serif";

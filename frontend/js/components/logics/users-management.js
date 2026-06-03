@@ -84,6 +84,7 @@ function renderRows(users) {
         <td colspan="7" style="padding: 14px; color:#666;">Không có dữ liệu</td>
       </tr>
     `;
+    renderPagination(0);
     return;
   }
 
@@ -125,21 +126,58 @@ function renderRows(users) {
 }
 
 function renderPagination(total) {
-  const container = document.querySelector(".admin-pagination");
+  const info = document.getElementById("um-page-info");
+  const container = document.getElementById("um-page-buttons");
   if (!container) return;
-  container.innerHTML = "";
+
   const pages = Math.max(1, Math.ceil(total / pageSize));
+  const start = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const end = Math.min(currentPage * pageSize, total);
+  if (info) {
+    info.textContent = `Dang hien thi ${start} den ${end} trong tong ${total} nguoi dung`;
+  }
+
+  container.innerHTML = "";
+  container.appendChild(makePagerBtn("<", currentPage === 1, () => {
+    currentPage--;
+    applyFiltersAndRender();
+  }));
+
   for (let p = 1; p <= pages; p++) {
-    const btn = document.createElement("button");
-    btn.className = "btn";
-    btn.textContent = p;
-    if (p === currentPage) btn.style.opacity = "0.8";
-    btn.addEventListener("click", () => {
+    const btn = makePagerBtn(p, false, () => {
       currentPage = p;
       applyFiltersAndRender();
     });
+    if (p === currentPage) {
+      btn.style.background = "linear-gradient(135deg,#c9a84c,#e8cc7a)";
+      btn.style.color = "#1a1a2e";
+      btn.style.borderColor = "transparent";
+      btn.style.fontWeight = "700";
+    }
     container.appendChild(btn);
   }
+
+  container.appendChild(makePagerBtn(">", currentPage === pages, () => {
+    currentPage++;
+    applyFiltersAndRender();
+  }));
+}
+
+function makePagerBtn(label, disabled, onClick) {
+  const btn = document.createElement("button");
+  btn.textContent = label;
+  btn.disabled = disabled;
+  btn.style.cssText = `
+    min-width: 34px; height: 34px; padding: 0 10px;
+    border: 1.5px solid #e2e2da; border-radius: 7px;
+    background: white; color: #4b5563;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.15s;
+    opacity: ${disabled ? 0.4 : 1};
+    font-family: inherit;
+  `;
+  if (!disabled) btn.addEventListener("click", onClick);
+  return btn;
 }
 
 function disableSelfActions() {
@@ -326,28 +364,32 @@ function setupToolbar() {
 
   // create toolbar nodes near the status element
   const toolbar = document.createElement('div');
-  toolbar.style.display = 'flex';
-  toolbar.style.gap = '12px';
-  toolbar.style.alignItems = 'center';
-  toolbar.style.marginBottom = '12px';
+  toolbar.className = "users-management__toolbar";
 
   toolbar.innerHTML = `
-    <div style="flex:1; display:flex; gap:8px;">
-      <input class="admin-search" placeholder="Tìm theo username, email, họ tên..." style="flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:8px;" />
-      <select class="admin-filter-role" style="padding:10px 12px; border:1px solid #ddd; border-radius:8px; background:#fff;">
+    <div class="users-management__search">
+      <i class="fa fa-search"></i>
+      <input class="admin-search" placeholder="Tìm theo username, email, họ tên..." />
+    </div>
+    <div class="users-management__select-wrap">
+      <select class="admin-filter-role">
         <option value="all">Tất cả vai trò</option>
         <option value="manager">Manager</option>
         <option value="staff">Staff</option>
         <option value="customer">Customer</option>
       </select>
+      <i class="fa fa-chevron-down"></i>
     </div>
-    <div style="display:flex; gap:8px; align-items:center;">
-      <label style="color:#666; font-size:13px;">Hiển thị</label>
-      <select class="admin-page-size" style="padding:8px 10px; border:1px solid #ddd; border-radius:8px; background:#fff;">
+    <div class="users-management__page-size">
+      <label>Hiển thị</label>
+      <div class="users-management__select-wrap users-management__select-wrap--compact">
+        <select class="admin-page-size">
         <option value="5">5</option>
         <option value="10" selected>10</option>
         <option value="25">25</option>
-      </select>
+        </select>
+        <i class="fa fa-chevron-down"></i>
+      </div>
     </div>
   `;
 

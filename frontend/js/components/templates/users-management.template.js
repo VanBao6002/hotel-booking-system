@@ -57,7 +57,10 @@ export function usersManagementTemplate() {
           <tbody class="users-management__tbody">
           </tbody>
         </table>
-        <div class="admin-pagination" style="display:flex; gap:6px; padding: 12px 16px; border-top: 0.5px solid #e5e7eb;"></div>
+        <div class="admin-pagination">
+          <span id="um-page-info"></span>
+          <div id="um-page-buttons"></div>
+        </div>
       </div>
     </div>
   `;
