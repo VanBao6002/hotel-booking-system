@@ -1,9 +1,16 @@
+import { navigation } from "../../router/router.js";
+import { userLogin, userRegister } from "../../services/authentication.js";
+import { getMe, forgotPassword, resetPassword } from "../../services/users.js";
+import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
+
 // global var
 
 const emailField = {
     selector: "#email",
-    validate: isValidEmail,
-    message: "Không đúng định dạng email hoặc chưa nhập email"
+    validate: function(value) {
+        return isValidEmail(value) || isValidPhoneNumber(value);
+    },
+    message: "Không đúng định dạng email hoặc số điện thoại"
 }
 
 const passwordField = {
@@ -40,26 +47,42 @@ const passwordFieldSIgnUp = {
     message: "Mật khẩu mạnh, tối thiểu 8 ký tự, phải có chữ hoa, chữ thường, số và ký tự đặc biệt"
 }
 
+// Dùng cho form sign-up
 const confirmPasswordField = {
     selector: "#confirm-password",
     validate: function(confirmPassword) {
         const password = document.querySelector("#form-sign-up #password");
-        return confirmPassword === password.value ? true : false;
+        return confirmPassword === password.value;
     },
     message: "Mật khẩu không khớp"
 }
 
+// Dùng cho form reset-password
+const confirmPasswordResetField = {
+    selector: "#confirm-password",
+    validate: function(confirmPassword) {
+        const password = document.querySelector("#form-reset-password #password");
+        return confirmPassword === password.value;
+    },
+    message: "Mật khẩu không khớp"
+}
+const otpField = {
+    selector: "#otp",
+    validate: function(otp) {
+        return otp.trim() !== "" && /^\d{6}$/.test(otp);
+    },
+    message: "Mã OTP phải là chuỗi gồm 6 chữ số"
+}
 
 // Su kien Dang nhap/ Dang ky
 
-import { navigation } from "../../router/router.js";
-import { userLogin, userRegister } from "../../services/authentication.js";
-import { getMe } from "../../services/users.js";
-import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
+
 
 const getModal = () => { return document.querySelector(".modal"); }
 const getSignInForm = () => { return document.querySelector("#form-sign-in");}
 const getSignUpForm = () => { return document.querySelector("#form-sign-up");}
+const getForgotPasswordForm = () => { return document.querySelector(".forgot-password__form");}
+const  getRessetPasswordForm = () => { return document.querySelector(".reset-password__form");}
 const getModalOverlay = () => { return document.querySelector(".modal .modal__overlay");}
 
 
@@ -76,9 +99,31 @@ function turnOnModal() {
 
 
 export function showForm(type) {
-    const isSignIn = type === "sign-in";
-    getSignInForm().style.display = isSignIn ? "block" : "none";
-    getSignUpForm().style.display = isSignIn ? "none" : "block";
+    const isSignIn = type;
+    if(isSignIn === "sign-in") {
+        getSignInForm().style.display = "block";
+        getSignUpForm().style.display = "none";
+        getForgotPasswordForm().style.display = "none";
+        getRessetPasswordForm().style.display = "none";
+    }
+    else if(isSignIn === "sign-up") {
+        getSignInForm().style.display = "none";
+        getSignUpForm().style.display = "block";
+        getForgotPasswordForm().style.display = "none";
+        getRessetPasswordForm().style.display = "none";
+    }
+    else if(isSignIn === "forgot-password") {
+        getSignInForm().style.display = "none";
+        getSignUpForm().style.display = "none";
+        getForgotPasswordForm().style.display = "block";
+        getRessetPasswordForm().style.display = "none";
+    }
+    else if(isSignIn === "reset-password") {
+        getSignInForm().style.display = "none";
+        getSignUpForm().style.display = "none";
+        getForgotPasswordForm().style.display = "none";
+        getRessetPasswordForm().style.display = "block";
+    }
     getModal().querySelectorAll(".form-group").forEach(e => {
         e.querySelector(".form-error").innerText = "";
         e.querySelector("input").value = "";
@@ -233,21 +278,21 @@ function attachHomeBrandNavigation() {
 
 function submitForm(){
     const submitButton = getModal().querySelectorAll(".confirm-btn");
+    let phoneNumberToResetPassword = "";
 
     // sign in
 
     submitButton[0].onclick = (e)=> {
         e.preventDefault();
-
-
+        
         const isValid = validateForm("form-sign-in",[emailField,passwordField]);
-        if(!isValid) {
+
+        if(!isValid ) {
             console.log("fail");
         }
         else {
             console.log("success");
             const form = getSignInForm();
-
             const userData = {
                 phoneNumberOrEmail: form.querySelector("#email").value,
                 password: form.querySelector("#password").value
@@ -333,6 +378,77 @@ function submitForm(){
         }
     };
 
+    submitButton[2].onclick = (e) => {
+        e.preventDefault();
+
+        const invalid = validateForm("form-forgot-password", [phoneNumberField]);
+        if(!invalid) {
+            console.log("Invalid phone number");
+            return;
+        }
+        else {
+            console.log("Submit forgot password form");
+            
+            const form = getForgotPasswordForm();
+            const phoneNumberData = {
+                phoneNumber: form.querySelector("#phone-number").value.trim()
+            };
+
+            forgotPassword(phoneNumberData)
+                .then(() => {
+                    console.log("Forgot password form submitted successfully");
+                    phoneNumberToResetPassword = phoneNumberData.phoneNumber;
+                    showToast("Mã OTP đã được gửi đến số điện thoại của bạn");
+                    // turnOffModal();
+                    hideAllForm();
+                    // show form reset password
+                    showForm("reset-password");
+                })
+                .catch(error => {
+                    console.log("Failed to submit forgot password form", error);
+                    showToast("Đã xảy ra lỗi khi gửi yêu cầu", "error");
+                    phoneNumberToResetPassword = "";
+                });
+        }
+
+    }
+    submitButton[3].onclick = (e) => {
+        e.preventDefault();
+        
+        const isValid = validateForm("form-reset-password", [otpField, passwordFieldSIgnUp, confirmPasswordResetField]);
+
+        if(!isValid) {
+            console.log("Invalid reset password form");
+            return;
+        }
+        else {
+            console.log("Submit reset password form");
+
+            const form = getRessetPasswordForm();
+
+            const resetData = {
+                phoneNumber: phoneNumberToResetPassword,
+                resetOtp: form.querySelector("#otp").value.trim(),
+                newPassword: form.querySelector("#password").value.trim()
+            };
+
+            console.log("Reset password data:", resetData);
+
+            resetPassword(resetData)
+                .then(() => {
+                    console.log("Reset password successfully");
+                    showToast("Mật khẩu của bạn đã được đặt lại thành công");
+                    phoneNumberToResetPassword = "";
+                    turnOffModal();
+                    hideAllForm();
+                })
+                .catch(error => {
+                    console.log("Failed to reset password", error);
+                    showToast("Đã xảy ra lỗi khi đặt lại mật khẩu", "error");
+                });
+        }
+    }
+
     console.log(getSignInForm().querySelectorAll(".form-input"));
 }
 
@@ -352,17 +468,29 @@ export function initHeader() {
         turnOnModal();
         showForm("sign-up");
     };
-
+    document.querySelector(".fp-sign-in-btn").onclick = () => {
+        turnOnModal();
+        showForm("sign-in");
+    }
+    document.querySelector(".rp-sign-in-btn").onclick = () => {
+        turnOnModal();
+        showForm("sign-in");
+    };
     document.querySelector(".sign-in-btn").onclick = () => {
         showForm("sign-in");
     };
     document.querySelector(".sign-up-btn").onclick = () => {
         showForm("sign-up");
     };
+    document.querySelector(".fogot-password").onclick = () => {
+        showForm("forgot-password");
+    }
 
     userExtra();
     attachValidation("form-sign-in",[emailField,passwordField]);
     attachValidation("form-sign-up",[fullnameField,usernameField,emailField,phoneNumberField,passwordFieldSIgnUp,confirmPasswordField]);
+    attachValidation("form-forgot-password",[phoneNumberField]);
+    attachValidation("form-reset-password",[otpField,passwordFieldSIgnUp,confirmPasswordResetField]);
     submitForm();
     showBookingHistory();
     attachHomeBrandNavigation();

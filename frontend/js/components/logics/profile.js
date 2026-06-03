@@ -1,3 +1,4 @@
+import { updateMe } from "../../services/users.js";
 import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber, safeJsonParse } from "../../utils/utils.js";
 
 const userData = safeJsonParse(localStorage.getItem("userData"), {});
@@ -5,22 +6,20 @@ const userData = safeJsonParse(localStorage.getItem("userData"), {});
 // if(userData) {
     const oldProfile = {
         fullName : userData.fullName ?? "",
-        username : userData.userName ?? "",
         email : userData.email ?? "",
         dateOfBirth : userData.dateOfBirth ?? "",
         gender : userData.gender ?? "",
         phoneNumber : userData.phoneNumber ?? "",
-        address : userData.currentAddress ?? "",  
+        currentAddress : userData.currentAddress ?? "",  
     }
     
     const newProfile = {
         fullName : userData.fullName ?? "",
-        username : userData.userName ?? "",
         email : userData.email ?? "",
         dateOfBirth : userData.dateOfBirth ?? "",
         gender : userData.gender ?? "",
         phoneNumber : userData.phoneNumber ?? "",
-        address : userData.currentAddress ?? "",  
+        currentAddress : userData.currentAddress ?? "",  
     }
     
 // }
@@ -40,30 +39,40 @@ function isValidProfile() {
 }
 
 function hasProfileChanged() {
-    return Object.keys(oldProfile).some(key => oldProfile[key] !== newProfile[key]);
+    return Object.keys(oldProfile).some(key => String(oldProfile[key] ?? "").trim() !== String(newProfile[key] ?? "").trim());
+}
+
+function updateSaveButtonState() {
+    const profileWrap = document.querySelector(".profile__wrap");
+    const saveBtn = profileWrap?.querySelector(".save-info__btn");
+    if (!saveBtn) return;
+
+    if (isValidProfile() && hasProfileChanged()) {
+        saveBtn.classList.add("active");
+    } else {
+        saveBtn.classList.remove("active");
+    }
 }
 
 function attachChangeHighlight() {
     const profileWrap = document.querySelector(".profile__wrap");
-    const inputs = profileWrap.querySelectorAll("input");
-    const saveBtn = profileWrap.querySelector(".save-info__btn");
+    const inputs = profileWrap?.querySelectorAll("input") || [];
+
+    const updateField = (input) => {
+        const key = input.name;
+        if (oldProfile[key] !== input.value) {
+            input.classList.add("changed");
+        } else {
+            input.classList.remove("changed");
+        }
+        newProfile[key] = input.value;
+        updateSaveButtonState();
+    };
+
     inputs.forEach(input => {
-        input.addEventListener("blur", () => {
-            const key = input.name;
-            if (oldProfile[key] !== input.value) {
-                console.log("changed", input.value, oldProfile[key]);
-                input.classList.add("changed");
-            } else {
-                input.classList.remove("changed");
-            }
-            newProfile[key] = input.value;
-            if(isValidProfile() && hasProfileChanged()) {
-                    saveBtn.classList.add("active");
-                }
-                else {                
-                    saveBtn.classList.remove("active");
-                }
-        });
+        input.addEventListener("input", () => updateField(input));
+        input.addEventListener("blur", () => updateField(input));
+        input.addEventListener("change", () => updateField(input));
     });
 }
 
@@ -88,9 +97,11 @@ function attachValidation() {
             if(e.target.classList.contains("gender-item")) {
                 const selectedGender = e.target.innerText;
                 genderInput.value = selectedGender;
+                newProfile.gender = selectedGender;
+                genderInput.classList.toggle("changed", oldProfile.gender !== selectedGender);
+                updateSaveButtonState();
             }
         });
-        saveProfile();
     };
 
     function choiceDateOfBirth() {
@@ -114,7 +125,8 @@ function attachValidation() {
             } else {
                 errorMessages.dateOfBirth.textContent = "";
                 dateOfBirthInput.classList.remove("error");
-                saveProfile();
+                newProfile.dateOfBirth = dateOfBirthInput.value;
+                updateSaveButtonState();
             }
         });
 
@@ -130,7 +142,7 @@ function attachValidation() {
         } else {
             errorMessages.fullName.textContent = "";
             fullNameInput.classList.remove("error");
-            saveProfile();
+            updateSaveButtonState();
         }
     });
 
@@ -141,7 +153,7 @@ function attachValidation() {
         } else {
             errorMessages.email.textContent = "";
             emailInput.classList.remove("error");
-            saveProfile();
+            updateSaveButtonState();
         }
     });
 
@@ -152,7 +164,7 @@ function attachValidation() {
         } else {
             errorMessages.phoneNumber.textContent = "";
             phoneInput.classList.remove("error");
-            saveProfile();
+            updateSaveButtonState();
         }
     });
 }
@@ -160,13 +172,48 @@ function attachValidation() {
 
 
 function saveProfile() {
-    if(isValidProfile()) {
-        // Gọi API để lưu thông tin cá nhân
-        const saveBtn = document.querySelector(".save-info__btn");
-        saveBtn.onclick = function() {
-            console.log("Thông tin hợp lệ. Thực hiện lưu thông tin cá nhân.");
-            console.log(newProfile);
-        }
+    const saveBtn = document.querySelector(".save-info__btn");
+    if (!saveBtn) return;
+
+    const modal = document.querySelector(".modal");
+    const showNotification = modal.querySelector(".show__notification");
+    const notificationTitle = showNotification.querySelector(".show__notification-title span");
+    const notificationMessage = showNotification.querySelector(".show__notification-text");
+
+
+    saveBtn.onclick = function() {
+        if (!saveBtn.classList.contains("active")) return;
+
+        console.log("Thông tin hợp lệ. Thực hiện lưu thông tin cá nhân.");
+        updateMe(newProfile)
+            .then(() => {
+                modal.classList.add("active");
+                showNotification.classList.remove("error", "warning", "success", "qrcode");
+                showNotification.classList.add("show", "success");
+                notificationTitle.innerText = "Thành công!";
+                notificationMessage.innerText = "Thông tin cá nhân của bạn đã được cập nhật.";
+                Object.assign(oldProfile, newProfile);
+                updateSaveButtonState();
+
+                const newUserData = JSON.parse(localStorage.getItem("userData")) || {};
+                newUserData.fullName = newProfile.fullName;
+                newUserData.email = newProfile.email;
+                newUserData.dateOfBirth = newProfile.dateOfBirth;
+                newUserData.gender = newProfile.gender;
+                newUserData.phoneNumber = newProfile.phoneNumber;
+                newUserData.currentAddress = newProfile.currentAddress;
+
+                localStorage.setItem("userData", JSON.stringify(newUserData));
+            })
+            .catch((error) => {
+                modal.classList.add("active");
+                showNotification.classList.remove("error", "warning", "success", "qrcode");
+                showNotification.classList.add("show", "error");
+                notificationTitle.innerText = "Lỗi!";
+                notificationMessage.innerText = "Đã có lỗi xảy ra. Vui lòng thử lại.";
+                console.error("Lỗi khi cập nhật thông tin cá nhân:", error);
+            });
+        console.log(newProfile);
     }
 }
 
@@ -194,6 +241,8 @@ export function initProfile() {
     editProfile();
     attachValidation();
     attachChangeHighlight();
+    saveProfile();
+    updateSaveButtonState();
 }
 
 

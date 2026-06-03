@@ -15,7 +15,7 @@ export function modalTemplate() {
               <div class="auth-form__form">
                 <div class="form-group">
                   <input id="email" type="text" class="form-input" placeholder="">
-                  <label for="email">Email</label>
+                  <label for="email">Email/Số điện thoại</label>
                   <span class="form-error"></span>
                 </div>
                 <div class="form-group">
@@ -30,7 +30,7 @@ export function modalTemplate() {
                       Lưu mật khẩu
                     </span>
                   </label>
-                  <a href="#" class="fogot-password">Quên mật khẩu?</a>
+                  <div class="fogot-password">Quên mật khẩu?</div>
                 </div>
                 <button class="confirm-btn">
                   <span class="confirm-btn-text">Đăng nhập</span>
@@ -95,7 +95,67 @@ export function modalTemplate() {
               </div>
             </div>
           </form>
+          
+          <div class="forgot-password__form" id="form-forgot-password">
+            <div class="forgot-password__container">
+              <div class="forgot-password__header">
+                <span class="forgot-password__header-title">Quên mật khẩu</span>
+                <span class="forgot-password__header-description">Nhập số điện thoại của bạn để nhận hướng dẫn đặt lại mật khẩu</span>
+              </div>
+              <div class="forgot-password-form__form">
+                <div class="form-group">
+                  <input id="phone-number" type="text" class="form-input" placeholder="" >
+                  <label for="phone-number">Số điện thoại</label>
+                  <span class="form-error"></span>
+                </div>
+                <button class="confirm-btn">
+                  <span class="confirm-btn-text">Gửi
+                  </span>
+                  <span class="confirm-btn-loading"></span>
+                </button>
+              </div>
+              <div class="forgot-password-form__footer">
+                  <p>Đã nhớ mật khẩu?
+                  <span class="fp-sign-in-btn">Đăng nhập ngay</span>
+                  </p>
+              </div>
+            </div>
+          </div>
 
+          <div class="reset-password__form" id="form-reset-password">
+            <div class="reset-password__container">
+              <div class="reset-password__header">
+                <span class="reset-password__header-title">Đặt lại mật khẩu</span>
+                <span class="reset-password__header-description">Nhập mật khẩu mới cho tài khoản của bạn</span>
+              </div>
+              <div class="reset-password-form__form">
+                <div class="form-group">
+                  <input id="otp" type="text" class="form-input" placeholder="" >
+                  <label for="otp">Mã OTP</label>
+                  <span class="form-error"></span>
+                </div>
+                <div class="form-group">
+                  <input id="password" type="password" class="form-input" placeholder="" >
+                  <label for="password">Mật khẩu mới</label>
+                  <span class="form-error"></span>
+                </div>
+                <div class="form-group">
+                  <input id="confirm-password" type="password" class="form-input" placeholder="" >
+                  <label for="confirm-password">Xác nhận mật khẩu mới</label>
+                  <span class="form-error"></span>
+                </div>
+                <button class="confirm-btn">
+                  <span class="confirm-btn-text">Đặt lại mật khẩu</span>
+                  <span class="confirm-btn-loading"></span>
+                </button>
+              </div>
+              <div class="reset-password-form__footer">
+                  <p>Đã nhớ mật khẩu?
+                  <span class="rp-sign-in-btn">Đăng nhập ngay</span>
+                  </p>
+              </div>
+            </div>
+          </div>
 
           <div class="show-room">
             <div class="show-room_head">

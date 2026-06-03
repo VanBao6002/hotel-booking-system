@@ -57,9 +57,33 @@ export const getMe = () => {
 };
 
 export const updateMe = (profile) => {
-  return apiClient("/api/v1/auth/me", {
+  return apiClient("/api/v1/auth/update-profile", {
     method: "PUT",
     skipAuth: false,
     body: JSON.stringify(profile),
   });
 };
+
+export const changePassword = (passwordData) => {
+  return apiClient("/api/v1/auth/change-password", {
+    method: "PUT",
+    skipAuth: false,
+    body: JSON.stringify(passwordData),
+  });
+};
+
+export const forgotPassword = (phoneNumber) => {
+  return apiClient("/api/v1/auth/forgot-password", {
+    method: "POST",
+    skipAuth: true,
+    body: JSON.stringify(phoneNumber),
+  });
+}
+
+export const resetPassword = (resetData) => {
+  return apiClient("/api/v1/auth/reset-password", {
+    method: "POST",
+    skipAuth: true,
+    body: JSON.stringify(resetData),
+  });
+}

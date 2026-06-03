@@ -33,22 +33,35 @@
 #form-sign-up {
     display: none;
 }
-
-.auth-form__container {
+.forgot-password__form {
+    display: none;
+}
+.reset-password__form {
+    display: none;
+}
+.auth-form__container,
+.forgot-password__container,
+.reset-password__container {
     padding: 0 32px;
 }
 
-.auth-form__header {
+.auth-form__header,
+.forgot-password__header,
+.reset-password__header {
     margin-bottom: 40px;
 }
 
-.auth-form {
+.auth-form,
+.forgot-password__form,
+.reset-password__form{
     width: 500px;
     background-color: var(--ivoryWhite-color);
     border-radius: 5px;
     animation: scaleUp ease-out 0.125s;
 }
-.auth-form__header-title {
+.auth-form__header-title, 
+.forgot-password__header-title,
+.reset-password__header-title {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -58,14 +71,18 @@
     margin: 44px 0 22px 0;
     color: var(--navyBlue-color);
 }
-.auth-form__header-description {
+.auth-form__header-description, 
+.forgot-password__header-description,
+.reset-password__header-description {
     font-size: 1.6rem;
     line-height: 1.6rem;
     color: var(--text-gray-color);
     text-align: center;
 }
 
-.auth-form__form {
+.auth-form__form,
+.forgot-password-form__form,
+.reset-password-form__form {
     display: flex;
     flex-direction: column;
 }
@@ -136,8 +153,8 @@
 }
 
 .fogot-password {
-    text-decoration: none;
     color: var(--navyBlue-color);
+    cursor: pointer;
 }
 
 .remember-wrapper {
@@ -178,15 +195,21 @@
     animation: spinner linear 1s infinite;
 }
 
-.auth-form__footer {
+.auth-form__footer,
+.forgot-password-form__footer,
+.reset-password-form__footer {
     font-size: 1.6rem;
     text-align: center;
     margin: 30px 0 36px 0;
 }
-.auth-form__footer p {
+.auth-form__footer p,
+.forgot-password-form__footer p,
+.reset-password-form__footer p {
     color: var(--text-gray-color);
 }
-.auth-form__footer span {
+.auth-form__footer span,
+.forgot-password-form__footer span,
+.reset-password-form__footer span {
     text-decoration: none;
     color: var(--navyBlue-color);
     cursor: pointer;

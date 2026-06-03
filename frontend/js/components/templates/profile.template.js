@@ -17,7 +17,7 @@ export function profileTemplate() {
     let dateOfBirth = "";
     let gender = "";
     let phoneNumber = "";
-    let address = "";
+    let currentAddress = "";
     const userData = safeJsonParse(localStorage.getItem("userData"), {});
     if(userData) {
       fullName = userData.fullName ?? "";
@@ -26,7 +26,7 @@ export function profileTemplate() {
       dateOfBirth = userData.dateOfBirth ?? "";
       gender = userData.gender ?? "";
       phoneNumber = userData.phoneNumber ?? "";
-      address = userData.currentAddress ?? "";
+      currentAddress = userData.currentAddress ?? "";
     }
     return `
         <div class="setting">
@@ -84,7 +84,7 @@ export function profileTemplate() {
                   <div class="group-info-section">
                     <label for="fullname">Địa chỉ</label>
                     <i class="edit fa-regular fa-pen-to-square"></i>
-                    <input type="text" name="address" id="address" value="${escapeAttr(address)}" readonly style="pointer-events:none;">
+                    <input type="text" name="currentAddress" id="currentAddress" value="${escapeAttr(currentAddress)}" readonly style="pointer-events:none;">
                   </div>
                 </div>
               </div>
