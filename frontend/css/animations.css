@@ -1,0 +1,694 @@
+/* =====================================================
+   ANIMATIONS & ENHANCED UI EFFECTS
+   Smooth, delightful interactions for hotel booking UI
+   ===================================================== */
+
+/* ─── Global Smooth Transitions ─────────────────────── */
+*, *::before, *::after {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Enhanced Keyframes ─────────────────────────────── */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.7); }
+  70%  { opacity: 1; transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(10, 154, 242, 0.4); }
+  70%  { box-shadow: 0 0 0 10px rgba(10, 154, 242, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(10, 154, 242, 0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(110%) scale(0.9);
+  }
+}
+
+@keyframes dropdownOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.9);
+    transform-origin: top;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+    transform-origin: top;
+  }
+}
+
+@keyframes modalBackdropIn {
+  from { opacity: 0; backdrop-filter: blur(0px); }
+  to   { opacity: 1; backdrop-filter: blur(4px); }
+}
+
+@keyframes modalPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes starPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.4) rotate(-10deg); }
+  100% { transform: scale(1); }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes spinnerSmooth {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ─── Page / Section Entrance ───────────────────────── */
+
+.main {
+  animation: fadeInUp 0.5s ease both;
+}
+
+/* Stagger children of common containers */
+.booking__picture,
+.booking__picture-main,
+.booking__picture-add-img {
+  animation: fadeInScale 0.5s ease both;
+}
+
+.booking__picture-add-img:nth-child(2) { animation-delay: 0.08s; }
+.booking__picture-add-img:nth-child(3) { animation-delay: 0.16s; }
+.booking__picture-add-img:nth-child(4) { animation-delay: 0.24s; }
+.booking__picture-add-img:nth-child(5) { animation-delay: 0.32s; }
+
+/* ─── Header ─────────────────────────────────────────── */
+
+.header {
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.header.scrolled {
+  box-shadow: 0 4px 24px rgba(10, 37, 64, 0.18);
+}
+
+.header__navbar-link {
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.header__navbar-link::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--gold-color);
+  border-radius: 2px;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.header__navbar-link:hover::after {
+  width: 60%;
+  left: 20%;
+}
+
+/* User info dropdown transition is handled in header.css */
+
+
+.extra__item-setting:hover,
+.extra__item-change-password:hover,
+.extra__item-manage:hover,
+.extra__item-sign-out:hover {
+  padding-left: 10px !important;
+}
+
+/* ─── Buttons ────────────────────────────────────────── */
+
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  filter: none !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(10, 154, 242, 0.35);
+}
+
+.btn:active {
+  transform: translateY(0px) scale(0.97);
+  box-shadow: none;
+}
+
+/* Ripple effect on buttons */
+.btn .ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+/* Auth buttons */
+.auth__btn-regist,
+.auth__btn-login {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.auth__btn-regist:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(10, 154, 242, 0.4);
+  filter: none !important;
+}
+.auth__btn-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(10, 37, 64, 0.15);
+  filter: none !important;
+}
+
+/* Confirm button in modal */
+.confirm-btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.confirm-btn:hover {
+  filter: none !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(10, 37, 64, 0.3);
+}
+.confirm-btn:active {
+  transform: translateY(0);
+}
+
+/* Booking choice buttons */
+.room-detail__button,
+.room-choice__button,
+.booking__button,
+.choice-room__button div {
+  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.room-detail__button:hover,
+.room-choice__button:hover,
+.booking__button:hover {
+  filter: none !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 14px rgba(10, 154, 242, 0.35) !important;
+}
+
+/* ─── Form Inputs ────────────────────────────────────── */
+
+.form-input,
+.group-info input,
+#review {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.form-input:focus,
+.group-info input:focus {
+  box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.12) !important;
+  transform: none;
+}
+
+/* Floating label animation already uses transition: all 0.2s ease — enhance it */
+.form-group label {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* ─── Modal ──────────────────────────────────────────── */
+
+.modal {
+  animation: none !important;
+}
+.modal.active {
+  animation: modalBackdropIn 0.3s ease both !important;
+}
+
+.modal__overlay {
+  backdrop-filter: blur(3px);
+  transition: backdrop-filter 0.3s ease;
+}
+
+.auth-form {
+  animation: modalPanelIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+/* show-room modal */
+.show-room.show {
+  animation: modalPanelIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* notification modal */
+.show__notification-wrap {
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Hotel management modal */
+.hotel-management-modal__backdrop {
+  animation: modalBackdropIn 0.3s ease both;
+}
+.hotel-management-modal__panel {
+  animation: modalPanelIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Users management modal */
+.modal-backdrop {
+  animation: modalBackdropIn 0.25s ease both !important;
+}
+.modal-container {
+  animation: modalPanelIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+/* Write review */
+.show__write-review.active {
+  animation: modalPanelIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+
+/* ─── Dropdowns ──────────────────────────────────────── */
+
+.booking-search__dropdown {
+  animation: dropdownOpen 0.2s cubic-bezier(0.4, 0, 0.2, 1) both !important;
+}
+
+.search-hotel-filter__box {
+  animation: dropdownOpen 0.2s cubic-bezier(0.4, 0, 0.2, 1) both !important;
+}
+
+.gender-options {
+  animation: dropdownOpen 0.25s cubic-bezier(0.4, 0, 0.2, 1) both !important;
+}
+
+/* ─── Booking Search ─────────────────────────────────── */
+
+.booking-search__body {
+  transition: box-shadow 0.3s ease;
+}
+.booking-search__body:hover {
+  box-shadow: 0 8px 30px rgba(10, 37, 64, 0.12);
+}
+
+.booking-search__input {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.booking-search__input:focus-within {
+  box-shadow: 0 0 0 3px rgba(10, 37, 64, 0.1) !important;
+}
+
+.booking-search__control-btn--plus,
+.booking-search__control-btn-minus {
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+.booking-search__control-btn--plus:hover,
+.booking-search__control-btn-minus:hover {
+  transform: scale(1.15);
+}
+
+/* Search submit button pulse on hover */
+.booking-search__submit.btn:hover {
+  animation: pulse-ring 1s ease infinite;
+}
+
+/* Location items */
+.location-item {
+  transition: background-color 0.18s ease, padding-left 0.18s ease;
+}
+.location-item:hover {
+  padding-left: 28px !important;
+  background-color: #f0f8ff !important;
+}
+
+/* ─── Search Hotel Results ───────────────────────────── */
+
+.search-hotel-result__wrap {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.search-hotel-result__wrap:hover {
+  box-shadow: 0 8px 28px rgba(10, 154, 242, 0.18) !important;
+  transform: translateY(-3px);
+}
+
+.search-hotel-result__picture-img img {
+  transition: transform 0.4s ease;
+}
+.search-hotel-result__wrap:hover .search-hotel-result__picture-img img {
+  transform: scale(1.06);
+}
+
+/* ─── Popular Destinations ───────────────────────────── */
+
+.popular-destinations__box {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.popular-destinations__box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(10, 37, 64, 0.2);
+}
+
+.popular-destinations__box img {
+  transition: transform 0.45s ease;
+}
+.popular-destinations__box:hover img {
+  transform: scale(1.08);
+}
+
+.popular-destinations__box-overlay {
+  background: linear-gradient(to top, rgba(10,37,64,0.7) 0%, rgba(10,37,64,0.1) 100%);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.popular-destinations__box:hover .popular-destinations__box-overlay {
+  opacity: 1 !important;
+  display: block !important;
+}
+
+.popular-destinations__box-look-more-btn {
+  transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  animation: none !important;
+}
+
+/* ─── Hotel Cards (Management) ───────────────────────── */
+
+.hotel-card {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease !important;
+}
+.hotel-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14) !important;
+}
+
+.hotel-card__image img {
+  transition: transform 0.45s ease !important;
+}
+.hotel-card:hover .hotel-card__image img {
+  transform: scale(1.08) !important;
+}
+
+.hotel-card__btn {
+  transition: all 0.22s ease !important;
+}
+.hotel-card__btn:hover {
+  transform: translateY(-2px) !important;
+}
+
+/* ─── Action buttons (Users table) ──────────────────── */
+
+.action-btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.action-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+}
+.action-btn:active {
+  transform: scale(0.95) translateY(0) !important;
+}
+
+/* Table row reveal */
+.users-management__tbody tr {
+  transition: background-color 0.18s ease;
+  animation: fadeInUp 0.35s ease both;
+}
+
+/* ─── Toast Notifications ────────────────────────────── */
+
+.toast {
+  border-radius: 14px !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2) !important;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.toast.show {
+  animation: toastSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
+}
+.toast__body {
+  animation: none !important;
+}
+
+/* Toast icon pulse */
+.toast.show i {
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+/* ─── Profile / Change Password ──────────────────────── */
+
+.profile {
+  animation: fadeInUp 0.4s ease both;
+}
+.profile__wrap {
+  transition: box-shadow 0.3s ease;
+}
+.profile__wrap:hover {
+  box-shadow: 0 6px 24px rgba(10, 37, 64, 0.1) !important;
+}
+
+.save-info__btn {
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+}
+.save-info__btn.active:hover {
+  filter: none !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(10, 154, 242, 0.35) !important;
+}
+
+/* Gender dropdown items */
+.gender-item {
+  transition: background-color 0.18s ease, padding-left 0.18s ease;
+}
+.gender-item:hover {
+  padding-left: 18px !important;
+}
+
+/* ─── Advertising Banner ─────────────────────────────── */
+
+.advertising-banner__picture img {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  border-radius: 10px;
+}
+.advertising-banner__picture:hover img {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(10, 37, 64, 0.18);
+}
+
+.advertising-banner__btn {
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.advertising-banner__btn:hover {
+  transform: translateY(-50%) scale(1.1) !important;
+  box-shadow: 0 6px 20px rgba(10, 154, 242, 0.3) !important;
+}
+
+/* ─── Booking Info Page ──────────────────────────────── */
+
+.booing__info {
+  transition: box-shadow 0.3s ease;
+  animation: fadeInUp 0.45s ease both;
+}
+
+.booking__info-genaral-button {
+  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.booking__info-genaral-button:hover {
+  filter: none !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(255, 94, 31, 0.35) !important;
+}
+
+.convervation__box {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.convervation__box:hover {
+  box-shadow: 0 6px 20px rgba(10, 37, 64, 0.1) !important;
+  transform: translateX(4px);
+}
+
+/* ─── Star Rating (Write Review) ────────────────────── */
+
+.write-review__star i {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.write-review__star i:hover {
+  animation: starPop 0.35s ease;
+}
+
+/* ─── Spinner (Loading) ──────────────────────────────── */
+
+.confirm-btn-loading {
+  animation: spinnerSmooth 0.9s linear infinite !important;
+}
+
+/* ─── Add Header Scroll Shadow via JS class ──────────── */
+/* (applied by the JS snippet in app.js) */
+
+/* ─── Booking Search Header Text ─────────────────────── */
+
+.booking-search__header h1 {
+  animation: fadeInDown 0.6s ease 0.1s both;
+}
+.booking-search__header h2 {
+  animation: fadeInDown 0.6s ease 0.25s both;
+}
+
+/* ─── Show/Hide notification button transitions ──────── */
+
+.show__notification-next-button,
+.show__notification-previous-button {
+  transition: filter 0.2s ease, transform 0.2s ease;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.show__notification-next-button:hover,
+.show__notification-previous-button:hover {
+  filter: brightness(0.88);
+  transform: translateY(-1px);
+}
+
+/* ─── Booking History ────────────────────────────────── */
+
+.booking-history {
+  animation: fadeInUp 0.45s ease both;
+}
+
+/* ─── Scrollbar Styling ──────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #c5a572;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a88a5a;
+}
+
+/* ─── Focus ring for accessibility ───────────────────── */
+:focus-visible {
+  outline: 2px solid var(--gold-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Smooth page route transitions ─────────────────── */
+.page-enter {
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.page-exit {
+  animation: fadeOut 0.2s ease forwards;
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; transform: translateY(-8px); }
+}
+
+/* ─── Scroll Reveal trigger class (set by JS) ────────── */
+.reveal-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+

@@ -6,6 +6,7 @@ import { initSearchHotel } from "./components/logics/search-hotel.js";
 import { initUsersManagement } from "./components/logics/users-management.js";
 import { initHomeManager } from "./components/logics/home-manager.js";
 import { initHomeStaff } from "./components/logics/home-staff.js";
+import { initHeaderScrollEffect, initRippleEffect, animatePageEnter, initScrollReveal, refreshScrollReveal } from "./utils/ui-effects.js";
 
 import { addRoute, initRouter } from "./router/router.js";
 
@@ -80,19 +81,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const main = document.querySelector(".main");
     main.style.minHeight = `calc(100vh - ${document.querySelector(".header").offsetHeight}px - ${document.querySelector(".footer").offsetHeight}px + 80px)`;
 
-    
+    // ── UI Effects bootstrap ──────────────────────────────
+    initHeaderScrollEffect();
+    initRippleEffect();
+    const scrollObserver = initScrollReveal();
+
+    // Helper: run after each route renders new content
+    function afterRouteRender() {
+        animatePageEnter(main);
+        refreshScrollReveal(scrollObserver);
+    }
+
     addRoute("#home", () => {
         main.innerHTML = homeTemplate();
         initBookingSearch();
         initAdvertisingBanner();
         initPopularDestinations();
+        afterRouteRender();
     });
 
     addRoute("#home-manager", () => {
     const main = document.querySelector(".main");
     if (main) {
         main.innerHTML = homeManagerTemplate();
-        initHomeManager(); 
+        initHomeManager();
+        afterRouteRender();
     }
     });
 
@@ -101,37 +114,44 @@ document.addEventListener("DOMContentLoaded", () => {
         if (main) {
             main.innerHTML = homeStaffTemplate();
             initHomeStaff();
+            afterRouteRender();
         }
     });
 
     addRoute("#users-management", () => {
         main.innerHTML = usersManagementTemplate();
         initUsersManagement();
+        afterRouteRender();
     });
     
     addRoute("#search-hotel", () => {
         main.innerHTML = searchHoteltemplate();
         initSearchHotel();
+        afterRouteRender();
     });
 
     addRoute("#booking", () => {
         main.innerHTML = bookingTemplate();
         initBooking();
+        afterRouteRender();
     });
 
     addRoute("#setting", () => {
         main.innerHTML = profileTemplate();
         initProfile();
+        afterRouteRender();
     });
 
     addRoute("#change-password", () => {
         main.innerHTML = changePasswordTemplate();
         initChangePassword();
+        afterRouteRender();
     });
 
     addRoute("#booking-history", () => {
         main.innerHTML = bookingHistoryTemplate();
         initBookingHistory();
+        afterRouteRender();
     })
 
 
