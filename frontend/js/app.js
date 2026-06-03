@@ -28,6 +28,7 @@ import { bookingHistoryTemplate } from "./components/templates/booking-history.t
 import { initBookingHistory } from "./components/logics/booking-history.js";
 // import { initSetting } from "./components/logics/setting.js";
 import { initProfile } from "./components/logics/profile.js";
+import { initChangePassword } from "./components/logics/change-password.js";
 
 
 
@@ -121,6 +122,11 @@ document.addEventListener("DOMContentLoaded", () => {
     addRoute("#setting", () => {
         main.innerHTML = profileTemplate();
         initProfile();
+    });
+
+    addRoute("#change-password", () => {
+        main.innerHTML = changePasswordTemplate();
+        initChangePassword();
     });
 
     addRoute("#booking-history", () => {

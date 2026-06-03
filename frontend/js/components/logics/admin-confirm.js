@@ -47,7 +47,7 @@ export const showConfirmDialog = (actionType, userId, userName, callback, option
       if (!selectedHotelId) {
         if (hotelError) {
           hotelError.style.display = "block";
-          hotelError.textContent = "Vui lòng chọn khách sạn cho staff.";
+          hotelError.textContent = "Vui lòng chọn khách sạn cho nhân viên.";
         }
         return;
       }

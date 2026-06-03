@@ -53,10 +53,10 @@ function renderDashboardContent() {
         
         <!-- Stats Grid -->
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
-            ${renderStatCard("Total Revenue", "Loading...", "Includes booked revenue", "revenue", "manager-stat-revenue", "manager-stat-revenue-sub")}
-            ${renderStatCard("Active Bookings", "Loading...", "Current open stays", "bookings", "manager-stat-active-bookings", "manager-stat-active-bookings-sub")}
-            ${renderStatCard("Occupancy Rate", "Loading...", "Booked rooms over total rooms", "occupancy", "manager-stat-occupancy", "manager-stat-occupancy-sub")}
-            ${renderStatCard("Total Users", "Loading...", "Accounts in database", "users", "manager-stat-users", "manager-stat-users-sub")}
+            ${renderStatCard("Tổng Doanh Thu", "Đang tải...", "Tính cả doanh thu từ đặt phòng", "revenue", "manager-stat-revenue", "manager-stat-revenue-sub")}
+            ${renderStatCard("Đặt Phòng Đang Hoạt Động", "Đang tải...", "Lượt lưu trú đang mở", "bookings", "manager-stat-active-bookings", "manager-stat-active-bookings-sub")}
+            ${renderStatCard("Tỷ Lệ Lấp Đầy", "Đang tải...", "Phòng đã đặt / tổng phòng", "occupancy", "manager-stat-occupancy", "manager-stat-occupancy-sub")}
+            ${renderStatCard("Tổng Người Dùng", "Đang tải...", "Tài khoản trong cơ sở dữ liệu", "users", "manager-stat-users", "manager-stat-users-sub")}
         </div>
 
         <!-- Chart + Right Panel -->
@@ -64,9 +64,9 @@ function renderDashboardContent() {
             <!-- Revenue vs Bookings Chart -->
             <div style="background: white; border-radius: 12px; padding: 24px; border: 1px solid #e8e4dc;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #1a1a2e;">Monthly Revenue</h3>
+                    <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #1a1a2e;">Doanh Thu Theo Tháng</h3>
                     <div style="display: flex; gap: 16px; font-size: 12px; color: #8892a4;">
-                        <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 20px; height: 2px; background: #c9a84c; display: inline-block; border-radius: 1px;"></span>Revenue</span>
+                        <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 20px; height: 2px; background: #c9a84c; display: inline-block; border-radius: 1px;"></span>Doanh thu</span>
                     </div>
                 </div>
                 <canvas id="manager-revenue-chart" style="width: 100%; height: 220px;"></canvas>
@@ -75,14 +75,14 @@ function renderDashboardContent() {
             <!-- Quick Actions + Top Hotels -->
             <div style="display: flex; flex-direction: column; gap: 16px;">
                 <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e8e4dc;">
-                    <h4 style="margin: 0 0 14px; font-size: 14px; font-weight: 600; color: #1a1a2e;">Quick Actions</h4>
-                    <button class="manager-dashboard-action manager-dashboard-action-hotels" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 8px; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Add Hotel</button>
-                    <button class="manager-dashboard-action manager-dashboard-action-finance" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">View Finance</button>
+                    <h4 style="margin: 0 0 14px; font-size: 14px; font-weight: 600; color: #1a1a2e;">Thao Tác Nhanh</h4>
+                    <button class="manager-dashboard-action manager-dashboard-action-hotels" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 8px; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Thêm Khách Sạn</button>
+                    <button class="manager-dashboard-action manager-dashboard-action-finance" style="width: 100%; padding: 10px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Xem Tài Chính</button>
                 </div>
                 <div style="background: white; border-radius: 12px; padding: 20px; border: 1px solid #e8e4dc; flex: 1; overflow: hidden;">
-                    <h4 style="margin: 0 0 14px; font-size: 14px; font-weight: 600; color: #1a1a2e;">Top Performing Hotels</h4>
+                    <h4 style="margin: 0 0 14px; font-size: 14px; font-weight: 600; color: #1a1a2e;">Khách Sạn Nổi Bật</h4>
                     <div id="manager-top-hotels">
-                        <div style="font-size: 13px; color: #8892a4;">Loading hotels...</div>
+                        <div style="font-size: 13px; color: #8892a4;">Đang tải khách sạn...</div>
                     </div>
                 </div>
             </div>
@@ -90,20 +90,20 @@ function renderDashboardContent() {
 
         <!-- Recent Bookings Table -->
         <div style="background: white; border-radius: 12px; padding: 24px; border: 1px solid #e8e4dc;">
-            <h3 style="margin: 0 0 18px; font-size: 16px; font-weight: 600; color: #1a1a2e;">Recent Bookings</h3>
+            <h3 style="margin: 0 0 18px; font-size: 16px; font-weight: 600; color: #1a1a2e;">Đặt Phòng Gần Đây</h3>
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="border-bottom: 1px solid #f0ece4;">
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Guest Name</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Hotel</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Dates</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Amount</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Status</th>
+                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Khách</th>
+                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Khách sạn</th>
+                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Ngày</th>
+                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Số tiền</th>
+                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody id="manager-recent-bookings">
                     <tr>
-                        <td colspan="5" style="padding: 14px 12px; font-size: 13px; color: #8892a4;">Loading bookings...</td>
+                        <td colspan="5" style="padding: 14px 12px; font-size: 13px; color: #8892a4;">Đang tải đặt phòng...</td>
                     </tr>
                 </tbody>
             </table>
@@ -118,8 +118,8 @@ function renderTopHotel(name, amount, metrics, img) {
             <div style="flex: 1; min-width: 0;">
                 <div style="font-size: 12px; font-weight: 500; color: #1a1a2e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${name}</div>
                 <div style="display: flex; gap: 12px; margin-top: 3px;">
-                    <div><div style="font-size: 10px; color: #8892a4;">Amount</div><div style="font-size: 11px; font-weight: 600; color: #1a1a2e;">${amount}</div></div>
-                    <div><div style="font-size: 10px; color: #8892a4;">Metrics</div><div style="font-size: 11px; font-weight: 600; color: #c9a84c;">${metrics}</div></div>
+                    <div><div style="font-size: 10px; color: #8892a4;">Số tiền</div><div style="font-size: 11px; font-weight: 600; color: #1a1a2e;">${amount}</div></div>
+                    <div><div style="font-size: 10px; color: #8892a4;">Chỉ số</div><div style="font-size: 11px; font-weight: 600; color: #c9a84c;">${metrics}</div></div>
                 </div>
             </div>
         </div>

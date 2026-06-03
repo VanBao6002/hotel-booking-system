@@ -90,6 +90,7 @@ function userExtra() {
     const userInfo = document.querySelector(".user__info");
     const userSignOut = userInfo.querySelector(".extra__item-sign-out");
     const userSetting = userInfo.querySelector(".extra__item-setting");
+    const userChangePassword = userInfo.querySelector(".extra__item-change-password");
     const userManage = userInfo.querySelector(".extra__item-manage");
     
     updateManageMenuVisibility();
@@ -99,6 +100,10 @@ function userExtra() {
     userSetting.onmousedown = (e) => {
         navigation("#setting");
     };
+
+    userChangePassword?.addEventListener("click", () => {
+        navigation("#change-password");
+    });
 
     userManage?.addEventListener("click", () => {
         // userInfoExtra.style.display = "none";
@@ -112,6 +117,15 @@ function userExtra() {
 
     
     userSignOut.onclick = () => {
+        const guard = window.__profileUnsavedGuard;
+        if (guard?.hasChanges?.()) {
+            const shouldSave = window.confirm("Bạn có thay đổi chưa lưu. Bạn có muốn lưu lại thông tin mới trước khi đăng xuất không?");
+            if (shouldSave) {
+                guard.save?.();
+                return;
+            }
+            guard.clear?.();
+        }
         document.querySelector(".header__navbar-user").classList.remove("logged-in");
         localStorage.setItem("role", "guest");
         localStorage.setItem("token", "");

@@ -32,6 +32,40 @@ function escapeHtml(value) {
     }[char]));
 }
 
+function monthLabel(month) {
+    const labels = {
+        JAN: "T1",
+        FEB: "T2",
+        MAR: "T3",
+        APR: "T4",
+        MAY: "T5",
+        JUN: "T6",
+        JUL: "T7",
+        AUG: "T8",
+        SEP: "T9",
+        OCT: "T10",
+        NOV: "T11",
+        DEC: "T12",
+    };
+    return labels[String(month || "").substring(0, 3).toUpperCase()] || month || "";
+}
+
+function transactionStatusLabel(status) {
+    const normalized = String(status || "").toLowerCase();
+    if (normalized === "completed") return "Hoàn tất";
+    if (normalized === "paid") return "Đã thanh toán";
+    if (normalized === "booked") return "Đã đặt";
+    if (normalized === "pending") return "Đang chờ";
+    if (normalized === "cancelled" || normalized === "canceled") return "Đã hủy";
+    return status || "-";
+}
+
+function transactionDescription(description) {
+    return String(description || "-")
+        .replace(/^Booking\s+(\d+)\s+-\s+Unknown hotel$/i, "Đặt phòng $1 - Chưa rõ khách sạn")
+        .replace(/^Booking\s+(\d+)\s+-\s+/i, "Đặt phòng $1 - ");
+}
+
 async function loadFinanceData() {
     try {
         const [summary, transactions, monthlyRevenue] = await Promise.all([
@@ -48,10 +82,10 @@ async function loadFinanceData() {
         renderFinanceBarChart(latestMonthlyData);
         renderTransactions(latestTransactions);
     } catch (err) {
-        console.error("Could not load finance data", err);
+        console.error("Không thể tải dữ liệu tài chính", err);
         const tbody = document.getElementById("transaction-tbody");
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="4" style="padding:18px 16px;color:#b42318;">${friendlyError(err, "Could not load finance data.")}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="padding:18px 16px;color:#b42318;">${friendlyError(err, "Không thể tải dữ liệu tài chính.")}</td></tr>`;
         }
         renderFinanceBarChart([]);
         latestTransactions = [];
@@ -63,16 +97,16 @@ function renderTransactions(transactions) {
     if (!tbody) return;
 
     if (transactions.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="padding:18px 16px;color:#6b7280;">No transactions found</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" style="padding:18px 16px;color:#6b7280;">Chưa có giao dịch</td></tr>`;
         return;
     }
 
     tbody.innerHTML = transactions.map(tx => `
         <tr style="border-bottom: 1px solid #f0ece4;">
             <td style="padding: 14px 16px; font-size: 13px; color: #4b5563;">${tx.date || "-"}</td>
-            <td style="padding: 14px 16px; font-size: 13px; color: #1a1a2e;">${tx.description || "-"}</td>
+            <td style="padding: 14px 16px; font-size: 13px; color: #1a1a2e;">${escapeHtml(transactionDescription(tx.description))}</td>
             <td style="padding: 14px 16px; font-size: 13px; font-weight: 600; color: #1a1a2e;">${formatMoney(tx.amount)}</td>
-            <td style="padding: 14px 16px; font-size: 13px; color: #4b5563;">${tx.status || "-"}</td>
+            <td style="padding: 14px 16px; font-size: 13px; color: #4b5563;">${escapeHtml(transactionStatusLabel(tx.status))}</td>
         </tr>
     `).join("");
 }
@@ -86,8 +120,8 @@ function renderFinanceBarChart(monthlyData) {
 
     const ctx = canvas.getContext("2d");
     const months = monthlyData.length
-        ? monthlyData.map(item => (item.month || "").substring(0, 3))
-        : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        ? monthlyData.map(item => monthLabel(item.month))
+        : ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"];
     const revenueData = monthlyData.length ? monthlyData.map(item => Number(item.revenue || 0)) : Array(12).fill(0);
     const expensesData = monthlyData.length ? monthlyData.map(item => Number(item.expenses || 0)) : Array(12).fill(0);
 
@@ -154,13 +188,13 @@ function initExportButtons() {
 
     if (csvBtn) {
         csvBtn.addEventListener("click", () => {
-            let csv = "Date,Description,Amount,Status\n";
+            let csv = "Ngày,Mô tả,Số tiền,Trạng thái\n";
             latestTransactions.forEach(tx => {
                 csv += [
                     tx.date || "",
-                    tx.description || "",
+                    transactionDescription(tx.description),
                     formatMoney(tx.amount),
-                    tx.status || "",
+                    transactionStatusLabel(tx.status),
                 ].map(value => `"${String(value).replaceAll('"', '""')}"`).join(",") + "\n";
             });
             downloadFile("transactions.csv", csv, "text/csv");
@@ -183,7 +217,7 @@ function openPdfReport(transactions) {
         <!doctype html>
         <html>
         <head>
-            <title>Transaction History</title>
+            <title>Lịch Sử Giao Dịch</title>
             <style>
                 body { font-family: Arial, sans-serif; color: #1a1a2e; margin: 32px; }
                 h1 { font-size: 22px; margin: 0 0 18px; }
@@ -195,20 +229,20 @@ function openPdfReport(transactions) {
             </style>
         </head>
         <body>
-            <h1>Transaction History</h1>
+            <h1>Lịch Sử Giao Dịch</h1>
             <table>
                 <thead>
-                    <tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr>
+                    <tr><th>Ngày</th><th>Mô tả</th><th>Số tiền</th><th>Trạng thái</th></tr>
                 </thead>
                 <tbody>
                     ${rows.length ? rows.map(tx => `
                         <tr>
                             <td>${escapeHtml(tx.date || "-")}</td>
-                            <td>${escapeHtml(tx.description || "-")}</td>
+                            <td>${escapeHtml(transactionDescription(tx.description))}</td>
                             <td class="amount">${escapeHtml(formatMoney(tx.amount))}</td>
-                            <td>${escapeHtml(tx.status || "-")}</td>
+                            <td>${escapeHtml(transactionStatusLabel(tx.status))}</td>
                         </tr>
-                    `).join("") : `<tr><td colspan="4">No transactions found</td></tr>`}
+                    `).join("") : `<tr><td colspan="4">Chưa có giao dịch</td></tr>`}
                 </tbody>
             </table>
             <script>

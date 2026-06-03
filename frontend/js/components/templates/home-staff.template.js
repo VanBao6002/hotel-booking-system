@@ -36,10 +36,10 @@ export function homeStaffTemplate() {
 export function renderStaffDashboardContent() {
     return `
         <div style="display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:16px;margin-bottom:22px;">
-            ${renderStatCard("Khách sạn", "Loading...", "Chi nhánh đang phụ trách", "staff-stat-hotel")}
-            ${renderStatCard("Tổng phòng", "Loading...", "Phòng trong database", "staff-stat-rooms")}
-            ${renderStatCard("Phòng trống", "Loading...", "Có thể đón khách", "staff-stat-available")}
-            ${renderStatCard("Check-in hôm nay", "Loading...", "Lượt đến trong ngày", "staff-stat-checkins")}
+            ${renderStatCard("Khách sạn", "Đang tải...", "Chi nhánh đang phụ trách", "staff-stat-hotel")}
+            ${renderStatCard("Tổng phòng", "Đang tải...", "Phòng trong cơ sở dữ liệu", "staff-stat-rooms")}
+            ${renderStatCard("Phòng trống", "Đang tải...", "Có thể đón khách", "staff-stat-available")}
+            ${renderStatCard("Check-in hôm nay", "Đang tải...", "Lượt đến trong ngày", "staff-stat-checkins")}
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;margin-bottom:20px;">
@@ -47,14 +47,14 @@ export function renderStaffDashboardContent() {
                 <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px;">
                     <div>
                         <h2 style="margin:0;font-size:18px;font-weight:700;">Tình trạng phòng</h2>
-                        <p id="staff-room-status-summary" style="margin:4px 0 0;font-size:13px;color:#6b7280;">Loading room status...</p>
+                        <p id="staff-room-status-summary" style="margin:4px 0 0;font-size:13px;color:#6b7280;">Đang tải tình trạng phòng...</p>
                     </div>
                     <button class="staff-dashboard-action staff-dashboard-action-hotel" type="button" style="height:36px;padding:0 14px;border:0;border-radius:7px;background:linear-gradient(135deg,#c9a84c,#e8cc7a);color:#1a1a2e;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">
                         Phòng
                     </button>
                 </div>
                 <div id="staff-room-status-bars" style="display:flex;flex-direction:column;gap:10px;">
-                    <div style="font-size:13px;color:#8892a4;">Loading rooms...</div>
+                    <div style="font-size:13px;color:#8892a4;">Đang tải phòng...</div>
                 </div>
             </section>
 
@@ -75,7 +75,7 @@ export function renderStaffDashboardContent() {
                 <table style="width:100%;border-collapse:collapse;min-width:760px;">
                     <thead>
                         <tr style="border-bottom:1px solid #f0ece4;">
-                            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Booking</th>
+                            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Mã đặt phòng</th>
                             <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Khách</th>
                             <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Ngày</th>
                             <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Tổng tiền</th>
@@ -83,7 +83,7 @@ export function renderStaffDashboardContent() {
                         </tr>
                     </thead>
                     <tbody id="staff-recent-bookings">
-                        <tr><td colspan="5" style="padding:14px 12px;font-size:13px;color:#8892a4;">Loading bookings...</td></tr>
+                        <tr><td colspan="5" style="padding:14px 12px;font-size:13px;color:#8892a4;">Đang tải đặt phòng...</td></tr>
                     </tbody>
                 </table>
             </div>

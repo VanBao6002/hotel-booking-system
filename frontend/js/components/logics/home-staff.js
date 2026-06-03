@@ -13,6 +13,25 @@ import {
 } from "../../services/staff.js";
 
 const ROOM_STATUSES = ["Available", "Booked", "Maintenance"];
+const ROOM_STATUS_LABELS = {
+    Available: "Còn trống",
+    Booked: "Đã đặt",
+    Maintenance: "Bảo trì",
+};
+
+function roomStatusLabel(status) {
+    return ROOM_STATUS_LABELS[status] || status || "-";
+}
+
+function bookingStatusLabel(status) {
+    const normalized = String(status || "").toLowerCase();
+    if (normalized === "completed" || normalized === "paid") return "Hoàn tất";
+    if (normalized === "cancelled") return "Đã hủy";
+    if (normalized === "confirmed") return "Đã xác nhận";
+    if (normalized === "pending") return "Đang chờ";
+    if (normalized === "booked") return "Đã đặt";
+    return status || "-";
+}
 
 function escapeHtml(value) {
     return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -58,7 +77,7 @@ function statusStyle(status) {
 }
 
 function renderStatusPill(status) {
-    return `<span style="${statusStyle(status)}display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:6px;font-size:12px;font-weight:700;">${escapeHtml(status || "-")}</span>`;
+    return `<span style="${statusStyle(status)}display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:6px;font-size:12px;font-weight:700;">${escapeHtml(roomStatusLabel(status))}</span>`;
 }
 
 function renderRecentBookings(bookings) {
@@ -66,7 +85,7 @@ function renderRecentBookings(bookings) {
     if (!tbody) return;
 
     if (!bookings?.length) {
-        tbody.innerHTML = `<tr><td colspan="5" style="padding:14px 12px;font-size:13px;color:#8892a4;">No bookings found</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="padding:14px 12px;font-size:13px;color:#8892a4;">Chưa có đặt phòng</td></tr>`;
         return;
     }
 
@@ -77,10 +96,10 @@ function renderRecentBookings(bookings) {
         return `
             <tr style="border-bottom:1px solid #f8f6f2;">
                 <td style="padding:12px;font-size:13px;font-weight:700;color:#1a1a2e;">${escapeHtml(booking.id)}</td>
-                <td style="padding:12px;font-size:13px;color:#4b5563;">${escapeHtml(booking.guestName || "Guest")}</td>
+                <td style="padding:12px;font-size:13px;color:#4b5563;">${escapeHtml(booking.guestName || "Khách")}</td>
                 <td style="padding:12px;font-size:13px;color:#4b5563;">${escapeHtml(dates)}</td>
                 <td style="padding:12px;font-size:13px;font-weight:700;color:#1a1a2e;">${formatMoney(booking.totalPrice)}</td>
-                <td style="padding:12px;">${renderStatusPill(booking.bookingStatus)}</td>
+                <td style="padding:12px;"><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:6px;background:#f3f4f6;color:#4b5563;font-size:12px;font-weight:700;">${escapeHtml(bookingStatusLabel(booking.bookingStatus))}</span></td>
             </tr>
         `;
     }).join("");
@@ -109,7 +128,7 @@ function renderRoomBars(dashboard) {
         return `
             <div>
                 <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;color:#4b5563;">
-                    <span>${label}</span>
+                    <span>${roomStatusLabel(label)}</span>
                     <strong style="color:#1a1a2e;">${count}</strong>
                 </div>
                 <div style="height:8px;background:#f0ece4;border-radius:999px;overflow:hidden;">
@@ -123,7 +142,7 @@ function renderRoomBars(dashboard) {
 async function initStaffDashboard() {
     try {
         const dashboard = await getStaffDashboard();
-        setText("staff-stat-hotel", dashboard?.hotel?.address || `Branch #${dashboard?.hotelBranchId || "-"}`);
+        setText("staff-stat-hotel", dashboard?.hotel?.address || `Chi nhánh #${dashboard?.hotelBranchId || "-"}`);
         setText("staff-stat-rooms", String(dashboard?.totalRooms || 0));
         setText("staff-stat-available", String(dashboard?.availableRooms || 0));
         setText("staff-stat-checkins", String(dashboard?.todayCheckIns || 0));
@@ -131,13 +150,13 @@ async function initStaffDashboard() {
         renderRecentBookings(dashboard?.recentBookings || []);
         wireDashboardActions();
     } catch (err) {
-        console.error("Could not load staff dashboard", err);
-        setText("staff-stat-hotel", "Error");
-        setText("staff-stat-rooms", "Error");
-        setText("staff-stat-available", "Error");
-        setText("staff-stat-checkins", "Error");
+        console.error("Không thể tải dashboard nhân viên", err);
+        setText("staff-stat-hotel", "Lỗi");
+        setText("staff-stat-rooms", "Lỗi");
+        setText("staff-stat-available", "Lỗi");
+        setText("staff-stat-checkins", "Lỗi");
         renderRecentBookings([]);
-        setText("staff-room-status-summary", err?.data?.message || "Could not load staff workspace");
+        setText("staff-room-status-summary", err?.data?.message || "Không thể tải không gian làm việc của nhân viên");
     }
 }
 
@@ -212,10 +231,10 @@ function renderHotelOverview(hotel) {
             <div>
                 <h2 style="margin:0 0 8px;font-size:22px;font-weight:700;">${escapeHtml(hotel?.address || "Khách sạn được phân công")}</h2>
                 <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:#4b5563;">
-                    <span><strong style="color:#1a1a2e;">Location:</strong> ${escapeHtml(hotel?.locationName || "-")}</span>
-                    <span><strong style="color:#1a1a2e;">Phone:</strong> ${escapeHtml(hotel?.phoneNumber || "-")}</span>
-                    <span><strong style="color:#1a1a2e;">Rating:</strong> ${Number(hotel?.averageStar || 0).toFixed(1)}</span>
-                    <span><strong style="color:#1a1a2e;">Rooms:</strong> ${Number(hotel?.roomCount || 0)}</span>
+                    <span><strong style="color:#1a1a2e;">Khu vực:</strong> ${escapeHtml(hotel?.locationName || "-")}</span>
+                    <span><strong style="color:#1a1a2e;">Số điện thoại:</strong> ${escapeHtml(hotel?.phoneNumber || "-")}</span>
+                    <span><strong style="color:#1a1a2e;">Đánh giá:</strong> ${Number(hotel?.averageStar || 0).toFixed(1)}</span>
+                    <span><strong style="color:#1a1a2e;">Số phòng:</strong> ${Number(hotel?.roomCount || 0)}</span>
                 </div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;max-width:420px;justify-content:flex-end;">${services}</div>
@@ -242,7 +261,7 @@ function renderRooms(rooms) {
             <td class="staff-room-status-cell" data-room-id="${room.id}" style="padding:13px 16px;">${renderStatusPill(room.roomStatus)}</td>
             <td style="padding:13px 16px;">
                 <select class="staff-room-status-select" data-room-id="${room.id}" style="height:34px;min-width:142px;border:1px solid #e2e2da;border-radius:7px;background:#fafaf8;color:#1a1a2e;padding:0 10px;font-family:inherit;font-size:13px;outline:none;">
-                    ${ROOM_STATUSES.map(status => `<option value="${status}" ${status === room.roomStatus ? "selected" : ""}>${status}</option>`).join("")}
+                    ${ROOM_STATUSES.map(status => `<option value="${status}" ${status === room.roomStatus ? "selected" : ""}>${roomStatusLabel(status)}</option>`).join("")}
                 </select>
             </td>
         </tr>
@@ -257,9 +276,9 @@ function renderRooms(rooms) {
                 const updated = await updateStaffRoomStatus(roomId, roomStatus);
                 const statusCell = document.querySelector(`.staff-room-status-cell[data-room-id="${roomId}"]`);
                 if (statusCell) statusCell.innerHTML = renderStatusPill(updated.roomStatus);
-                showStaffHotelMessage(`Phòng ${updated.roomNumber} đã được cập nhật sang ${updated.roomStatus}.`);
+                showStaffHotelMessage(`Phòng ${updated.roomNumber} đã được cập nhật sang ${roomStatusLabel(updated.roomStatus)}.`);
             } catch (err) {
-                console.error("Could not update room status", err);
+                console.error("Không thể cập nhật trạng thái phòng", err);
                 showStaffHotelMessage(err?.data?.message || "Không thể cập nhật trạng thái phòng.", "error");
             } finally {
                 select.disabled = false;
@@ -274,7 +293,7 @@ async function initStaffHotel() {
         renderHotelOverview(hotel);
         renderRooms(rooms);
     } catch (err) {
-        console.error("Could not load assigned hotel", err);
+        console.error("Không thể tải khách sạn được phân công", err);
         renderHotelOverview({});
         const tbody = document.getElementById("staff-rooms-tbody");
         if (tbody) {

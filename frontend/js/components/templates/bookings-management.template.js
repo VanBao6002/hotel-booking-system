@@ -2,7 +2,7 @@ export function bookingsManagementTemplate() {
     return `
         <div style="font-family: 'Inter', sans-serif; color: #1a1a2e;">
 
-            <h2 style="margin: 0 0 24px; font-size: 22px; font-weight: 700; color: #1a1a2e;">Booking Management</h2>
+            <h2 style="margin: 0 0 24px; font-size: 22px; font-weight: 700; color: #1a1a2e;">Quản Lý Đặt Phòng</h2>
 
             <!-- Filter Bar -->
             <div style="background: white; border: 1px solid #e8e4dc; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
@@ -12,7 +12,7 @@ export function bookingsManagementTemplate() {
                         <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/>
                         <path d="M10 10l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
-                    <input id="bm-search-id" type="text" placeholder="Search by Booking ID" style="border: none; background: transparent; outline: none; font-size: 13px; color: #1a1a2e; width: 100%;" />
+                    <input id="bm-search-id" type="text" placeholder="Tìm theo mã đặt phòng" style="border: none; background: transparent; outline: none; font-size: 13px; color: #1a1a2e; width: 100%;" />
                 </div>
 
                 <!-- Date Range -->
@@ -21,13 +21,13 @@ export function bookingsManagementTemplate() {
                         <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
                         <path d="M5 3V1.5M11 3V1.5M2 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
-                    <input id="bm-date-range" type="text" placeholder="Date Range (Start - End)" style="border: none; background: transparent; outline: none; font-size: 13px; color: #1a1a2e; width: 100%;" />
+                    <input id="bm-date-range" type="text" placeholder="Khoảng ngày (bắt đầu - kết thúc)" style="border: none; background: transparent; outline: none; font-size: 13px; color: #1a1a2e; width: 100%;" />
                 </div>
 
                 <!-- Hotel select -->
                 <div style="flex: 1; min-width: 140px; position: relative;">
                     <select id="bm-hotel-select" style="width: 100%; appearance: none; border: 1px solid #e2e2da; border-radius: 7px; padding: 9px 36px 9px 14px; background: #fafaf8; font-size: 13px; color: #1a1a2e; outline: none; cursor: pointer;">
-                        <option value="">Hotel</option>
+                        <option value="">Khách sạn</option>
                     </select>
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9aa3b0">
                         <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -36,11 +36,11 @@ export function bookingsManagementTemplate() {
 
                 <!-- Guest Name -->
                 <div style="flex: 1; min-width: 140px; display: flex; align-items: center; gap: 8px; border: 1px solid #e2e2da; border-radius: 7px; padding: 9px 14px; background: #fafaf8;">
-                    <input id="bm-guest-name" type="text" placeholder="Guest Name" style="border: none; background: transparent; outline: none; font-size: 13px; color: #1a1a2e; width: 100%;" />
+                    <input id="bm-guest-name" type="text" placeholder="Tên khách" style="border: none; background: transparent; outline: none; font-size: 13px; color: #1a1a2e; width: 100%;" />
                 </div>
 
                 <!-- Filter Button -->
-                <button id="bm-filter-btn" style="padding: 9px 22px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; flex-shrink: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Filter</button>
+                <button id="bm-filter-btn" style="padding: 9px 22px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; flex-shrink: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Lọc</button>
             </div>
 
             <!-- Bookings Table -->
@@ -48,17 +48,17 @@ export function bookingsManagementTemplate() {
                 <table style="width: 100%; border-collapse: collapse;" id="bm-table">
                     <thead>
                         <tr style="background: #fafaf8; border-bottom: 2px solid #e8e4dc;">
-                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Booking ID</th>
-                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Guest</th>
-                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Hotel Name</th>
-                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Check-in / Check-out</th>
-                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Total Price</th>
-                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Booking Status</th>
-                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Action</th>
+                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Mã đặt phòng</th>
+                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Khách</th>
+                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Khách sạn</th>
+                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Nhận / Trả phòng</th>
+                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Tổng tiền</th>
+                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Trạng thái đánh giá</th>
+                            <th style="padding: 13px 16px; text-align: left; font-size: 13px; color: #1a1a2e; font-weight: 600;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="bm-tbody">
-                        <tr><td colspan="7" style="padding:24px;text-align:center;color:#6b7280;">Loading bookings...</td></tr>
+                        <tr><td colspan="7" style="padding:24px;text-align:center;color:#6b7280;">Đang tải đặt phòng...</td></tr>
                     </tbody>
                 </table>
 
@@ -90,7 +90,7 @@ function renderBookingRow(id, guest, hotel, dates, price, bookStatus, bookTag) {
                 <span style="${bookStyle} padding: 4px 12px; border-radius: 5px; font-size: 12px; font-weight: 600; white-space: nowrap;">${bookStatus}</span>
             </td>
             <td style="padding: 13px 16px;">
-                <a href="#" class="bm-view-details" data-id="${id}" style="font-size: 13px; color: #c9a84c; font-weight: 600; text-decoration: none;" onmouseenter="this.style.textDecoration='underline'" onmouseleave="this.style.textDecoration='none'">View Details</a>
+                <a href="#" class="bm-view-details" data-id="${id}" style="font-size: 13px; color: #c9a84c; font-weight: 600; text-decoration: none;" onmouseenter="this.style.textDecoration='underline'" onmouseleave="this.style.textDecoration='none'">Xem chi tiết</a>
             </td>
         </tr>
     `;

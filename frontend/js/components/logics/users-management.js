@@ -51,9 +51,9 @@ function updateRowStatus(userId, status, message) {
 }
 
 function roleBadge(role) {
-  if (role === "manager") return `<span class="role-badge badge-admin">Manager</span>`;
-  if (role === "staff") return `<span class="role-badge badge-staff">Staff</span>`;
-  return `<span class="role-badge badge-user">Customer</span>`;
+  if (role === "manager") return `<span class="role-badge badge-admin">Quản lý</span>`;
+  if (role === "staff") return `<span class="role-badge badge-staff">Nhân viên</span>`;
+  return `<span class="role-badge badge-user">Khách hàng</span>`;
 }
 
 function escapeHtml(value) {
@@ -97,7 +97,7 @@ function renderRows(users) {
       const locked = u.lockedUntil ? new Date(u.lockedUntil).toLocaleString() : "-";
       const lockReason = u.lockReason ? `<div style="font-size:11px;color:#b42318;margin-top:4px;">${escapeHtml(u.lockReason)}</div>` : "";
       const lockInfo = u.lockedUntil ? `<div style="font-size:11px;color:#6b7280;margin-top:4px;">Khóa đến: ${escapeHtml(locked)}</div>` : "";
-      const staffHotel = u.staffHotelBranchId ? `<div style="font-size:11px;color:#6b7280;margin-top:4px;">Hotel #${u.staffHotelBranchId}</div>` : "";
+      const staffHotel = u.staffHotelBranchId ? `<div style="font-size:11px;color:#6b7280;margin-top:4px;">Khách sạn #${u.staffHotelBranchId}</div>` : "";
       const disabledAction = u.active === false ? "disabled" : "";
       return `
         <tr style="border-top:1px solid #f0f0f0;" data-user-id="${u.id}">
@@ -110,9 +110,9 @@ function renderRows(users) {
           <td style="padding: 12px 14px;">
             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
               <button class="action-btn action-delete" data-user-id="${u.id}" data-user-name="${u.userName}" title="Vô hiệu hóa tài khoản" ${disabledAction}><i class="fa fa-ban"></i> Vô hiệu hóa</button>
-              <button class="action-btn action-ban" data-user-id="${u.id}" data-user-name="${u.userName}" title="Ban user" ${disabledAction}><i class="fa fa-lock"></i> Cấm</button>
-              <button class="action-btn action-warn" data-user-id="${u.id}" data-user-name="${u.userName}" title="Send warning" ${disabledAction}><i class="fa fa-exclamation-triangle"></i> Cảnh báo</button>
-              <button class="action-btn action-promote" data-user-id="${u.id}" data-user-name="${u.userName}" title="Promote to staff" ${disabledAction}><i class="fa fa-user-plus"></i> Thăng cấp</button>
+              <button class="action-btn action-ban" data-user-id="${u.id}" data-user-name="${u.userName}" title="Cấm người dùng" ${disabledAction}><i class="fa fa-lock"></i> Cấm</button>
+              <button class="action-btn action-warn" data-user-id="${u.id}" data-user-name="${u.userName}" title="Gửi cảnh báo" ${disabledAction}><i class="fa fa-exclamation-triangle"></i> Cảnh báo</button>
+              <button class="action-btn action-promote" data-user-id="${u.id}" data-user-name="${u.userName}" title="Nâng cấp thành nhân viên" ${disabledAction}><i class="fa fa-user-plus"></i> Thăng cấp</button>
             </div>
             <span class="row-status" style="display: none; font-size: 12px; margin-top: 4px; padding: 4px; border-radius: 3px;"></span>
           </td>
@@ -134,7 +134,7 @@ function renderPagination(total) {
   const start = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const end = Math.min(currentPage * pageSize, total);
   if (info) {
-    info.textContent = `Dang hien thi ${start} den ${end} trong tong ${total} nguoi dung`;
+    info.textContent = `Đang hiển thị ${start} đến ${end} trong tổng ${total} người dùng`;
   }
 
   container.innerHTML = "";
@@ -229,7 +229,7 @@ async function loadUsers() {
       status === 401
         ? "Bạn chưa đăng nhập."
         : status === 403
-          ? "Bạn không có quyền Manager để xem danh sách người dùng."
+          ? "Bạn không có quyền Quản lý để xem danh sách người dùng."
           : err?.data?.message || "Tải dữ liệu thất bại.";
     setStatus(message, "error");
     allUsers = [];
@@ -251,7 +251,7 @@ function simulateActionSuccess(userId, action) {
     const u = allUsers.find((x) => x.id === userId);
     if (u) {
       u.active = false;
-      u.lockReason = "Account disabled by manager";
+      u.lockReason = "Tài khoản đã bị quản lý vô hiệu hóa";
     }
     applyFiltersAndRender();
     updateRowStatus(userId, "success", "Đã vô hiệu hóa");
@@ -333,7 +333,7 @@ async function handleGrantStaffRole(userId, userName) {
   }
 
   if (!hotels.length) {
-    updateRowStatus(userId, "error", "✗ Chưa có khách sạn trong database");
+    updateRowStatus(userId, "error", "✗ Chưa có khách sạn trong cơ sở dữ liệu");
     return;
   }
 
@@ -374,9 +374,9 @@ function setupToolbar() {
     <div class="users-management__select-wrap">
       <select class="admin-filter-role">
         <option value="all">Tất cả vai trò</option>
-        <option value="manager">Manager</option>
-        <option value="staff">Staff</option>
-        <option value="customer">Customer</option>
+        <option value="manager">Quản lý</option>
+        <option value="staff">Nhân viên</option>
+        <option value="customer">Khách hàng</option>
       </select>
       <i class="fa fa-chevron-down"></i>
     </div>

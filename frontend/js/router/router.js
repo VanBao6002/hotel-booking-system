@@ -5,6 +5,7 @@ import { initProfile } from "../components/logics/profile.js";
 import { initChangePassword } from "../components/logics/change-password.js";
 const routers = {};
 let currentPath = null;
+let isRevertingHash = false;
 
 const rules = [
     {
@@ -40,7 +41,12 @@ const rules = [
     {
         path: ["#setting"],
         roles: ["customer", "staff", "manager"],
-        item: ["profile","changePassword","home"]
+        item: []
+    },
+    {
+        path: ["#change-password"],
+        roles: ["customer", "staff", "manager"],
+        item: []
     },
     {
         path: ["#booking-history"],
@@ -156,13 +162,13 @@ function renderRoute(path) {
 
     const role = localStorage.getItem("role");
     console.log(role);
+    const handler = routers[path];
 
     if(path !== "#error") {
         const matchedRole = rules.find(rule => rule.path.includes(path));
         if(matchedRole) {
             if(matchedRole.roles.includes(role)) {
                 console.log(1);
-                const handler = routers[path];
                 if(handler) {
                     handler();
                 }
@@ -181,13 +187,33 @@ function renderRoute(path) {
 
 }
 
+function shouldBlockNavigation() {
+    const guard = window.__profileUnsavedGuard;
+    if (!guard || typeof guard.hasChanges !== "function" || !guard.hasChanges()) {
+        return false;
+    }
+
+    const shouldSave = window.confirm("Bạn có thay đổi chưa lưu. Bạn có muốn lưu lại thông tin mới trước khi chuyển trang không?");
+    if (shouldSave) {
+        guard.save?.();
+        return true;
+    }
+
+    guard.clear?.();
+    return false;
+}
+
 export function navigation(path) {
     if(path === window.location.hash) {
         return;
     }
+    if (shouldBlockNavigation()) {
+        return;
+    }
     window.location.hash = path;
-    renderRoute(window.location.hash);
-    renderNav(window.location.hash);
+    currentPath = path;
+    renderRoute(path);
+    renderNav(path);
     attachNavEvents();
 }
 
@@ -303,9 +329,20 @@ function attachNavEvents() {
 export function initRouter() {
 
     window.onhashchange = () => {
-        currentPath = window.location.hash;
-        renderRoute(window.location.hash);
-        renderNav(window.location.hash);
+        const nextPath = window.location.hash;
+        if (isRevertingHash) {
+            isRevertingHash = false;
+            return;
+        }
+        if (nextPath === currentPath) return;
+        if (shouldBlockNavigation()) {
+            isRevertingHash = true;
+            window.location.hash = currentPath || "#home";
+            return;
+        }
+        currentPath = nextPath;
+        renderRoute(nextPath);
+        renderNav(nextPath);
         attachNavEvents();
     };
 

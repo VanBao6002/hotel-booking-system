@@ -3,8 +3,9 @@ export function changePasswordTemplate() {
         <div class="setting">
         <div class="grid">
           <div class="change-password">
-            <div class="change-password__title">Thông Tin Cá Nhân</div>
+            <div class="change-password__title">Đổi Mật Khẩu</div>
             <div class="change-password__wrap">
+              <div class="change-password__message" style="display:none;"></div>
               <div class="group-info">
                 <label for="currentPassword">Mật khẩu hiện tại</label>
                 <input type="password" name="currentPassword" id="currentPassword" >

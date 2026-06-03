@@ -38,8 +38,8 @@ export const renderConfirmModal = (actionType, userId, userName, options = {}) =
       showInput: true,
     },
     promote: {
-      title: "Xác nhận Trở Thành Staff",
-      message: `Chọn khách sạn hiện có trong database để phân công người dùng "${safeUserName}" khi nâng cấp lên staff.`,
+      title: "Xác nhận Trở Thành Nhân Viên",
+      message: `Chọn khách sạn hiện có trong cơ sở dữ liệu để phân công người dùng "${safeUserName}" khi nâng cấp lên nhân viên.`,
       inputLabel: "Khách sạn phụ trách",
       inputPlaceholder: "Chọn khách sạn",
       showInput: false,
@@ -107,8 +107,8 @@ export const renderConfirmModal = (actionType, userId, userName, options = {}) =
   html += `
         </div>
         <div class="modal-footer">
-          <button id="confirmCancel" class="btn-cancel">Cancel</button>
-          <button id="confirmOk" class="btn-confirm">Confirm</button>
+          <button id="confirmCancel" class="btn-cancel">Hủy</button>
+          <button id="confirmOk" class="btn-confirm">Xác nhận</button>
         </div>
       </div>
     </div>

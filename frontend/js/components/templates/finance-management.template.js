@@ -4,13 +4,13 @@ export function financeManagementTemplate() {
 
             <!-- Summary Cards -->
             <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 28px;">
-                ${renderFinanceCard("Total Earnings", "0 VND", "#c9a84c", "#1a1a2e", "finance-total-earnings")}
-                ${renderFinanceCard("Tax Summary", "0 VND", "#1a1a2e", "#1a1a2e", "finance-tax-summary")}
+                ${renderFinanceCard("Tổng Doanh Thu", "0 VND", "#c9a84c", "#1a1a2e", "finance-total-earnings")}
+                ${renderFinanceCard("Tổng Thuế", "0 VND", "#1a1a2e", "#1a1a2e", "finance-tax-summary")}
             </div>
 
             <!-- Monthly Revenue Distribution Chart -->
             <div style="background: white; border-radius: 12px; padding: 28px; border: 1px solid #e8e4dc; margin-bottom: 28px;">
-                <h3 style="margin: 0 0 24px; font-size: 18px; font-weight: 600; color: #1a1a2e;">Monthly Revenue Distribution</h3>
+                <h3 style="margin: 0 0 24px; font-size: 18px; font-weight: 600; color: #1a1a2e;">Phân Bố Doanh Thu Theo Tháng</h3>
                 <div style="position: relative;">
                     <canvas id="finance-bar-chart" style="width: 100%; height: 280px;"></canvas>
                 </div>
@@ -19,24 +19,24 @@ export function financeManagementTemplate() {
             <!-- Transaction History -->
             <div style="background: white; border-radius: 12px; padding: 28px; border: 1px solid #e8e4dc;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e;">Transaction History</h3>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e;">Lịch Sử Giao Dịch</h3>
                     <div style="display: flex; gap: 10px;">
-                        <button id="export-csv-btn" style="padding: 9px 18px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Export CSV</button>
-                        <button id="export-pdf-btn" style="padding: 9px 18px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Export PDF</button>
+                        <button id="export-csv-btn" style="padding: 9px 18px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Xuất CSV</button>
+                        <button id="export-pdf-btn" style="padding: 9px 18px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Xuất PDF</button>
                     </div>
                 </div>
 
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr style="border-bottom: 2px solid #e8e4dc; background: #fafaf8;">
-                            <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #4b5563; font-weight: 600;">Date</th>
-                            <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #4b5563; font-weight: 600;">Description</th>
-                            <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #4b5563; font-weight: 600;">Amount</th>
-                            <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #4b5563; font-weight: 600;">Status</th>
+                            <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #4b5563; font-weight: 600;">Ngày</th>
+                            <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #4b5563; font-weight: 600;">Mô tả</th>
+                            <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #4b5563; font-weight: 600;">Số tiền</th>
+                            <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #4b5563; font-weight: 600;">Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody id="transaction-tbody">
-                        <tr><td colspan="4" style="padding: 18px 16px; font-size: 13px; color: #6b7280;">Loading transactions...</td></tr>
+                        <tr><td colspan="4" style="padding: 18px 16px; font-size: 13px; color: #6b7280;">Đang tải giao dịch...</td></tr>
                     </tbody>
                 </table>
             </div>

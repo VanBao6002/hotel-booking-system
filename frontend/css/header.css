@@ -7,10 +7,11 @@
     z-index: 100;
 }
 .header__navbar {
+    position: relative;
     display: flex;
     width: 100%;
     height: 60px;
-    justify-content: space-between ;
+    justify-content: flex-start;
     align-items: center;
 }
 .header__navbar-page-transition {
@@ -43,6 +44,8 @@
     color: white;
 }
 .header__navbar-logo {
+    position: relative;
+    z-index: 1;
     height: 46px;
     width: 90px;
     background-color: white;
@@ -52,10 +55,14 @@
     height: 100%;
 }
 .header__navbar-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     color: var(--ivoryWhite-color);
     font-size: 4.6rem;
     line-height: 4.6rem;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .header__navbar-user-auth {
@@ -63,9 +70,12 @@
 }
 
 .header__navbar-user {
+    position: relative;
+    z-index: 1;
     height: 100%;
     display: flex;
     align-items: center;
+    margin-left: auto;
 }
 
 .header__navbar-extras {
@@ -88,23 +98,6 @@
     padding: 12px 24px;
     display: block;
 }
-.header__navbar-language {
-    display: flex;
-    height: 20px;
-    width: 30px;
-    margin: 0 4px;
-}
-.header__navbar-language i {
-    color: var(--ivoryWhite-color);
-    margin: auto 2px;
-}
-.header__navbar-select-language-img {
-    width: 20px;
-    height: 20px;
-}
-
-
-
 .auth__btn-regist {
     background-color: #0a9af2;
     color: var(--ivoryWhite-color);
@@ -138,8 +131,8 @@
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
-    width: 100%;
+    right: 0;
+    min-width: 170px;
     background-color: var(--navyBlue-color);
     padding: 10px;
     border-radius: 10px;
@@ -157,22 +150,19 @@
 .line::after {
     content: "";
     display: block;
-    position: absolute;
-    width: 95%;
+    width: 100%;
     border-top: 1px solid white;
-    top: 26px;
-    left: 4px;
-}
-.user__info-extra.has-management .line::after {
-    top: 56px;
+    margin: 4px 0;
 }
 .extra__item-setting,
+.extra__item-change-password,
 .extra__item-manage,
 .extra__item-sign-out {
     padding: 5px;
     border-radius: 5px;
 }
 .extra__item-setting:hover,
+.extra__item-change-password:hover,
 .extra__item-manage:hover,
 .extra__item-sign-out:hover {
     cursor: pointer;

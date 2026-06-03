@@ -22,10 +22,6 @@ export function headerTemplate() {
                     <div class="header__navbar-extras">
                         <span class="header__navbar-extras-booking">Đặt Chỗ của tôi</span>
                     </div>
-                    <div class="header__navbar-language">
-                        <img src="assets/images/vn-flag.png" alt="flag" class="header__navbar-select-language-img">
-                        <i class="fa-solid fa-caret-down"></i>
-                    </div>
                     <div class="header__navbar-user-auth">
                         <div class="user__info">
                             <div class="user__info-avatar">
@@ -37,9 +33,10 @@ export function headerTemplate() {
                             <div class="user__info-extra">
                                 <div class="user__info-extra-wrap">
                                     <div class="extra__item-setting"><span>Thông Tin Cá Nhân</span></div>
+                                    <div class="extra__item-change-password"><span>Đổi Mật Khẩu</span></div>
                                     <div class="extra__item-manage"><span>Quản Lý</span></div>
-                                    <div class="extra__item-sign-out"><span>Đăng xuất</span></div>
                                     <div class="line"></div>
+                                    <div class="extra__item-sign-out"><span>Đăng xuất</span></div>
                                 </div>
                             </div>
                         </div>
