@@ -165,133 +165,30 @@ CREATE TABLE IF NOT EXISTS booking (
     booked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     room_img TEXT NOT NULL,
     booking_price BIGINT NOT NULL DEFAULT 0,
+    reviewed BOOLEAN NOT NULL DEFAULT FALSE,
     user_id INT,
     hotel_branch_id INT,
     room_id INT,
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_booking_HotelBranch_id FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT fk_booking_hotelbranch_id FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_booking_room_id FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS staff(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    UserID INT NOT NULL UNIQUE,
-    HotelBranchID INT ,
-    CONSTRAINT fk_staff_user FOREIGN KEY (UserID) REFERENCES users(id)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_staff_branch FOREIGN KEY (HotelBranchID) REFERENCES hotelbranch(id)
-         ON DELETE SET NULL ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS historylogin(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    timeLogin TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UserID INT NOT NULL ,
-    CONSTRAINT fk_historyLogin_user_id FOREIGN KEY (UserID) REFERENCES users(id)  ON DELETE CASCADE  ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS roomprice(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    dateStart DATE NOT NULL,
-    dateEnd DATE NOT NULL,
-    price BIGINT NOT NULL,
-    HotelBranchID INT ,
-    RoomID INT ,
-    CONSTRAINT fk_roomPrice_HotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_roomPrice_Room_id FOREIGN KEY (RoomID) REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
-
-);
-
-CREATE Table IF NOT EXISTS notificationstatus(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    status VARCHAR(30) NOT NULL UNIQUE
-);
-CREATE TABLE IF NOT EXISTS room(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    area VARCHAR(30) NOT NULL,
-    numberOfBed INT NOT NULL,
-    description TEXT NOT NULL,
-    roomIMG TEXT NOT NULL,
-    HotelBranchID INT,
-    TypeRoomID INT ,
-    LocationID INT ,
-    RoomStatusID INT ,
-    CONSTRAINT fk_room_HotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_room_TypeRoom_id FOREIGN KEY (TypeRoomID) REFERENCES typeroom(id)  ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_room_Location_id FOREIGN KEY (LocationID) REFERENCES locations(id)  ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_room_RoomStatus_id FOREIGN KEY (RoomStatusID) REFERENCES roomstatus(id)  ON DELETE SET NULL ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS booking(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    checkInDate DATE NOT NULL,
-    checkOutDate DATE  NOT NULL,
-    bookedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    roomIMG TEXT NOT NULL,
-    HotelBranchID INT ,
-    RoomID INT ,
-    CONSTRAINT fk_booking_HotelBranch_id FOREIGN KEY (HotelBranchID) REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_booking_room_id FOREIGN KEY (RoomID) REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS bookingservice(
-    Type_roomID INT ,
-    ServiceID INT ,
-    CONSTRAINT fk_bookingService_typeRoom_id FOREIGN KEY (Type_roomID) REFERENCES typeroom(id) ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_bookingService_service_id FOREIGN KEY (ServiceID) REFERENCES services(id) ON DELETE SET NULL ON UPDATE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_name VARCHAR(100) NOT NULL UNIQUE,
-    email VARCHAR(255) UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    role_id INT NOT NULL,
-    full_name VARCHAR(100),
-    date_of_birth DATE,
-    gender_id INT,
-    phone_number VARCHAR(20) NOT NULL UNIQUE,
-    current_address VARCHAR(255),
-    country_id INT,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
-    failed_login_attempts INT NOT NULL DEFAULT 0,
-    locked_until DATETIME NULL,
-    last_login_at DATETIME NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_users_gender FOREIGN KEY (gender_id) REFERENCES genders(id)
-        ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_users_gender FOREIGN KEY (gender_id) REFERENCES genders(id)
-        ON DELETE SET NULL ON UPDATE CASCADE,
-    CONSTRAINT fk_users_country FOREIGN KEY (country_id) REFERENCES countries(id)
-        ON DELETE SET NULL ON UPDATE CASCADE
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS password_otps (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
-    booking_price BIGINT NOT NULL,
-    reviewed BOOLEAN NOT NULL DEFAULT FALSE, -- đã đánh giá hay chưa
-    CONSTRAINT fk_booking_branch FOREIGN KEY (hotel_branch_id) REFERENCES hotelbranch(id) ON DELETE CASCADE,
-    CONSTRAINT fk_booking_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
-
-CREATE TABLE IF NOT EXISTS booking_room (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    booking_id INT NOT NULL,
-    room_id INT NOT NULL,
-    CONSTRAINT fk_booking_room_booking FOREIGN KEY (booking_id)
-        REFERENCES booking(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_booking_room_room FOREIGN KEY (room_id)
-        REFERENCES room(id) ON DELETE CASCADE ON UPDATE CASCADE
+    phone_number VARCHAR(20) NOT NULL,
+    otp_hash VARCHAR(255) NOT NULL,
+    purpose VARCHAR(50) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_used BOOLEAN NOT NULL DEFAULT FALSE,
+    attempts INT NOT NULL DEFAULT 0,
+    CONSTRAINT fk_password_otps_user FOREIGN KEY (user_id)
+        REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS staff (
+CREATE TABLE IF NOT EXISTS staff(
     id INT PRIMARY KEY AUTO_INCREMENT,
     UserID INT NOT NULL UNIQUE,
     HotelBranchID INT,
@@ -301,7 +198,7 @@ CREATE TABLE IF NOT EXISTS staff (
         REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS historylogin (
+CREATE TABLE IF NOT EXISTS historylogin(
     id INT PRIMARY KEY AUTO_INCREMENT,
     timeLogin TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UserID INT NOT NULL,
@@ -309,7 +206,7 @@ CREATE TABLE IF NOT EXISTS historylogin (
         REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS roomprice (
+CREATE TABLE IF NOT EXISTS roomprice(
     id INT PRIMARY KEY AUTO_INCREMENT,
     dateStart DATE NOT NULL,
     dateEnd DATE NOT NULL,
@@ -320,6 +217,16 @@ CREATE TABLE IF NOT EXISTS roomprice (
         REFERENCES hotelbranch(id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_roomprice_room FOREIGN KEY (RoomID)
         REFERENCES room(id) ON DELETE SET NULL ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS booking_room (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    room_id INT NOT NULL,
+    CONSTRAINT fk_booking_room_booking FOREIGN KEY (booking_id)
+        REFERENCES booking(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_booking_room_room FOREIGN KEY (room_id)
+        REFERENCES room(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS notification (
