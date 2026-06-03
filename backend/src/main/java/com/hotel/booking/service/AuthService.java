@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.hotel.booking.dto.LoginRequest;
 import com.hotel.booking.dto.LoginResponse;
+import com.hotel.booking.dto.ProfileUpdateRequest;
 import com.hotel.booking.dto.RegisterRequest;
 import com.hotel.booking.dto.ChangePasswordRequest;
 import com.hotel.booking.dto.ForgotPasswordRequest;

@@ -647,6 +647,29 @@
             "description": "Admin-only."
           }
         }
+        ,
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"address\": \"123 Main St\",\n  \"avatarUrl\": \"https://example.com/avatar.jpg\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/users/update-profile/{{phone}}",
+            "description": "Authenticated. Update user profile by phone number using UpdateProfileRequest."
+          }
+        }
       ]
     },
     {

@@ -14,6 +14,7 @@ import com.hotel.booking.dto.ForgotPasswordRequest;
 import com.hotel.booking.dto.ForgotPasswordResponse;
 import com.hotel.booking.dto.LoginRequest;
 import com.hotel.booking.dto.LoginResponse;
+import com.hotel.booking.dto.ProfileUpdateRequest;
 import com.hotel.booking.dto.RegisterRequest;
 import com.hotel.booking.dto.ResetPasswordRequest;
 import com.hotel.booking.dto.UserDTO;

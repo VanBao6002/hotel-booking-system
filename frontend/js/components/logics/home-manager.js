@@ -3,14 +3,18 @@ import { usersManagementTemplate } from "../templates/users-management.template.
 import { hotelsManagementTemplate } from "../templates/hotels-management.template.js";
 import { financeManagementTemplate } from "../templates/finance-management.template.js";
 import { bookingsManagementTemplate } from "../templates/bookings-management.template.js";
+import { profileTemplate } from "../templates/profile.template.js";
 import { initUsersManagement } from "./users-management.js";
 import { initHotelsManagement } from "./hotels-management.js";
 import { initFinanceManagement } from "./finance-management.js";
 import { initBookingsManagement } from "./bookings-management.js";
+import { initSetting } from "./setting.js";
 import { getManagerDashboard } from "../../services/admin.js";
 // Swap nội dung vào #manager-content
-function loadManagerContent(html, initFn) {
+function loadManagerContent(html, initFn, title = "") {
+    const titleEl = document.getElementById("manager-topbar-title");
     const content = document.getElementById("manager-content");
+    if (titleEl && title) titleEl.textContent = title;
     if (!content) return;
     content.innerHTML = html;
     if (initFn) initFn();
@@ -225,11 +229,12 @@ async function initManagerDashboard() {
 export function initHomeManager() {
     // Map className sidebar => { html, initFn }
     const sidebarRoutes = {
-        "manager__btn-dashboard": { getHTML: getDashboardHTML,         initFn: initManagerDashboard    },
-        "manager__btn-users":     { getHTML: usersManagementTemplate,  initFn: initUsersManagement     },
-        "manager__btn-properties":{ getHTML: hotelsManagementTemplate, initFn: initHotelsManagement    },
-        "manager__btn-bookings":  { getHTML: bookingsManagementTemplate, initFn: initBookingsManagement },
-        "manager__btn-finance":   { getHTML: financeManagementTemplate, initFn: initFinanceManagement   },
+        "manager__btn-dashboard": { title: "Tổng Quan", getHTML: getDashboardHTML,         initFn: initManagerDashboard    },
+        "manager__btn-users":     { title: "Quản Lý Người Dùng", getHTML: usersManagementTemplate,  initFn: initUsersManagement     },
+        "manager__btn-properties":{ title: "Quản Lý Khách Sạn", getHTML: hotelsManagementTemplate, initFn: initHotelsManagement    },
+        "manager__btn-bookings":  { title: "Quản Lý Đặt Phòng", getHTML: bookingsManagementTemplate, initFn: initBookingsManagement },
+        "manager__btn-finance":   { title: "Quản Lý Tài Chính", getHTML: financeManagementTemplate, initFn: initFinanceManagement   },
+        "manager__btn-settings":  { title: "Thông Tin Cá Nhân", getHTML: profileTemplate, initFn: initSetting },
     };
 
     document.querySelectorAll(".sidebar-item").forEach(item => {
@@ -240,7 +245,7 @@ export function initHomeManager() {
             const matchedKey = Object.keys(sidebarRoutes).find(cls => item.classList.contains(cls));
             if (matchedKey) {
                 const route = sidebarRoutes[matchedKey];
-                loadManagerContent(route.getHTML(), route.initFn);
+                loadManagerContent(route.getHTML(), route.initFn, route.title);
             }
         });
     });
