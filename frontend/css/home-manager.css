@@ -1,3 +1,118 @@
+.management-shell {
+    --management-bg: var(--ivoryWhite-color);
+    --management-panel: #ffffff;
+    --management-panel-soft: #fbf8f1;
+    --management-sidebar: var(--navyBlue-color);
+    --management-sidebar-deep: #132647;
+    --management-text: var(--navyBlue-color);
+    --management-muted: var(--text-gray-color);
+    --management-border: var(--lightGray-color);
+    --management-accent: var(--gold-color);
+    --management-accent-soft: #eadbb9;
+    background: var(--management-bg) !important;
+    color: var(--management-text) !important;
+}
+
+.management-shell .management-sidebar {
+    background: linear-gradient(180deg, var(--management-sidebar) 0%, var(--management-sidebar-deep) 100%) !important;
+    border-right: 1px solid rgba(226, 221, 213, 0.16);
+    box-shadow: 2px 0 16px rgba(27, 48, 85, 0.22) !important;
+}
+
+.management-shell [style*="#f0f0eb"],
+.management-shell [style*="#f4f4f0"] {
+    background: var(--management-bg) !important;
+    background-color: var(--management-bg) !important;
+}
+
+.management-shell [style*="background: white"],
+.management-shell [style*="background:white"],
+.management-shell [style*="background: #fff"],
+.management-shell [style*="background:#fff"],
+.management-shell [style*="background: #ffffff"],
+.management-shell [style*="background:#ffffff"] {
+    background: var(--management-panel) !important;
+    background-color: var(--management-panel) !important;
+}
+
+.management-shell [style*="#fafaf8"],
+.management-shell [style*="#f8fafc"],
+.management-shell [style*="#fafafa"],
+.management-shell [style*="#f9fafb"] {
+    background: var(--management-panel-soft) !important;
+    background-color: var(--management-panel-soft) !important;
+}
+
+.management-shell [style*="#1a1a2e"],
+.management-shell [style*="#111827"],
+.management-shell [style*="#1f2937"],
+.management-shell [style*="#374151"] {
+    color: var(--management-text) !important;
+}
+
+.management-shell [style*="#8892a4"],
+.management-shell [style*="#9aa3b0"],
+.management-shell [style*="#6b7280"],
+.management-shell [style*="#4b5563"],
+.management-shell [style*="#7a8499"] {
+    color: var(--management-muted) !important;
+}
+
+.management-shell [style*="#c9a84c"],
+.management-shell [style*="#e8cc7a"],
+.management-shell [style*="#f0e6c8"] {
+    color: var(--management-accent) !important;
+}
+
+.management-shell [style*="#e8e4dc"],
+.management-shell [style*="#e2e2da"],
+.management-shell [style*="#e5e7eb"],
+.management-shell [style*="#eef0f3"],
+.management-shell [style*="#f0ece4"],
+.management-shell [style*="#d1d5db"] {
+    border-color: var(--management-border) !important;
+}
+
+.management-shell [style*="background: #1a1a2e"],
+.management-shell [style*="background:#1a1a2e"] {
+    background: var(--management-sidebar) !important;
+    background-color: var(--management-sidebar) !important;
+}
+
+.management-shell [style*="background: #c9a84c"],
+.management-shell [style*="background:#c9a84c"] {
+    background: var(--management-accent) !important;
+    background-color: var(--management-accent) !important;
+}
+
+.management-shell button[style*="#c9a84c"],
+.management-shell .manager-dashboard-action,
+.management-shell .staff-dashboard-action,
+.management-shell #bm-filter-btn,
+.management-shell #export-csv-btn,
+.management-shell #export-pdf-btn,
+.management-shell .hotels-management__add-btn,
+.management-shell .btn-confirm,
+.management-shell .modal-save-btn {
+    background: linear-gradient(135deg, var(--management-accent), var(--management-accent-soft)) !important;
+    color: var(--management-text) !important;
+}
+
+.management-shell input,
+.management-shell select,
+.management-shell textarea {
+    border-color: var(--management-border) !important;
+    color: var(--management-text) !important;
+    background-color: var(--management-panel-soft) !important;
+}
+
+.management-shell input:focus,
+.management-shell select:focus,
+.management-shell textarea:focus {
+    border-color: var(--management-accent) !important;
+    box-shadow: 0 0 0 3px rgba(200, 169, 108, 0.18) !important;
+}
+
 /* ── Sidebar Items ─────────────────────────────────────────────────────────── */
 .sidebar-item {
     padding: 16px 16px;
@@ -14,7 +129,7 @@
 
 .sidebar-item span {
     font-size: 13px;
-    color: #7a8499;
+    color: rgba(247, 244, 238, 0.66);
     font-weight: 400;
     letter-spacing: 0.1px;
 }
@@ -23,7 +138,7 @@
     width: 15px;
     height: 15px;
     flex-shrink: 0;
-    color: #4a5568;
+    color: rgba(247, 244, 238, 0.46);
     transition: color 0.18s ease;
 }
 
@@ -31,28 +146,28 @@
 .sidebar-item:hover {
     transform: translateX(10px);
     background-color: rgba(255, 255, 255, 0.05);
-    border-left-color: rgba(201, 168, 76, 0.4);
+    border-left-color: rgba(200, 169, 108, 0.48);
 }
 
 .sidebar-item:hover span {
-    color: #b8c0cc;
+    color: var(--ivoryWhite-color);
 }
 
 .sidebar-item:hover .sidebar-icon {
-    color: #9aa3b0;
+    color: var(--gold-color);
 }
 
 /* Active — gold, matching Aethelgard brand */
 .sidebar-item.active {
-    background: linear-gradient(90deg, rgba(201, 168, 76, 0.18) 0%, rgba(201, 168, 76, 0.06) 100%);
-    border-left-color: #c9a84c;
+    background: linear-gradient(90deg, rgba(200, 169, 108, 0.24) 0%, rgba(200, 169, 108, 0.08) 100%);
+    border-left-color: var(--gold-color);
 }
 
 .sidebar-item.active span {
-    color: #e8cc7a;
+    color: #f1dfb8;
     font-weight: 500;
 }
 
 .sidebar-item.active .sidebar-icon {
-    color: #c9a84c;
+    color: var(--gold-color);
 }

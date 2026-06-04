@@ -155,6 +155,10 @@ function renderRevenueChart(monthlyData) {
     canvas.width = canvas.parentElement.offsetWidth || 600;
     canvas.height = 220;
     const ctx = canvas.getContext("2d");
+    const rootStyles = getComputedStyle(document.documentElement);
+    const accentColor = rootStyles.getPropertyValue("--gold-color").trim() || "#C8A96C";
+    const mutedColor = rootStyles.getPropertyValue("--text-gray-color").trim() || "#7A7685";
+    const gridColor = rootStyles.getPropertyValue("--lightGray-color").trim() || "#E2DDD5";
     const data = monthlyData?.length ? monthlyData : [];
     const months = data.map(item => monthLabel(item.month));
     const values = data.map(item => Number(item.revenue || 0));
@@ -175,7 +179,7 @@ function renderRevenueChart(monthlyData) {
 
     ctx.clearRect(0, 0, width, height);
     ctx.font = "11px Inter, sans-serif";
-    ctx.fillStyle = "#9aa3b0";
+    ctx.fillStyle = mutedColor;
     ctx.textAlign = "right";
 
     for (let i = 0; i <= 4; i++) {
@@ -183,7 +187,7 @@ function renderRevenueChart(monthlyData) {
         const y = top + chartHeight - (value / roundedMax) * chartHeight;
         ctx.fillText(`${Math.round(value / 1000)}k`, left - 8, y + 4);
         ctx.beginPath();
-        ctx.strokeStyle = "#f0ece4";
+        ctx.strokeStyle = gridColor;
         ctx.setLineDash([3, 3]);
         ctx.moveTo(left, y);
         ctx.lineTo(left + chartWidth, y);
@@ -197,11 +201,11 @@ function renderRevenueChart(monthlyData) {
         const barHeight = (revenue[index] / roundedMax) * chartHeight;
         const x = left + index * barGap + (barGap - barWidth) / 2;
         const y = top + chartHeight - barHeight;
-        ctx.fillStyle = "#c9a84c";
+        ctx.fillStyle = accentColor;
         ctx.beginPath();
         ctx.roundRect ? ctx.roundRect(x, y, barWidth, barHeight, [4, 4, 0, 0]) : ctx.rect(x, y, barWidth, barHeight);
         ctx.fill();
-        ctx.fillStyle = "#9aa3b0";
+        ctx.fillStyle = mutedColor;
         ctx.textAlign = "center";
         ctx.fillText(label, x + barWidth / 2, height - 10);
     });
