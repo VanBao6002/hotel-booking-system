@@ -1,9 +1,9 @@
 export function homeManagerTemplate() {
     return `
-        <div style="display: flex; min-height: 100vh; background-color: #f0f0eb; font-family: 'Inter', sans-serif;">
+        <div class="management-shell" style="display: flex; height: calc(100vh - var(--header-height) - 20px); min-height: 560px; overflow: hidden; background-color: #f0f0eb; font-family: 'Inter', sans-serif;">
             
             <!-- SIDEBAR -->
-            <div style="width: 210px; background-color: #1a1a2e; color: white; display: flex; flex-direction: column; padding: 0; flex-shrink: 0; box-shadow: 2px 0 12px rgba(0,0,0,0.3);">
+            <div class="management-sidebar" style="position: sticky; top: calc(var(--header-height) + 20px); width: 210px; height: 100%; background-color: #1a1a2e; color: white; display: flex; flex-direction: column; padding: 0; flex-shrink: 0; box-shadow: 2px 0 12px rgba(0,0,0,0.3); overflow-y: auto;">
                 <!-- Logo -->
                 <div style="padding: 20px 20px 18px; border-bottom: 1px solid rgba(255,255,255,0.07);">
                     <div style="display: flex; align-items: center; gap: 10px;">
@@ -28,17 +28,17 @@ export function homeManagerTemplate() {
             </div>
 
             <!-- MAIN CONTENT -->
-            <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f4f4f0;">
+            <div style="flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; overflow: hidden; background: #f4f4f0;">
                 
                 <!-- Top Bar -->
-                <div style="display: flex; align-items: center; padding: 16px 28px; background: white; border-bottom: 1px solid #e8e4dc; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; flex-shrink: 0; padding: 16px 28px; background: white; border-bottom: 1px solid #e8e4dc; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
                     <div style="font-size: 22px; font-weight: 600; color: #1a1a2e;">
                         <span id="manager-topbar-title">Tổng Quan</span>
                     </div>
                 </div>
 
                 <!-- Dynamic Content Area -->
-                <div id="manager-content" style="flex: 1; padding: 28px; overflow-y: auto;">
+                <div id="manager-content" style="flex: 1; min-height: 0; padding: 28px; overflow-y: auto;">
 
                     ${renderDashboardContent()}
 

@@ -1,7 +1,7 @@
 export function homeStaffTemplate() {
     return `
-        <div style="display:flex;min-height:100vh;background-color:#f0f0eb;font-family:'Roboto',Arial,sans-serif;color:#1a1a2e;">
-            <aside style="width:210px;background-color:#1a1a2e;color:white;display:flex;flex-direction:column;padding:0;flex-shrink:0;box-shadow:2px 0 12px rgba(0,0,0,0.3);">
+        <div class="management-shell" style="display:flex;height:calc(100vh - var(--header-height) - 20px);min-height:560px;overflow:hidden;background-color:#f0f0eb;font-family:'Roboto',Arial,sans-serif;color:#1a1a2e;">
+            <aside class="management-sidebar" style="position:sticky;top:calc(var(--header-height) + 20px);width:210px;height:100%;background-color:#1a1a2e;color:white;display:flex;flex-direction:column;padding:0;flex-shrink:0;box-shadow:2px 0 12px rgba(0,0,0,0.3);overflow-y:auto;">
                 <div style="padding:20px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.07);">
                     <div style="display:flex;align-items:center;gap:10px;">
                         <div style="width:32px;height:32px;background:linear-gradient(135deg,#c9a84c,#e8cc7a);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#1a1a2e;">
@@ -22,11 +22,11 @@ export function homeStaffTemplate() {
                 </nav>
             </aside>
 
-            <section style="flex:1;display:flex;flex-direction:column;min-width:0;background:#f4f4f0;">
-                <div style="display:flex;align-items:center;padding:16px 28px;background:white;border-bottom:1px solid #e8e4dc;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+            <section style="flex:1;display:flex;flex-direction:column;min-width:0;height:100%;overflow:hidden;background:#f4f4f0;">
+                <div style="display:flex;align-items:center;flex-shrink:0;padding:16px 28px;background:white;border-bottom:1px solid #e8e4dc;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
                     <h1 id="staff-topbar-title" style="margin:0;font-size:22px;font-weight:600;color:#1a1a2e;">Tổng Quan</h1>
                 </div>
-                <div id="staff-content" style="flex:1;padding:28px;overflow:auto;">
+                <div id="staff-content" style="flex:1;min-height:0;padding:28px;overflow:auto;">
                     ${renderStaffDashboardContent()}
                 </div>
             </section>
