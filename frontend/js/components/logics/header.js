@@ -1,4 +1,5 @@
 import { navigation } from "../../router/router.js";
+import { showAppDialog } from "../../utils/app-dialog.js";
 import { userLogin, userRegister } from "../../services/authentication.js";
 import { getMe, forgotPassword, resetPassword } from "../../services/users.js";
 import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
@@ -75,13 +76,6 @@ const otpField = {
 }
 
 // Su kien Dang nhap/ Dang ky
-
-import { navigation } from "../../router/router.js";
-import { userLogin, userRegister } from "../../services/authentication.js";
-import { getMe } from "../../services/users.js";
-import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
-import { showAppDialog } from "../../utils/app-dialog.js";
-
 const getModal = () => { return document.querySelector(".modal"); }
 const getSignInForm = () => { return document.querySelector("#form-sign-in");}
 const getSignUpForm = () => { return document.querySelector("#form-sign-up");}
@@ -294,7 +288,7 @@ function showBookingHistory() {
     };
 }
 
-function attachHomeBrandNavigation() {
+function attachHomeBrandnavigation() {
     document.querySelector(".header__navbar-logo-link")?.addEventListener("click", (event) => {
         event.preventDefault();
         navigation("#home");
@@ -523,5 +517,5 @@ export function initHeader() {
     attachValidation("form-reset-password",[otpField,passwordFieldSIgnUp,confirmPasswordResetField]);
     submitForm();
     showBookingHistory();
-    attachHomeBrandNavigation();
+    attachHomeBrandnavigation();
 }
