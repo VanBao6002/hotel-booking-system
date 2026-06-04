@@ -1,8 +1,6 @@
 import { renderStaffDashboardContent } from "../templates/home-staff.template.js";
 import { bookingsManagementTemplate } from "../templates/bookings-management.template.js";
-import { profileTemplate } from "../templates/profile.template.js";
 import { initBookingsManagement } from "./bookings-management.js";
-import { initSetting } from "./setting.js";
 import { getReviewsHotel } from "../../services/hotel.js";
 import {
     getStaffDashboard,
@@ -213,8 +211,8 @@ function wireDashboardActions() {
     document.querySelector(".staff-dashboard-action-bookings")?.addEventListener("click", () => {
         document.querySelector(".staff__btn-bookings")?.click();
     });
-    document.querySelector(".staff-dashboard-action-settings")?.addEventListener("click", () => {
-        document.querySelector(".staff__btn-settings")?.click();
+    document.querySelector(".staff-dashboard-action-reviews")?.addEventListener("click", () => {
+        document.querySelector(".staff__btn-reviews")?.click();
     });
 }
 
@@ -500,11 +498,6 @@ export function initHomeStaff() {
             title: "Quản Lý Đánh Giá",
             html: staffReviewsTemplate,
             initFn: initStaffReviews,
-        },
-        "staff__btn-settings": {
-            title: "Thông Tin Cá Nhân",
-            html: profileTemplate,
-            initFn: initSetting,
         },
     };
 
