@@ -42,7 +42,7 @@ export function profileTemplate() {
                 <div class="error-message" id="fullNameError"></div>
               </div>
               <div class="group-info">
-                <label for="fullname">Username</label>
+                <label for="fullname">Tên đăng nhập</label>
                 <input type="text" name="username" id="username" value="${escapeAttr(username)}" readonly style="pointer-events:none;">
               </div>
               <div class="group-info">

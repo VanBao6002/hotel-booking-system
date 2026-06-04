@@ -1,13 +1,17 @@
 :root{
-    --ivoryWhite-color: #F8F5F0; /*main backgrund*/
-    --navyBlue-color: #0A2540; /*header,footer, primary-btn*/
-    --gold-color: #C5A572; /*accent color*/
-    --lightGray-color: #D9D9D9; /*border, second background*/
-    --yellow-color: #FFFF00;
-    --text-gray-color: #888888;
-    --error-color: #FF0000;
-    --success-color: #22bb33;
-    --warning-color: #f0ad4e;
+    /* ── Luxury Premium Palette ───────────────────────── */
+    --ivoryWhite-color: #F7F4EE;   /* warm ivory — main background */
+    --navyBlue-color:  #1B3055;   /* deep navy — header, footer, primary elements */
+    --gold-color:      #C8A96C;   /* champagne gold — accent */
+    --lightGray-color: #E2DDD5;   /* warm soft gray — borders, secondary bg */
+    --text-gray-color: #7A7685;   /* refined muted text */
+    --error-color:     #C94A3A;   /* soft crimson */
+    --success-color:   #3D9E72;   /* muted emerald */
+    --warning-color:   #C9965A;   /* warm amber */
+    /* ── Semantic aliases ────────────────────────────── */
+    --slate-blue:      #5B8FB9;   /* replaces harsh #0a9af2 in buttons/accents */
+    --terracotta:      #C47840;   /* replaces harsh #ff5e1f in prices/CTAs */
+    --slate-blue-light:#EAF0F5;   /* replaces #d1f0ff */
     --header-height: 100px;
 }
 
@@ -18,7 +22,7 @@
 html {
     font-size: 62.5%;
     line-height: 1.6rem;
-    font-family:"Roboto", Arial, sans-serif ;
+    font-family: "Roboto", Arial, sans-serif;
     box-sizing: border-box;
 }
 body {
@@ -84,11 +88,11 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    background-color: #0a9af2;
-    color: var(--ivoryWhite-color);
+    background-color: var(--slate-blue);
+    color: #ffffff;
 }
 .btn:hover {
-    filter: brightness(80%);
+    filter: brightness(90%);
     cursor: pointer;
 }
 

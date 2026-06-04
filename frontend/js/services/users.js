@@ -71,6 +71,7 @@ export const changePassword = (passwordData) => {
     body: JSON.stringify(passwordData),
   });
 };
+<<<<<<< HEAD
 
 export const forgotPassword = (phoneNumber) => {
   return apiClient("/api/v1/auth/forgot-password", {
@@ -87,3 +88,5 @@ export const resetPassword = (resetData) => {
     body: JSON.stringify(resetData),
   });
 }
+=======
+>>>>>>> origin/FE_QuanLy

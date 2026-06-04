@@ -2,6 +2,7 @@ package com.hotel.booking.repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import com.hotel.booking.dto.BookingRoomDTO;
 public class BookingRepository {
     private final JdbcTemplate jdbcTemplate;
     private final DatabaseSchemaInspector schemaInspector;
+    private static final ZoneId APP_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
 
     public BookingRepository(JdbcTemplate jdbcTemplate, DatabaseSchemaInspector schemaInspector) {
         this.jdbcTemplate = jdbcTemplate;
@@ -206,13 +208,14 @@ public class BookingRepository {
         String roomImg = resolveRoomImage(firstRoomId);
 
         String sql = """
-            INSERT INTO booking(check_in_date, check_out_date, room_img, hotel_branch_id, user_id, booking_price)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO booking(check_in_date, check_out_date, booked_at, room_img, hotel_branch_id, user_id, booking_price)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
         jdbcTemplate.update(
             sql,
             request.getCheckInDate(),
             request.getCheckOutDate(),
+            LocalDateTime.now(APP_ZONE),
             roomImg,
             request.getHotelBranchId(),
             request.getUserId(),
@@ -244,13 +247,14 @@ public class BookingRepository {
         String roomImg = resolveRoomImage(roomId);
 
         String sql = """
-            INSERT INTO booking(check_in_date, check_out_date, room_img, hotel_branch_id, room_id)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO booking(check_in_date, check_out_date, booked_at, room_img, hotel_branch_id, room_id)
+            VALUES (?, ?, ?, ?, ?, ?)
             """;
         jdbcTemplate.update(
             sql,
             request.getCheckInDate(),
             request.getCheckOutDate(),
+            LocalDateTime.now(APP_ZONE),
             roomImg,
             request.getHotelBranchId(),
             roomId

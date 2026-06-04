@@ -2,7 +2,7 @@
     margin-top: calc(var(--header-height) + 24px);
 } */
 .star {
-    color: yellow;
+    color: var(--gold-color);
 }
 .booking__picture {
     display: flex;
@@ -67,13 +67,13 @@
     font-size: 1.8rem;
     text-align: end;
     font-weight: bold;
-    color: #ff5e1f;
+    color: var(--terracotta);
 }
 .booking__info-genaral-button {
     font-size: 1.6rem;
     font-weight: 500;
     color: white;
-    background-color: #ff5e1f;
+    background-color: var(--terracotta);
     padding: 10px;
     border-radius: 5px;
     margin-left: 10px;
@@ -175,19 +175,19 @@
 }
 .room-current__price,
 .room-total-price {
-    color: #ff5e1f;
+    color: var(--terracotta);
     font-weight: bold;
 }
 
 .room-detail__button,
 .room-choice__button {
-    background-color: #0a9af2;
+    background-color: var(--slate-blue);
     color: white;
     border: none;
     border-radius: 5px;
 }
 .booking__button {
-    background-color: #ff5e1f;
+    background-color: var(--terracotta);
     color: white;
     border: none;
     border-radius: 5px;
@@ -199,10 +199,10 @@
     width: 90px;
 }
 .room-choice__button {
-    background-color: #ff5e1f;
+    background-color: var(--terracotta);
 }
 .room-choice__button.active {
-    background-color: #00FF00;
+    background-color: var(--success-color);
 }
 .room-detail__button:hover,
 .room-choice__button:hover,
@@ -238,7 +238,7 @@
     align-items: center;
     width: 100px;
     height: 100px;
-    border: 5px solid #0a9af2;
+    border: 5px solid var(--slate-blue);
     border-radius: 10px;
     margin-right: 50px;
 }
@@ -248,7 +248,7 @@
     align-items: center;
     width: 90%;
     height: 90%;
-    background-color: #45b3f7;
+    background-color: var(--slate-blue);
     border-radius: 10px;
 }
 .rate-avg__text {
@@ -261,7 +261,7 @@
     font-weight: bold;
 }
 .rate__star {
-    color: yellow;
+    color: var(--gold-color);
 }
 .rate__row {
     margin-right: 20px;
@@ -279,8 +279,7 @@
 .rate__row-fill-five-star {
     width: 100%;
     height: 100%;
-    background-color: #0a9af2;
-    /* transform: scaleX(0.5); */
+    background-color: var(--slate-blue);
     transform-origin: left center;
 }
 
@@ -337,7 +336,7 @@
 .convervation__chat-rate {
     padding: 5px;
     border-radius: 20px;
-    background-color: #d1f0ff;
+    background-color: var(--slate-blue-light);
 }
 .convervation__chat-time {
     padding: 5px;

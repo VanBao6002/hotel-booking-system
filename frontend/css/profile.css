@@ -73,7 +73,7 @@
     background-color: var(--lightGray-color);
 }
 .save-info__btn.active {
-    background-color: #0a9af2;;
+    background-color: var(--slate-blue);
     cursor: pointer;
 }
 .save-info__btn.active:hover {

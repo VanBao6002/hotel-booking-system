@@ -1,83 +1,136 @@
 import { updateMe } from "../../services/users.js";
-import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber, safeJsonParse } from "../../utils/utils.js";
+import { isValidEmail, isValidPhoneNumber, safeJsonParse } from "../../utils/utils.js";
 
-const userData = safeJsonParse(localStorage.getItem("userData"), {});
+let oldProfile = {};
+let newProfile = {};
+let isSaving = false;
 
-// if(userData) {
-    const oldProfile = {
-        fullName : userData.fullName ?? "",
-        email : userData.email ?? "",
-        dateOfBirth : userData.dateOfBirth ?? "",
-        gender : userData.gender ?? "",
-        phoneNumber : userData.phoneNumber ?? "",
-        currentAddress : userData.currentAddress ?? "",  
+function readProfileFromStorage() {
+    const userData = safeJsonParse(localStorage.getItem("userData"), {});
+    return {
+        fullName: userData.fullName ?? "",
+        username: userData.userName ?? "",
+        email: userData.email ?? "",
+        dateOfBirth: userData.dateOfBirth ?? "",
+        gender: userData.gender ?? "",
+        phoneNumber: userData.phoneNumber ?? "",
+        address: userData.currentAddress ?? "",
+    };
+}
+
+function getProfileWrap() {
+    return document.querySelector(".profile__wrap");
+}
+
+function setMessage(message, type = "success") {
+    const el = document.querySelector(".profile__message");
+    if (!el) return;
+    el.style.display = message ? "block" : "none";
+    el.style.background = type === "error" ? "#fee2e2" : "#dcfce7";
+    el.style.color = type === "error" ? "#b91c1c" : "#166534";
+    el.textContent = message || "";
+}
+
+function setFieldError(input, message) {
+    const profileWrap = getProfileWrap();
+    const errorIdMap = {
+        fullName: "fullNameError",
+        email: "emailError",
+        phoneNumber: "phoneNumberError",
+        dateOfBirth: "dateOfBirthError",
+    };
+    const errorEl = profileWrap?.querySelector(`#${errorIdMap[input.name]}`);
+    if (errorEl) errorEl.textContent = message;
+    input.classList.toggle("error", Boolean(message));
+}
+
+function validateInput(input, showError = true) {
+    if (!input) return true;
+
+    if (input.name === "fullName") {
+        const message = input.value.trim() ? "" : "Họ và tên không được để trống.";
+        if (showError) setFieldError(input, message);
+        return !message;
     }
-    
-    const newProfile = {
-        fullName : userData.fullName ?? "",
-        email : userData.email ?? "",
-        dateOfBirth : userData.dateOfBirth ?? "",
-        gender : userData.gender ?? "",
-        phoneNumber : userData.phoneNumber ?? "",
-        currentAddress : userData.currentAddress ?? "",  
+
+    if (input.name === "email") {
+        const message = isValidEmail(input.value.trim()) ? "" : "Định dạng email không hợp lệ.";
+        if (showError) setFieldError(input, message);
+        return !message;
     }
-    
-// }
-function isValidProfile() {
-    let isValid = true;
 
-    const profileWrap = document.querySelector(".profile__wrap");
-    const inputs = profileWrap.querySelectorAll("input");
+    if (input.name === "phoneNumber") {
+        const message = isValidPhoneNumber(input.value.trim()) ? "" : "Định dạng số điện thoại không hợp lệ.";
+        if (showError) setFieldError(input, message);
+        return !message;
+    }
 
-    for(let input of inputs) {
-        if(input.classList.contains("error")) {
-            isValid = false;
-            break;
+    if (input.name === "dateOfBirth" && input.value) {
+        const selectedDate = new Date(input.value);
+        const today = new Date();
+        let age = today.getFullYear() - selectedDate.getFullYear();
+        const monthDiff = today.getMonth() - selectedDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < selectedDate.getDate())) {
+            age--;
         }
+        const message = age < 18 ? "Bạn phải đủ 18 tuổi trở lên." : "";
+        if (showError) setFieldError(input, message);
+        return !message;
     }
-    return isValid;
+
+    if (showError) setFieldError(input, "");
+    return true;
+}
+
+function validateProfile(showErrors = true) {
+    const profileWrap = getProfileWrap();
+    if (!profileWrap) return false;
+    return [...profileWrap.querySelectorAll("input")].every(input => validateInput(input, showErrors));
+}
+
+function syncProfileFromInputs() {
+    const profileWrap = getProfileWrap();
+    profileWrap?.querySelectorAll("input").forEach(input => {
+        newProfile[input.name] = input.value;
+    });
 }
 
 function hasProfileChanged() {
     return Object.keys(oldProfile).some(key => String(oldProfile[key] ?? "").trim() !== String(newProfile[key] ?? "").trim());
 }
 
-function updateSaveButtonState() {
-    const profileWrap = document.querySelector(".profile__wrap");
+function updateSaveState() {
+    const profileWrap = getProfileWrap();
     const saveBtn = profileWrap?.querySelector(".save-info__btn");
     if (!saveBtn) return;
 
-    if (isValidProfile() && hasProfileChanged()) {
-        saveBtn.classList.add("active");
-    } else {
-        saveBtn.classList.remove("active");
-    }
+    const canSave = validateProfile(false) && hasProfileChanged() && !isSaving;
+    saveBtn.classList.toggle("active", canSave);
+    saveBtn.setAttribute("aria-disabled", String(!canSave));
+}
+
+function handleInputChange(input) {
+    newProfile[input.name] = input.value;
+    input.classList.toggle("changed", oldProfile[input.name] !== input.value);
+    validateInput(input);
+    updateSaveState();
 }
 
 function attachChangeHighlight() {
-    const profileWrap = document.querySelector(".profile__wrap");
-    const inputs = profileWrap?.querySelectorAll("input") || [];
+    const profileWrap = getProfileWrap();
+    if (!profileWrap) return;
 
-    const updateField = (input) => {
-        const key = input.name;
-        if (oldProfile[key] !== input.value) {
-            input.classList.add("changed");
-        } else {
-            input.classList.remove("changed");
-        }
-        newProfile[key] = input.value;
-        updateSaveButtonState();
-    };
-
-    inputs.forEach(input => {
-        input.addEventListener("input", () => updateField(input));
-        input.addEventListener("blur", () => updateField(input));
-        input.addEventListener("change", () => updateField(input));
+    profileWrap.querySelectorAll("input").forEach(input => {
+        input.addEventListener("input", () => handleInputChange(input));
+        input.addEventListener("change", () => handleInputChange(input));
+        input.addEventListener("blur", () => handleInputChange(input));
     });
 }
 
 function attachValidation() {
-    const profileWrap = document.querySelector(".profile__wrap");
+    const profileWrap = getProfileWrap();
+    if (!profileWrap) return;
+
     const emailInput = profileWrap.querySelector("#email");
     const phoneInput = profileWrap.querySelector("#phonenumber");
     const fullNameInput = profileWrap.querySelector("#fullname");
@@ -88,21 +141,19 @@ function attachValidation() {
         phoneNumber: profileWrap.querySelector("#phoneNumberError"),
         dateOfBirth: profileWrap.querySelector("#dateOfBirthError")
     };
-    
+
     function choiceGender() {
         const genderInput = profileWrap.querySelector("#gender");
         const genderOptions = profileWrap.querySelector(".gender-options");
-    
-        genderOptions.addEventListener("mousedown",(e) => {
-            if(e.target.classList.contains("gender-item")) {
+
+        genderOptions?.addEventListener("mousedown", (e) => {
+            if (e.target.classList.contains("gender-item")) {
                 const selectedGender = e.target.innerText;
                 genderInput.value = selectedGender;
-                newProfile.gender = selectedGender;
-                genderInput.classList.toggle("changed", oldProfile.gender !== selectedGender);
-                updateSaveButtonState();
+                handleInputChange(genderInput);
             }
         });
-    };
+    }
 
     function choiceDateOfBirth() {
         const dateOfBirthInput = profileWrap.querySelector("#dateofbirth");
@@ -126,106 +177,130 @@ function attachValidation() {
                 errorMessages.dateOfBirth.textContent = "";
                 dateOfBirthInput.classList.remove("error");
                 newProfile.dateOfBirth = dateOfBirthInput.value;
-                updateSaveButtonState();
+                updateSaveState();
             }
         });
-
     }
 
     choiceGender();
     choiceDateOfBirth();
 
-    fullNameInput.addEventListener("blur", () => { 
-        if(fullNameInput.value.trim() === "") {
+    fullNameInput?.addEventListener("blur", () => {
+        if (fullNameInput.value.trim() === "") {
             errorMessages.fullName.textContent = "Họ và tên không được để trống.";
             fullNameInput.classList.add("error");
         } else {
             errorMessages.fullName.textContent = "";
             fullNameInput.classList.remove("error");
-            updateSaveButtonState();
+            updateSaveState();
         }
     });
 
-    emailInput.addEventListener("blur", () => {
-        if(!isValidEmail(emailInput.value)) {
-            errorMessages.email.textContent = "Định dạng email không hợp lệ."; 
+    emailInput?.addEventListener("blur", () => {
+        if (!isValidEmail(emailInput.value)) {
+            errorMessages.email.textContent = "Định dạng email không hợp lệ.";
             emailInput.classList.add("error");
         } else {
             errorMessages.email.textContent = "";
             emailInput.classList.remove("error");
-            updateSaveButtonState();
+            updateSaveState();
         }
     });
 
-    phoneInput.addEventListener("blur", () => {
-        if(!isValidPhoneNumber(phoneInput.value)) {
+    phoneInput?.addEventListener("blur", () => {
+        if (!isValidPhoneNumber(phoneInput.value)) {
             errorMessages.phoneNumber.textContent = "Định dạng số điện thoại không hợp lệ.";
             phoneInput.classList.add("error");
         } else {
             errorMessages.phoneNumber.textContent = "";
             phoneInput.classList.remove("error");
-            updateSaveButtonState();
+            updateSaveState();
         }
     });
 }
 
+function lockProfileInputs() {
+    const profileWrap = getProfileWrap();
+    profileWrap?.querySelectorAll("input").forEach(input => {
+        input.classList.remove("changed", "error");
+        input.setAttribute("readonly", true);
+        input.style.pointerEvents = "none";
+    });
+    profileWrap?.querySelectorAll(".error-message").forEach(el => {
+        el.textContent = "";
+    });
+}
 
+async function saveProfile({ force = false } = {}) {
+    const profileWrap = getProfileWrap();
+    const saveBtn = profileWrap?.querySelector(".save-info__btn");
+    if (!saveBtn || isSaving) return false;
 
-function saveProfile() {
-    const saveBtn = document.querySelector(".save-info__btn");
-    if (!saveBtn) return;
+    if (!force && !saveBtn.classList.contains("active")) return false;
 
-    const modal = document.querySelector(".modal");
-    const showNotification = modal.querySelector(".show__notification");
-    const notificationTitle = showNotification.querySelector(".show__notification-title span");
-    const notificationMessage = showNotification.querySelector(".show__notification-text");
+    syncProfileFromInputs();
+    if (!validateProfile()) {
+        updateSaveState();
+        setMessage("Vui lòng kiểm tra lại thông tin trước khi lưu.", "error");
+        return false;
+    }
 
+    if (!hasProfileChanged()) {
+        updateSaveState();
+        return true;
+    }
 
-    saveBtn.onclick = function() {
-        if (!saveBtn.classList.contains("active")) return;
+    isSaving = true;
+    saveBtn.classList.remove("active");
+    saveBtn.classList.add("loading");
+    saveBtn.querySelector("span").textContent = "Đang lưu...";
+    setMessage("");
 
-        console.log("Thông tin hợp lệ. Thực hiện lưu thông tin cá nhân.");
-        updateMe(newProfile)
-            .then(() => {
-                modal.classList.add("active");
-                showNotification.classList.remove("error", "warning", "success", "qrcode");
-                showNotification.classList.add("show", "success");
-                notificationTitle.innerText = "Thành công!";
-                notificationMessage.innerText = "Thông tin cá nhân của bạn đã được cập nhật.";
-                Object.assign(oldProfile, newProfile);
-                updateSaveButtonState();
+    try {
+        const updated = await updateMe({
+            fullName: newProfile.fullName,
+            email: newProfile.email,
+            dateOfBirth: newProfile.dateOfBirth || null,
+            gender: newProfile.gender || null,
+            phoneNumber: newProfile.phoneNumber,
+            currentAddress: newProfile.address || "",
+        });
 
-                const newUserData = JSON.parse(localStorage.getItem("userData")) || {};
-                newUserData.fullName = newProfile.fullName;
-                newUserData.email = newProfile.email;
-                newUserData.dateOfBirth = newProfile.dateOfBirth;
-                newUserData.gender = newProfile.gender;
-                newUserData.phoneNumber = newProfile.phoneNumber;
-                newUserData.currentAddress = newProfile.currentAddress;
+        localStorage.setItem("userData", JSON.stringify(updated));
+        oldProfile = readProfileFromStorage();
+        newProfile = { ...oldProfile };
 
-                localStorage.setItem("userData", JSON.stringify(newUserData));
-            })
-            .catch((error) => {
-                modal.classList.add("active");
-                showNotification.classList.remove("error", "warning", "success", "qrcode");
-                showNotification.classList.add("show", "error");
-                notificationTitle.innerText = "Lỗi!";
-                notificationMessage.innerText = "Đã có lỗi xảy ra. Vui lòng thử lại.";
-                console.error("Lỗi khi cập nhật thông tin cá nhân:", error);
-            });
-        console.log(newProfile);
+        lockProfileInputs();
+
+        const headerName = document.querySelector(".user__info-name span");
+        if (headerName) {
+            headerName.textContent = updated.fullName || updated.userName || "";
+        }
+
+        setMessage("Cập nhật thông tin cá nhân thành công.");
+        return true;
+    } catch (err) {
+        const message = err?.data?.message || "Không thể cập nhật thông tin cá nhân.";
+        setMessage(message, "error");
+        return false;
+    } finally {
+        isSaving = false;
+        saveBtn.classList.remove("loading");
+        saveBtn.querySelector("span").textContent = "Lưu thông tin";
+        updateSaveState();
     }
 }
 
-
 function editProfile() {
-    const profileWrap = document.querySelector(".profile__wrap");
-    const editIcons = profileWrap.querySelectorAll(".edit");
+    const profileWrap = getProfileWrap();
+    const editIcons = profileWrap?.querySelectorAll(".edit") || [];
 
     editIcons.forEach(icon => {
         icon.addEventListener("click", () => {
             const input = icon.nextElementSibling;
-            if(input.hasAttribute("readonly")) {
+            if (!input) return;
+
+            if (input.hasAttribute("readonly")) {
                 input.removeAttribute("readonly");
                 input.style.pointerEvents = "auto";
                 input.focus();
@@ -235,15 +310,27 @@ function editProfile() {
             }
         });
     });
-
 }
+
+function registerUnsavedGuard() {
+    window.__profileUnsavedGuard = {
+        hasChanges: () => Boolean(getProfileWrap()) && hasProfileChanged(),
+        save: () => saveProfile({ force: true }),
+        clear: () => {
+            syncProfileFromInputs();
+            oldProfile = { ...newProfile };
+            window.__profileUnsavedGuard = null;
+        },
+    };
+}
+
 export function initProfile() {
+    oldProfile = readProfileFromStorage();
+    newProfile = { ...oldProfile };
     editProfile();
     attachValidation();
     attachChangeHighlight();
-    saveProfile();
-    updateSaveButtonState();
+    getProfileWrap()?.querySelector(".save-info__btn")?.addEventListener("click", () => saveProfile());
+    registerUnsavedGuard();
+    updateSaveState();
 }
-
-
-

@@ -9,7 +9,7 @@ export function headerTemplate() {
             <nav class="header__navbar">
                 <div class="header__navbar-logo header__navbar-box">
                     <a href="#" class="header__navbar-logo-link">
-                        <img src="assets/images/app-logo.jpg" alt="logo-app" class="header__navbar-logo-img">
+                        <img src="assets/images/app-logo-v2.jpg?v=20260604-2" alt="logo-app" class="header__navbar-logo-img">
                     </a>
                 </div>
 
@@ -22,10 +22,6 @@ export function headerTemplate() {
                     <div class="header__navbar-extras">
                         <span class="header__navbar-extras-booking">Đặt Chỗ của tôi</span>
                     </div>
-                    <div class="header__navbar-language">
-                        <img src="assets/images/vn-flag.png" alt="flag" class="header__navbar-select-language-img">
-                        <i class="fa-solid fa-caret-down"></i>
-                    </div>
                     <div class="header__navbar-user-auth">
                         <div class="user__info">
                             <div class="user__info-avatar">
@@ -36,10 +32,17 @@ export function headerTemplate() {
                             </div>
                             <div class="user__info-extra">
                                 <div class="user__info-extra-wrap">
+<<<<<<< HEAD
                                     <div class="extra__item-setting"><span>Cài đặt</span></div>
                                     <div class="extra__item-manage"><span>Quản lý</span></div>
                                     <div class="extra__item-sign-out"><span>Đăng xuất</span></div>
+=======
+                                    <div class="extra__item-setting"><span>Thông Tin Cá Nhân</span></div>
+                                    <div class="extra__item-change-password"><span>Đổi Mật Khẩu</span></div>
+                                    <div class="extra__item-manage"><span>Quản Lý</span></div>
+>>>>>>> origin/FE_QuanLy
                                     <div class="line"></div>
+                                    <div class="extra__item-sign-out"><span>Đăng xuất</span></div>
                                 </div>
                             </div>
                         </div>

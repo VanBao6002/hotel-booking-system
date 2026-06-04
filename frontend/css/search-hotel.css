@@ -5,7 +5,7 @@
 .box-filter {
     display: flex;
     height: 40px;
-    background-color: rgb(215, 235, 252);
+    background-color: var(--slate-blue-light);
     border-radius: 10px;
     margin-top: 10px;
     align-items: center;
@@ -39,7 +39,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0a9af2;
+    background-color: var(--slate-blue);
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -58,7 +58,7 @@
     margin: 5px 0;
 }
 .search-hotel-filter__box-choice input {
-    accent-color: #0a9af2;
+    accent-color: var(--slate-blue);
     font-size: 1.6rem;
     transform: scale(1.1429);
     margin-left: 10px;
@@ -67,7 +67,7 @@
     padding-left: 10px;
 }
 .search-hotel-filter__box-choice i {
-    color: var(--yellow-color);
+    color: var(--gold-color);
 }
 
 .search-hotel-filter__box-choice label:hover,
@@ -75,7 +75,7 @@
     cursor: pointer;
 }
 .search-hotel-filter__box-choice label:hover {
-    color: #0a9af2;
+    color: var(--slate-blue);
 }
 
 .search-hotel-result__head {
@@ -134,11 +134,11 @@
 .search-hotel-result__hotel-rate {
     margin-right: 20px;
     font-weight: bold;
-    color: #0a9af2;
+    color: var(--slate-blue);
 }
 
 .search-hotel-result__hotel-rate i{
-    color: var(--yellow-color);
+    color: var(--gold-color);
 }
 
 .search-hotel-result__location {
@@ -163,7 +163,7 @@
     margin: auto;
     font-size: 2.4rem;
     line-height: 2.4rem;
-    color: #ff5e1f;
+    color: var(--terracotta);
     text-align: end;
 }
 

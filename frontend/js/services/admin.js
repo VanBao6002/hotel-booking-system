@@ -1,6 +1,7 @@
 import apiClient from "./apiClient.js";
 
 export const getHotels = () => apiClient("/api/v1/hotels", { method: "GET" });
+export const getLocations = () => apiClient("/api/v1/hotels/locations", { method: "GET" });
 export const getHotel = (hotelId) => apiClient(`/api/v1/hotels/${hotelId}`, { method: "GET" });
 export const createHotel = (hotel) => apiClient("/api/v1/hotels", {
   method: "POST",

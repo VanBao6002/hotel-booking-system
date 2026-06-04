@@ -4,11 +4,11 @@ export function hotelsManagementTemplate() {
       <!-- Header -->
       <div class="hotels-management__header">
         <div>
-          <h2 class="hotels-management__title">Hotel Inventory</h2>
-          <p class="hotels-management__subtitle">Manage your properties</p>
+          <h2 class="hotels-management__title">Danh Sách Khách Sạn</h2>
+          <p class="hotels-management__subtitle">Quản lý các khách sạn trong hệ thống</p>
         </div>
         <button class="hotels-management__add-btn">
-          <i class="fa fa-plus"></i> Add Property
+          <i class="fa fa-plus"></i> Thêm Khách Sạn
         </button>
       </div>
 
@@ -17,7 +17,7 @@ export function hotelsManagementTemplate() {
 
       <!-- Loading State -->
       <div class="hotels-management__loading" style="display: none; text-align: center; padding: 40px;">
-        <p>Loading hotels...</p>
+        <p>Đang tải khách sạn...</p>
       </div>
 
       <!-- Cards Grid -->
@@ -27,7 +27,7 @@ export function hotelsManagementTemplate() {
 
       <!-- Empty State -->
       <div class="hotels-management__empty" style="display: none; text-align: center; padding: 60px 20px;">
-        <p style="color: #999; font-size: 16px;">No hotels found</p>
+        <p style="color: #999; font-size: 16px;">Chưa có khách sạn</p>
       </div>
     </div>
   `;

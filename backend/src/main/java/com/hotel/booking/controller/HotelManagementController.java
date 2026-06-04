@@ -1,6 +1,7 @@
 package com.hotel.booking.controller;
 
 import com.hotel.booking.dto.HotelBranchDTO;
+import com.hotel.booking.dto.LocationsDTO;
 import com.hotel.booking.dto.RoomDTO;
 import com.hotel.booking.service.HotelManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class HotelManagementController {
     public ResponseEntity<List<HotelBranchDTO>> getAllHotels() {
         List<HotelBranchDTO> hotels = hotelService.getAllHotels();
         return ResponseEntity.ok(hotels);
+    }
+
+    @GetMapping("/locations")
+    public ResponseEntity<List<LocationsDTO>> getLocations() {
+        return ResponseEntity.ok(hotelService.getLocations());
     }
 
     /**

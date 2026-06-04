@@ -17,6 +17,7 @@ export function homeStaffTemplate() {
                     ${renderStaffSidebarItem("Tổng Quan", "staff__btn-dashboard", true)}
                     ${renderStaffSidebarItem("Quản Lý Khách Sạn", "staff__btn-hotel")}
                     ${renderStaffSidebarItem("Quản Lý Đặt Phòng", "staff__btn-bookings")}
+                    ${renderStaffSidebarItem("Quản Lý Đánh Giá", "staff__btn-reviews")}
                     ${renderStaffSidebarItem("Thông Tin Cá Nhân", "staff__btn-settings")}
                 </nav>
             </aside>
@@ -36,10 +37,10 @@ export function homeStaffTemplate() {
 export function renderStaffDashboardContent() {
     return `
         <div style="display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:16px;margin-bottom:22px;">
-            ${renderStatCard("Khách sạn", "Loading...", "Chi nhánh đang phụ trách", "staff-stat-hotel")}
-            ${renderStatCard("Tổng phòng", "Loading...", "Phòng trong database", "staff-stat-rooms")}
-            ${renderStatCard("Phòng trống", "Loading...", "Có thể đón khách", "staff-stat-available")}
-            ${renderStatCard("Check-in hôm nay", "Loading...", "Lượt đến trong ngày", "staff-stat-checkins")}
+            ${renderStatCard("Khách sạn", "Đang tải...", "Chi nhánh đang phụ trách", "staff-stat-hotel")}
+            ${renderStatCard("Tổng phòng", "Đang tải...", "Phòng trong cơ sở dữ liệu", "staff-stat-rooms")}
+            ${renderStatCard("Phòng trống", "Đang tải...", "Có thể đón khách", "staff-stat-available")}
+            ${renderStatCard("Check-in hôm nay", "Đang tải...", "Lượt đến trong ngày", "staff-stat-checkins")}
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;margin-bottom:20px;">
@@ -47,14 +48,14 @@ export function renderStaffDashboardContent() {
                 <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px;">
                     <div>
                         <h2 style="margin:0;font-size:18px;font-weight:700;">Tình trạng phòng</h2>
-                        <p id="staff-room-status-summary" style="margin:4px 0 0;font-size:13px;color:#6b7280;">Loading room status...</p>
+                        <p id="staff-room-status-summary" style="margin:4px 0 0;font-size:13px;color:#6b7280;">Đang tải tình trạng phòng...</p>
                     </div>
                     <button class="staff-dashboard-action staff-dashboard-action-hotel" type="button" style="height:36px;padding:0 14px;border:0;border-radius:7px;background:linear-gradient(135deg,#c9a84c,#e8cc7a);color:#1a1a2e;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;">
                         Phòng
                     </button>
                 </div>
                 <div id="staff-room-status-bars" style="display:flex;flex-direction:column;gap:10px;">
-                    <div style="font-size:13px;color:#8892a4;">Loading rooms...</div>
+                    <div style="font-size:13px;color:#8892a4;">Đang tải phòng...</div>
                 </div>
             </section>
 
@@ -75,7 +76,7 @@ export function renderStaffDashboardContent() {
                 <table style="width:100%;border-collapse:collapse;min-width:760px;">
                     <thead>
                         <tr style="border-bottom:1px solid #f0ece4;">
-                            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Booking</th>
+                            <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Mã đặt phòng</th>
                             <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Khách</th>
                             <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Ngày</th>
                             <th style="padding:10px 12px;text-align:left;font-size:11px;color:#8892a4;text-transform:uppercase;font-weight:600;">Tổng tiền</th>
@@ -83,7 +84,7 @@ export function renderStaffDashboardContent() {
                         </tr>
                     </thead>
                     <tbody id="staff-recent-bookings">
-                        <tr><td colspan="5" style="padding:14px 12px;font-size:13px;color:#8892a4;">Loading bookings...</td></tr>
+                        <tr><td colspan="5" style="padding:14px 12px;font-size:13px;color:#8892a4;">Đang tải đặt phòng...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -109,6 +110,7 @@ const STAFF_SIDEBAR_ICONS = {
     "Tổng Quan": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor"/></svg>`,
     "Quản Lý Khách Sạn": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><path d="M1 14V7l7-5 7 5v7H1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><rect x="6" y="9" width="4" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/></svg>`,
     "Quản Lý Đặt Phòng": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 3V1.5M11 3V1.5M2 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5 10h2m2 0h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
+    "Quản Lý Đánh Giá": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><path d="M8 1.7l1.7 3.5 3.8.5-2.8 2.7.7 3.8L8 10.4l-3.4 1.8.7-3.8-2.8-2.7 3.8-.5L8 1.7z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>`,
     "Thông Tin Cá Nhân": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M3 14c.6-2.4 2.5-4 5-4s4.4 1.6 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
 };
 

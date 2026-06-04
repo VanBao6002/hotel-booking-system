@@ -36,7 +36,7 @@ export function usersManagementTemplate() {
     <div class="users-management__container" style="padding: 24px 0;">
       <div style="margin-bottom: 16px;">
         <h2 style="margin:0; font-size: 18px; font-weight: 500;">Quản lý người dùng</h2>
-        <div style="color:#999; margin-top:4px; font-size: 13px;">Chỉ dành cho Manager</div>
+        <div style="color:#999; margin-top:4px; font-size: 13px;">Chỉ dành cho tài khoản Quản lý</div>
       </div>
 
       <div class="users-management__status" style="display:none; padding: 12px 14px; border-radius: 8px; background:#fff; border: 1px solid #eee; margin-bottom: 12px;"></div>
@@ -46,7 +46,7 @@ export function usersManagementTemplate() {
           <thead>
             <tr style="background:#f8fafc; text-align:left; border-bottom: 0.5px solid #e5e7eb;">
               <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">ID</th>
-              <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Username</th>
+              <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Tên đăng nhập</th>
               <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Email</th>
               <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Họ tên</th>
               <th style="padding: 10px 16px; font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Vai trò</th>
@@ -57,7 +57,10 @@ export function usersManagementTemplate() {
           <tbody class="users-management__tbody">
           </tbody>
         </table>
-        <div class="admin-pagination" style="display:flex; gap:6px; padding: 12px 16px; border-top: 0.5px solid #e5e7eb;"></div>
+        <div class="admin-pagination">
+          <span id="um-page-info"></span>
+          <div id="um-page-buttons"></div>
+        </div>
       </div>
     </div>
   `;

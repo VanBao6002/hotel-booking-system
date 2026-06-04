@@ -1,7 +1,9 @@
 package com.hotel.booking.service;
 
 import com.hotel.booking.dto.HotelBranchDTO;
+import com.hotel.booking.dto.LocationsDTO;
 import com.hotel.booking.dto.RoomDTO;
+import com.hotel.booking.exception.ConflictException;
 import com.hotel.booking.exception.ResourceNotFoundException;
 import com.hotel.booking.repository.HotelBranchRepository;
 import com.hotel.booking.repository.RoomRepository;
@@ -22,6 +24,10 @@ public class HotelManagementService {
 
     public List<HotelBranchDTO> getAllHotels() {
         return hotelRepository.getAllHotelBranches();
+    }
+
+    public List<LocationsDTO> getLocations() {
+        return hotelRepository.getLocations();
     }
 
     public HotelBranchDTO getHotelById(Integer hotelId) {
@@ -64,12 +70,25 @@ public class HotelManagementService {
         getHotelById(hotelId);
         normalizeRoomDefaults(roomDTO);
         validateRoom(roomDTO);
+        normalizeAndValidateRoomType(roomDTO);
+        ensureRoomNumberAvailable(hotelId, roomDTO.getRoomNumber(), null);
         return roomRepository.addRoom(hotelId, roomDTO);
     }
 
     @Transactional
     public RoomDTO updateRoom(Integer hotelId, Integer roomId, RoomDTO roomDTO) {
         getHotelById(hotelId);
+        RoomDTO existing = roomRepository.getRoomByHotelAndId(hotelId, roomId);
+        if (existing == null) {
+            throw new ResourceNotFoundException("Room not found with ID: " + roomId);
+        }
+
+        int requestedRoomNumber = roomDTO.getRoomNumber() > 0 ? roomDTO.getRoomNumber() : existing.getRoomNumber();
+        if (hasText(roomDTO.getTypeCode())) {
+            roomDTO.setTypeCode(normalizedAllowedRoomType(roomDTO.getTypeCode()));
+        }
+        ensureRoomNumberAvailable(hotelId, requestedRoomNumber, roomId);
+
         RoomDTO updated = roomRepository.updateRoom(hotelId, roomId, roomDTO);
         if (updated == null) {
             throw new ResourceNotFoundException("Room not found with ID: " + roomId);
@@ -93,6 +112,9 @@ public class HotelManagementService {
         if (!hasText(hotelDTO.getPhoneNumber())) {
             throw new IllegalArgumentException("Hotel phone number is required");
         }
+        if (!hasText(hotelDTO.getLocationName())) {
+            throw new IllegalArgumentException("Hotel location is required");
+        }
     }
 
     private void validateRoom(RoomDTO roomDTO) {
@@ -110,6 +132,24 @@ public class HotelManagementService {
         }
         if (!hasText(roomDTO.getArea())) {
             throw new IllegalArgumentException("Room area is required");
+        }
+    }
+
+    private void normalizeAndValidateRoomType(RoomDTO roomDTO) {
+        roomDTO.setTypeCode(normalizedAllowedRoomType(roomDTO.getTypeCode()));
+    }
+
+    private String normalizedAllowedRoomType(String typeCode) {
+        String normalized = hasText(typeCode) ? typeCode.trim().toUpperCase() : "SINGLE";
+        if (!"SINGLE".equals(normalized) && !"DOUBLE".equals(normalized)) {
+            throw new IllegalArgumentException("Room type must be SINGLE or DOUBLE");
+        }
+        return normalized;
+    }
+
+    private void ensureRoomNumberAvailable(Integer hotelId, Integer roomNumber, Integer excludingRoomId) {
+        if (roomRepository.existsRoomNumberInHotel(hotelId, roomNumber, excludingRoomId)) {
+            throw new ConflictException("Room number already exists in this hotel");
         }
     }
 
