@@ -185,6 +185,10 @@ public class HotelBranchRepository {
         return getHotelBranchById(hotelId);
     }
 
+    public int updateHotelImage(int hotelId, String imageUrl) {
+        return jdbcTemplate.update("UPDATE hotelbranch SET image_url = ? WHERE id = ?", imageUrl, hotelId);
+    }
+
     public int deleteHotelBranch(Integer hotelId) {
         jdbcTemplate.update("DELETE FROM hotel_services WHERE hotel_id = ?", hotelId);
         jdbcTemplate.update("DELETE FROM hotelratingsummary WHERE hotel_branch_id = ?", hotelId);

@@ -8,6 +8,8 @@ import {
   getLocations,
   updateHotel,
   updateRoom,
+  uploadHotelMedia,
+  uploadRoomMedia,
 } from "../../services/admin.js";
 
 let allHotels = [];
@@ -120,6 +122,14 @@ function placeholderImage(label = "Chưa có ảnh") {
   return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect fill='%23e5e7eb' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239ca3af' font-size='20'%3E${encodeURIComponent(label)}%3C/text%3E%3C/svg%3E`;
 }
 
+function resolveMediaUrl(url) {
+  if (!url) return url;
+  if (url.startsWith("/media/")) {
+    return `http://localhost:8080${url}`;
+  }
+  return url;
+}
+
 function generateStars(rating) {
   const fullStars = Math.floor(Number(rating) || 0);
   const hasHalf = (Number(rating) || 0) % 1 !== 0;
@@ -136,7 +146,7 @@ function generateStars(rating) {
 
 function renderHotelCard(rawHotel) {
   const hotel = normalizeHotel(rawHotel);
-  const imageSrc = hotel.imageUrl || placeholderImage();
+  const imageSrc = resolveMediaUrl(hotel.imageUrl) || placeholderImage();
 
   return `
     <div class="hotel-card">
@@ -373,6 +383,11 @@ function openHotelForm({ mode, defaults = {}, locations = [], onSubmit }) {
           <span>URL/tên file ảnh đại diện</span>
           <input name="imageUrl" type="text" value="${escapeHtml(defaults.imageUrl || "")}" placeholder="assets/images/example-banner.jpeg hoặc https://...">
         </label>
+        <label>
+          <span>Ảnh đại diện khách sạn</span>
+          <input type="file" name="hotelImageFile" accept="image/*">
+          <small>Chọn ảnh ở đây, hệ thống sẽ tải ảnh lên tự động khi nhấn Lưu thay đổi.</small>
+        </label>
       </form>
     `,
     footer: `
@@ -382,12 +397,27 @@ function openHotelForm({ mode, defaults = {}, locations = [], onSubmit }) {
     onReady(modal, close) {
       const form = modal.querySelector("#hotel-admin-form");
       const submitBtn = modal.querySelector(".hotel-modal-btn--primary");
+      const fileInput = modal.querySelector("input[name=\"hotelImageFile\"]");
+      const hotelImgInput = modal.querySelector("input[name=\"imageUrl\"]");
+      let pendingFile = null;
+
+      fileInput?.addEventListener("change", (event) => {
+        pendingFile = event.target.files?.[0] || null;
+      });
+
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         try {
           const payload = hotelPayloadFromForm(form);
           setButtonLoading(submitBtn, true, submitLabel);
-          await onSubmit(payload);
+          const createdHotel = await onSubmit(payload);
+          if (pendingFile && createdHotel?.id) {
+            const result = await uploadHotelMedia(createdHotel.id, pendingFile);
+            if (result?.mediaUrl) {
+              hotelImgInput.value = result.mediaUrl;
+            }
+            await loadHotels({ preserveStatus: true });
+          }
           close();
         } catch (err) {
           setModalError(modal, friendlyError(err, err.message || "Thao tác khách sạn thất bại."));
@@ -453,6 +483,11 @@ function openRoomForm({ hotelId, mode, defaults = {}, existingRooms = [], onSubm
           <span>URL/tên file ảnh phòng</span>
           <input name="roomIMG" type="text" value="${escapeHtml(room.roomIMG)}">
         </label>
+        <label>
+          <span>Ảnh phòng</span>
+          <input type="file" name="roomImageFile" accept="image/*">
+          <small>Chọn ảnh ở đây, hệ thống sẽ tải ảnh lên tự động khi nhấn Lưu phòng.</small>
+        </label>
         <label class="hotel-admin-form__wide">
           <span>Mô tả</span>
           <textarea name="description" rows="3">${escapeHtml(room.description || "")}</textarea>
@@ -466,6 +501,14 @@ function openRoomForm({ hotelId, mode, defaults = {}, existingRooms = [], onSubm
     onReady(modal, close) {
       const form = modal.querySelector("#hotel-room-form");
       const submitBtn = modal.querySelector(".hotel-modal-btn--primary");
+      const fileInput = modal.querySelector("input[name=\"roomImageFile\"]");
+      const roomImgInput = modal.querySelector("input[name=\"roomIMG\"]");
+      let pendingFile = null;
+
+      fileInput?.addEventListener("change", (event) => {
+        pendingFile = event.target.files?.[0] || null;
+      });
+
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         try {
@@ -474,7 +517,13 @@ function openRoomForm({ hotelId, mode, defaults = {}, existingRooms = [], onSubm
             throw new Error(`Số phòng ${payload.roomNumber} đã tồn tại trong khách sạn này.`);
           }
           setButtonLoading(submitBtn, true, submitLabel);
-          await onSubmit(payload);
+
+          const createdRoom = await onSubmit(payload);
+          if (pendingFile && createdRoom?.id) {
+            await uploadRoomMedia(createdRoom.id, pendingFile);
+            await loadHotels({ preserveStatus: true });
+          }
+
           close();
         } catch (err) {
           setModalError(modal, friendlyError(err, err.message || "Thao tác phòng thất bại."));
@@ -547,7 +596,7 @@ function renderRoomRows(rooms) {
         <tbody>
           ${rooms.map(rawRoom => {
             const room = normalizeRoom(rawRoom);
-            const roomImage = room.roomIMG || placeholderImage("Phòng");
+            const roomImage = resolveMediaUrl(room.roomIMG || placeholderImage("Phòng"));
             return `
               <tr>
                 <td>
@@ -605,9 +654,10 @@ function openRoomsModal(hotel) {
           mode: "add",
           existingRooms: rooms,
           onSubmit: async (room) => {
-            await createRoom(hotel.id, room);
+            const createdRoom = await createRoom(hotel.id, room);
             await loadHotels({ preserveStatus: true });
             setStatus("Đã tạo phòng.");
+            return createdRoom;
           },
         });
       });
@@ -625,9 +675,10 @@ function openRoomsModal(hotel) {
               defaults: room,
               existingRooms: rooms,
               onSubmit: async (payload) => {
-                await updateRoom(hotel.id, roomId, payload);
+                const updatedRoom = await updateRoom(hotel.id, roomId, payload);
                 await loadHotels({ preserveStatus: true });
                 setStatus("Đã cập nhật phòng.");
+                return updatedRoom;
               },
             });
           }
@@ -660,9 +711,10 @@ async function handleAddHotel() {
     mode: "add",
     locations,
     onSubmit: async (hotel) => {
-      await createHotel(hotel);
+      const createdHotel = await createHotel(hotel);
       await loadHotels({ preserveStatus: true });
       setStatus("Đã tạo khách sạn.");
+      return createdHotel;
     },
   });
 }
@@ -677,9 +729,10 @@ async function handleEditHotel(hotelId) {
     defaults: current,
     locations,
     onSubmit: async (hotel) => {
-      await updateHotel(hotelId, hotel);
+      const updatedHotel = await updateHotel(hotelId, hotel);
       await loadHotels({ preserveStatus: true });
       setStatus("Đã cập nhật khách sạn.");
+      return updatedHotel;
     },
   });
 }

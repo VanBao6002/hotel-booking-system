@@ -13,6 +13,15 @@ export const updateHotel = (hotelId, hotel) => apiClient(`/api/v1/hotels/${hotel
 });
 export const deleteHotel = (hotelId) => apiClient(`/api/v1/hotels/${hotelId}`, { method: "DELETE" });
 
+export const uploadHotelMedia = (hotelId, file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  return apiClient(`/api/v1/hotels/${hotelId}/media`, {
+    method: "POST",
+    body: formData,
+  });
+};
+
 export const getHotelRooms = (hotelId) => apiClient(`/api/v1/hotels/${hotelId}/rooms`, { method: "GET" });
 export const createRoom = (hotelId, room) => apiClient(`/api/v1/hotels/${hotelId}/rooms`, {
   method: "POST",
@@ -23,6 +32,15 @@ export const updateRoom = (hotelId, roomId, room) => apiClient(`/api/v1/hotels/$
   body: JSON.stringify(room),
 });
 export const deleteRoom = (hotelId, roomId) => apiClient(`/api/v1/hotels/${hotelId}/rooms/${roomId}`, { method: "DELETE" });
+
+export const uploadRoomMedia = (roomId, file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  return apiClient(`/api/v1/rooms/${roomId}/media`, {
+    method: "POST",
+    body: formData,
+  });
+};
 
 export const getBookings = () => apiClient("/api/v1/bookings", { method: "GET" });
 export const searchBookings = (filters) => apiClient("/api/v1/bookings/search", {

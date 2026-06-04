@@ -14,7 +14,7 @@ function readProfileFromStorage() {
         dateOfBirth: userData.dateOfBirth ?? "",
         gender: userData.gender ?? "",
         phoneNumber: userData.phoneNumber ?? "",
-        address: userData.currentAddress ?? "",
+        currentAddress: userData.currentAddress ?? "",
     };
 }
 
@@ -263,7 +263,7 @@ async function saveProfile({ force = false } = {}) {
             dateOfBirth: newProfile.dateOfBirth || null,
             gender: newProfile.gender || null,
             phoneNumber: newProfile.phoneNumber,
-            currentAddress: newProfile.address || "",
+            currentAddress: newProfile.currentAddress || "",
         });
 
         localStorage.setItem("userData", JSON.stringify(updated));
