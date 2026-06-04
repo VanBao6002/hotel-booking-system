@@ -1,6 +1,6 @@
 import { navigation } from "../../router/router.js";
 import { bookingRoom, getReviewsHotel } from "../../services/hotel.js";
-import { formatDateToDisplay, HotelService, safeJsonParse } from "../../utils/utils.js";
+import { formatDateToDisplay, HotelService, safeJsonParse, resolveMediaUrl } from "../../utils/utils.js";
 
 let isShowRoomDetailInit = false;
 
@@ -10,6 +10,26 @@ function renderHotelGenaral(hotelName, price, address, phoneNumber){
     document.querySelector(".booking__info-genaral-price-current").innerText= price.toLocaleString("vi-VN") + " VNĐ";
     document.querySelector(".booking__info-genaral-contact-body span:nth-child(1)").innerText = "Địa chỉ: " + address;
     document.querySelector(".booking__info-genaral-contact-body span:nth-child(2)").innerText = "Số điện thoại: " + phoneNumber;
+}
+
+function renderBookingGallery(hotel, rooms) {
+    const mainImg = document.querySelector(".booking__picture-main-img img");
+    const thumbs = document.querySelectorAll(".booking__picture-add-img img");
+    if (!mainImg || thumbs.length === 0) return;
+
+    const mainSrc = resolveMediaUrl(hotel.imageUrl) || "assets/images/example-room.jpg";
+    mainImg.src = mainSrc;
+    mainImg.alt = hotel.locationName || hotel.address || "Hình phòng";
+
+    const roomImages = rooms
+        .map(room => resolveMediaUrl(room.roomIMG))
+        .filter(src => src)
+        .slice(0, thumbs.length);
+
+    thumbs.forEach((thumb, index) => {
+        thumb.src = roomImages[index] || mainSrc;
+        thumb.alt = `Hình phòng ${index + 1}`;
+    });
 }
 
 function renderRoomType(rooms, roomType) {
@@ -218,6 +238,14 @@ function showRoomDetail() {
                 showRoomId.innerText = "Phòng " + roomDetail.roomNumber;
             }
 
+            const showRoomImg = showRoomModal.querySelector(".show-room__detail-img");
+            if (showRoomImg) {
+                const imageSrc = resolveMediaUrl(roomDetail.roomIMG) || "assets/images/example-room.jpg";
+                showRoomImg.innerHTML = `
+                    <img src="${imageSrc}" alt="Phòng ${roomDetail.roomNumber}">
+                `;
+            }
+
             const showRoomGenaral = showRoomModal.querySelector(".show-room__detail-genaral-body");
             if(showRoomGenaral) {
                 showRoomGenaral.innerHTML = `
@@ -367,8 +395,10 @@ function renderBooking() {
 
     const singleRooms = HotelService.getRooms(hotelId, "SINGLE");
     const doubleRooms = HotelService.getRooms(hotelId, "DOUBLE");
+    const allRooms = [...singleRooms, ...doubleRooms];
 
     renderHotelGenaral(hotel.id, hotel.cheapestRoom.price, hotel.address, hotel.phoneNumber);
+    renderBookingGallery(hotel, allRooms);
     document.querySelector(".booking__info-room-body").innerHTML = renderRoomType(singleRooms, "SINGLE")+ renderRoomType(doubleRooms, "DOUBLE");
     document.querySelector(".booking__info-service-body").innerHTML = renderService(hotel.services);
     renderConfirm();

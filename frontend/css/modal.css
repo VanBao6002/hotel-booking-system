@@ -251,9 +251,18 @@
     cursor: pointer;
 }
 .show-room__detail-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
     height: 550px;
     width: 700px;
     background-color: white;
+}
+.show-room__detail-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .show-room__detail-info {
     display: flex;

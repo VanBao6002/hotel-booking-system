@@ -36,6 +36,7 @@ export const HotelService = {
                 locationName: branch.locationName,
                 averageStar: branch.averageStar,
                 services: branch.services,
+                imageUrl: branch.imageUrl || "",
                 cheapestRoom: {
                     price: cheapestRoom.price
                 },
@@ -48,6 +49,7 @@ export const HotelService = {
                         numberOfBed: room.numberOfBed,
                         price: room.price,
                         description: room.description,
+                        roomIMG: room.roomIMG || room.roomImg || "assets/images/example-room.jpg",
                         typeCode: room.typeCode,
                         roomStatus: room.roomStatus,
                         services: room.services
@@ -104,6 +106,7 @@ export const HotelService = {
                 numberOfBed: room.numberOfBed,
                 price: room.price,
                 description: room.description,
+                roomIMG: room.roomIMG || room.roomImg || "assets/images/example-room.jpg",
                 typeCode: room.typeCode,
                 roomStatus: room.roomStatus,
                 services: room.services
@@ -112,6 +115,15 @@ export const HotelService = {
         return rooms;
     }
 }
+
+export function resolveMediaUrl(url) {
+    if (!url) return url;
+    if (url.startsWith("/media/")) {
+        return `http://localhost:8080${url}`;
+    }
+    return url;
+}
+
 export function isValidEmail(email) {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
