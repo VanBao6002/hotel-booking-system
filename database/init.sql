@@ -129,7 +129,8 @@ CREATE TABLE IF NOT EXISTS room (
     CONSTRAINT fk_room_typeroom FOREIGN KEY (type_room_id)
         REFERENCES typeroom(id) ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT fk_room_roomstatus FOREIGN KEY (room_status_id)
-        REFERENCES roomstatus(id) ON DELETE SET NULL ON UPDATE CASCADE
+        REFERENCES roomstatus(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT uq_room_hotel_number UNIQUE (hotel_branch_id, room_number)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS users (

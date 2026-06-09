@@ -2,31 +2,42 @@ import { getBookingHistory } from "../../services/hotel.js";
 import { safeJsonParse } from "../../utils/utils.js";
 import { submitReview } from "../../services/hotel.js";
 
+function parseLocalDate(value) {
+    const [year, month, day] = String(value || "").split("-").map(Number);
+    if (!year || !month || !day) return null;
+    return new Date(year, month - 1, day);
+}
+
+function formatDate(date) {
+    const dateObj = parseLocalDate(date);
+    if (!dateObj) return "-";
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const year = dateObj.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+function formatDateTime(dateTime) {
+    if (!dateTime) return "-";
+    const normalized = String(dateTime).includes("T") ? String(dateTime) : String(dateTime).replace(" ", "T");
+    const date = new Date(normalized);
+    if (Number.isNaN(date.getTime())) return "-";
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
 function handleData(rawData) {
-    function formatDateTime(dateTime) {
-        const date = new Date(dateTime);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${day}/${month}/${year} ${hours}:${minutes}`; 
-    }
-
-    function formatDate(date) {
-        const dateObj = new Date(date);
-        const day = String(dateObj.getDate()).padStart(2, '0');
-        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const year = dateObj.getFullYear();
-        return `${day}/${month}/${year}`; 
-    }
-
     const roomList = rawData.bookingRooms.map(room => room.roomNumber);
 
     const formattedData = {
         bookingId: rawData.id,
         hotelBranchId: rawData.hotelBranchId,
         roomList: roomList,
+        rawCheckOutDate: rawData.checkOutDate,
         checkInDate: formatDate(rawData.checkInDate),
         checkOutDate: formatDate(rawData.checkOutDate),
         bookingPrice: rawData.bookingPrice,
@@ -68,12 +79,11 @@ function renderBooking(userId){
         
         reviewButtons.forEach(button => {
 
-            const checkOutDate = button.closest("tr").querySelector("td:nth-child(5)").textContent;            
-            const checkOut = new Date(checkOutDate.split("/").reverse().join("-"));
+            const checkOut = parseLocalDate(button.dataset.checkOutDate);
             
-            if(checkOut > now && !button.classList.contains("reviewed")) {
+            if(checkOut && checkOut > now && !button.classList.contains("reviewed")) {
                 button.classList.remove("active");
-                button.textContent = "Chưa thể đánh giá";
+                button.textContent = "Chưa tới ngày trả phòng";
             }
             else {
                 button.classList.add("active");
@@ -206,7 +216,7 @@ function renderBooking(userId){
                         <td>${bookingData.checkOutDate}</td>
                         <td>${bookingData.bookingPrice.toLocaleString("vi-VN")} VND</td>
                         <td>${bookingData.bookedAt}</td>
-                        <td><div class="rating-btn ${reviewed}" data-booking-id="${bookingData.bookingId}"></div></td>
+                        <td><div class="rating-btn ${reviewed}" data-booking-id="${bookingData.bookingId}" data-check-out-date="${bookingData.rawCheckOutDate}"></div></td>
                     </tr>
                 `;
                 // console.log(bookingData);

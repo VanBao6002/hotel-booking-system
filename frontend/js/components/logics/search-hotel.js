@@ -1,5 +1,5 @@
 import { navigation } from "../../router/router.js";
-import {  HotelService, safeJsonParse } from "../../utils/utils.js";
+import { HotelService, safeJsonParse, resolveMediaUrl } from "../../utils/utils.js";
 import { initBookingSearch } from "../logics/booking-search.js";
 
 function extraOption() {
@@ -33,12 +33,13 @@ function choiceHotel() {
   };
 }
 
-function hotelCard(id, address, averageStar, price) {
+function hotelCard(id, address, averageStar, price, imageUrl) {
+  const src = resolveMediaUrl(imageUrl) || "assets/images/example-room.jpg";
   return `
     <div class="search-hotel-result__wrap" id="${id}">
       <div class="search-hotel-result__picture">
         <div class="search-hotel-result__picture-img">
-          <img src="assets/images/example-room.jpg" alt="room">
+          <img src="${src}" alt="room" onerror="this.onerror=null;this.src='assets/images/example-room.jpg'">
         </div>
       </div>
       <div class="search-hotel-result__info">
@@ -73,8 +74,8 @@ function renderHotelFilter(filterFn, sortFn) {
     if(hotelBranches && hotelBranches.length > 0) {
         let html = "";
         hotelBranches.forEach(branch => {
-            const { id, address ,averageStar, cheapestRoom: { price}} = branch;
-            html += hotelCard(id, address, averageStar, price);
+            const { id, address ,averageStar, cheapestRoom: { price}, imageUrl } = branch;
+            html += hotelCard(id, address, averageStar, price, imageUrl);
         });
         hotelResultEl.innerHTML = html;
     }

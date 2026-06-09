@@ -4,7 +4,7 @@
     justify-content: space-between;
     padding: 10px 0;
     border-radius: 10px;
-    background-color: #0a9af2;
+    background-color: var(--slate-blue);
     /* margin-top: calc(var(--header-height) + 24px); */
 }
 .booking-history-title {
@@ -44,7 +44,7 @@
 }
 .rating-btn.active {
     color: white;
-    background-color: #ff5e1f;
+    background-color: var(--terracotta);
     cursor: pointer;
 }
 .rating-btn.reviewed {
@@ -53,6 +53,6 @@
     background-color: transparent;
 }
 .rating-btn.active:hover {
-    background-color: #ff5e1f;
-    filter: brightness(80%);
+    background-color: var(--terracotta);
+    filter: brightness(90%);
 }

@@ -1,6 +1,7 @@
 package com.hotel.booking.repository;
 
 import com.hotel.booking.dto.HotelBranchDTO;
+import com.hotel.booking.dto.LocationsDTO;
 import com.hotel.booking.dto.RoomDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -35,6 +36,16 @@ public class HotelBranchRepository {
         hotel.setImageUrl(rs.getString("image_url"));
         return hotel;
     };
+
+    public List<LocationsDTO> getLocations() {
+        return jdbcTemplate.query(
+            "SELECT id, name FROM location ORDER BY name",
+            (rs, rowNum) -> new LocationsDTO(
+                rs.getInt("id"),
+                rs.getString("name")
+            )
+        );
+    }
 
     public List<HotelBranchDTO> getAllHotelBranches() {
         String sql = """
@@ -174,6 +185,10 @@ public class HotelBranchRepository {
         return getHotelBranchById(hotelId);
     }
 
+    public int updateHotelImage(int hotelId, String imageUrl) {
+        return jdbcTemplate.update("UPDATE hotelbranch SET image_url = ? WHERE id = ?", imageUrl, hotelId);
+    }
+
     public int deleteHotelBranch(Integer hotelId) {
         jdbcTemplate.update("DELETE FROM hotel_services WHERE hotel_id = ?", hotelId);
         jdbcTemplate.update("DELETE FROM hotelratingsummary WHERE hotel_branch_id = ?", hotelId);
@@ -271,18 +286,7 @@ public class HotelBranchRepository {
             return existingIds.get(0);
         }
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO location(name) VALUES (?)",
-                Statement.RETURN_GENERATED_KEYS
-            );
-            ps.setString(1, locationName.trim());
-            return ps;
-        }, keyHolder);
-
-        Number key = keyHolder.getKey();
-        return key == null ? null : key.intValue();
+        throw new IllegalArgumentException("Location must exist in database: " + locationName.trim());
     }
 
     private boolean hasText(String value) {

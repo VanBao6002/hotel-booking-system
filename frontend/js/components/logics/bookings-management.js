@@ -31,21 +31,62 @@ function friendlyError(err, fallback) {
     return message;
 }
 
+function translateMonthText(value) {
+    const months = {
+        Jan: "Tháng 1",
+        Feb: "Tháng 2",
+        Mar: "Tháng 3",
+        Apr: "Tháng 4",
+        May: "Tháng 5",
+        Jun: "Tháng 6",
+        Jul: "Tháng 7",
+        Aug: "Tháng 8",
+        Sep: "Tháng 9",
+        Oct: "Tháng 10",
+        Nov: "Tháng 11",
+        Dec: "Tháng 12",
+    };
+    return String(value || "").replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/g, month => months[month] || month);
+}
+
+function formatDateVi(value) {
+    if (!value) return "";
+    const raw = String(value);
+    const normalized = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? `${raw}T00:00:00` : raw;
+    const date = new Date(normalized);
+    if (Number.isNaN(date.getTime())) return translateMonthText(raw);
+    return date.toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+    });
+}
+
 function formatDates(booking) {
-    if (booking.formattedDates) return booking.formattedDates;
-    if (!booking.checkInDate || !booking.checkOutDate) return "-";
-    return `${booking.checkInDate} - ${booking.checkOutDate}`;
+    const checkIn = formatDateVi(booking.checkInDate);
+    const checkOut = formatDateVi(booking.checkOutDate);
+    if (checkIn && checkOut) return `${checkIn} - ${checkOut}`;
+    if (booking.formattedDates) return translateMonthText(booking.formattedDates);
+    return "-";
+}
+
+function roomTypeLabel(type) {
+    const normalized = String(type || "").trim().toUpperCase();
+    if (normalized === "SINGLE" || normalized === "SINGLE ROOM") return "Phòng đơn";
+    if (normalized === "DOUBLE" || normalized === "DOUBLE ROOM") return "Phòng đôi";
+    return type || "-";
 }
 
 function mapBooking(booking) {
+    const reviewed = booking.reviewed === true;
     return {
         id: booking.id,
-        guest: booking.guestName || "Guest",
-        hotel: booking.hotelName || "Unknown hotel",
+        guest: booking.guestName || "Khách",
+        hotel: booking.hotelName || "Chưa rõ khách sạn",
         dates: formatDates(booking),
         price: formatMoney(booking.totalPrice),
-        payStatus: booking.paymentStatus || "Pending",
-        bookStatus: booking.bookingStatus || "Confirmed",
+        reviewed,
+        bookStatus: reviewed ? "ĐÃ ĐÁNH GIÁ" : "CHƯA ĐÁNH GIÁ",
     };
 }
 
@@ -59,7 +100,7 @@ function populateHotelFilter(bookings) {
         .filter(Boolean))]
         .sort((a, b) => a.localeCompare(b));
 
-    select.innerHTML = `<option value="">Hotel</option>` + hotels
+    select.innerHTML = `<option value="">Khách sạn</option>` + hotels
         .map(hotel => `<option value="${escapeHtml(hotel)}">${escapeHtml(hotel)}</option>`)
         .join("");
 
@@ -76,14 +117,8 @@ function parseDateRange(value) {
     };
 }
 
-function tagStyle(value, kind) {
-    const strong = value === "Paid" || value === "Confirmed";
-    if (kind === "payment") {
-        return strong
-            ? "background: linear-gradient(135deg,#c9a84c,#e8cc7a); color: #1a1a2e;"
-            : "background: #1a1a2e; color: #f0e6c8;";
-    }
-    return strong
+function tagStyle(reviewed) {
+    return reviewed
         ? "border: 1.5px solid #c9a84c; color: #c9a84c; background: transparent;"
         : "border: 1.5px solid #1a1a2e; color: #1a1a2e; background: transparent;";
 }
@@ -96,7 +131,7 @@ function renderRows(data) {
     const pageData = data.slice(start, start + PAGE_SIZE);
 
     if (pageData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="padding:24px;text-align:center;color:#6b7280;">No bookings found</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="padding:24px;text-align:center;color:#6b7280;">Chưa có đặt phòng</td></tr>`;
         updatePagination(data);
         return;
     }
@@ -111,13 +146,10 @@ function renderRows(data) {
                 <td style="padding:13px 16px;font-size:13px;color:#4b5563;">${escapeHtml(b.dates)}</td>
                 <td style="padding:13px 16px;font-size:13px;color:#1a1a2e;font-weight:500;">${escapeHtml(b.price)}</td>
                 <td style="padding:13px 16px;">
-                    <span style="${tagStyle(b.payStatus, "payment")} padding:4px 12px;border-radius:5px;font-size:12px;font-weight:600;white-space:nowrap;">${escapeHtml(b.payStatus)}</span>
+                    <span style="${tagStyle(b.reviewed)} padding:4px 12px;border-radius:5px;font-size:12px;font-weight:600;white-space:nowrap;">${escapeHtml(b.bookStatus)}</span>
                 </td>
                 <td style="padding:13px 16px;">
-                    <span style="${tagStyle(b.bookStatus, "booking")} padding:4px 12px;border-radius:5px;font-size:12px;font-weight:600;white-space:nowrap;">${escapeHtml(b.bookStatus)}</span>
-                </td>
-                <td style="padding:13px 16px;">
-                    <a href="#" class="bm-view-details" data-id="${b.id}" style="font-size:13px;color:#c9a84c;font-weight:600;text-decoration:none;">View Details</a>
+                    <a href="#" class="bm-view-details" data-id="${b.id}" style="font-size:13px;color:#c9a84c;font-weight:600;text-decoration:none;">Xem chi tiết</a>
                 </td>
             </tr>
         `;
@@ -142,7 +174,7 @@ function updatePagination(data) {
     const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
     const info = document.getElementById("bm-page-info");
-    if (info) info.textContent = `Dang hien thi ${start} den ${end} trong tong ${total} dat phong`;
+    if (info) info.textContent = `Đang hiển thị ${start} đến ${end} trong tổng ${total} đặt phòng`;
 
     const btns = document.getElementById("bm-page-buttons");
     if (!btns) return;
@@ -190,30 +222,29 @@ function showBookingDetails(booking) {
             <section class="bm-detail-modal__panel" role="dialog" aria-modal="true">
                 <header class="bm-detail-modal__header">
                     <div>
-                        <h3>Booking ${escapeHtml(mapped.id)}</h3>
+                        <h3>Đặt phòng ${escapeHtml(mapped.id)}</h3>
                         <p>${escapeHtml(mapped.hotel)}</p>
                     </div>
-                    <button type="button" class="bm-detail-modal__close" data-close-booking-modal aria-label="Close">
+                    <button type="button" class="bm-detail-modal__close" data-close-booking-modal aria-label="Đóng">
                         <i class="fa fa-times"></i>
                     </button>
                 </header>
                 <div class="bm-detail-modal__body">
                     <div class="bm-detail-grid">
-                        <div><span>Guest</span><strong>${escapeHtml(mapped.guest)}</strong></div>
+                        <div><span>Khách</span><strong>${escapeHtml(mapped.guest)}</strong></div>
                         <div><span>Email</span><strong>${escapeHtml(booking.guestEmail || "-")}</strong></div>
-                        <div><span>Dates</span><strong>${escapeHtml(mapped.dates)}</strong></div>
-                        <div><span>Total</span><strong>${escapeHtml(mapped.price)}</strong></div>
-                        <div><span>Payment</span><strong>${escapeHtml(mapped.payStatus)}</strong></div>
-                        <div><span>Status</span><strong>${escapeHtml(mapped.bookStatus)}</strong></div>
+                        <div><span>Ngày</span><strong>${escapeHtml(mapped.dates)}</strong></div>
+                        <div><span>Tổng tiền</span><strong>${escapeHtml(mapped.price)}</strong></div>
+                        <div><span>Trạng thái</span><strong>${escapeHtml(mapped.bookStatus)}</strong></div>
                     </div>
                     <div class="bm-detail-rooms">
-                        <h4>Rooms</h4>
+                        <h4>Phòng</h4>
                         ${rooms.length ? rooms.map(room => `
                             <div class="bm-detail-room">
-                                <span>Room ${escapeHtml(room.roomNumber || room.roomId || "-")}</span>
-                                <strong>${escapeHtml(room.roomType || "-")} | ${formatMoney(room.roomPrice)}</strong>
+                                <span>Phòng ${escapeHtml(room.roomNumber || room.roomId || "-")}</span>
+                                <strong>${escapeHtml(roomTypeLabel(room.roomType))} | ${formatMoney(room.roomPrice)}</strong>
                             </div>
-                        `).join("") : `<div class="bm-detail-room bm-detail-room--empty">No room details</div>`}
+                        `).join("") : `<div class="bm-detail-room bm-detail-room--empty">Chưa có chi tiết phòng</div>`}
                     </div>
                 </div>
             </section>
@@ -239,10 +270,10 @@ async function loadBookings() {
         currentPage = 1;
         renderRows(filtered);
     } catch (err) {
-        console.error("Could not load bookings", err);
+        console.error("Không thể tải đặt phòng", err);
         const tbody = document.getElementById("bm-tbody");
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="8" style="padding:24px;text-align:center;color:#b42318;">${friendlyError(err, "Could not load bookings from database.")}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="padding:24px;text-align:center;color:#b42318;">${friendlyError(err, "Không thể tải đặt phòng từ cơ sở dữ liệu.")}</td></tr>`;
         }
     }
 }
@@ -258,10 +289,10 @@ async function applyServerFilter() {
         currentPage = 1;
         renderRows(filtered);
     } catch (err) {
-        console.error("Booking search failed", err);
+        console.error("Tìm kiếm đặt phòng thất bại", err);
         const tbody = document.getElementById("bm-tbody");
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="8" style="padding:24px;text-align:center;color:#b42318;">${friendlyError(err, "Search failed.")}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="padding:24px;text-align:center;color:#b42318;">${friendlyError(err, "Tìm kiếm thất bại.")}</td></tr>`;
         }
     }
 }

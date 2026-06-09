@@ -51,9 +51,9 @@ function updateRowStatus(userId, status, message) {
 }
 
 function roleBadge(role) {
-  if (role === "manager") return `<span class="role-badge badge-admin">Manager</span>`;
-  if (role === "staff") return `<span class="role-badge badge-staff">Staff</span>`;
-  return `<span class="role-badge badge-user">Customer</span>`;
+  if (role === "manager") return `<span class="role-badge badge-admin">Quản lý</span>`;
+  if (role === "staff") return `<span class="role-badge badge-staff">Nhân viên</span>`;
+  return `<span class="role-badge badge-user">Khách hàng</span>`;
 }
 
 function escapeHtml(value) {
@@ -84,6 +84,7 @@ function renderRows(users) {
         <td colspan="7" style="padding: 14px; color:#666;">Không có dữ liệu</td>
       </tr>
     `;
+    renderPagination(0);
     return;
   }
 
@@ -96,7 +97,7 @@ function renderRows(users) {
       const locked = u.lockedUntil ? new Date(u.lockedUntil).toLocaleString() : "-";
       const lockReason = u.lockReason ? `<div style="font-size:11px;color:#b42318;margin-top:4px;">${escapeHtml(u.lockReason)}</div>` : "";
       const lockInfo = u.lockedUntil ? `<div style="font-size:11px;color:#6b7280;margin-top:4px;">Khóa đến: ${escapeHtml(locked)}</div>` : "";
-      const staffHotel = u.staffHotelBranchId ? `<div style="font-size:11px;color:#6b7280;margin-top:4px;">Hotel #${u.staffHotelBranchId}</div>` : "";
+      const staffHotel = u.staffHotelBranchId ? `<div style="font-size:11px;color:#6b7280;margin-top:4px;">Khách sạn #${u.staffHotelBranchId}</div>` : "";
       const disabledAction = u.active === false ? "disabled" : "";
       return `
         <tr style="border-top:1px solid #f0f0f0;" data-user-id="${u.id}">
@@ -109,9 +110,9 @@ function renderRows(users) {
           <td style="padding: 12px 14px;">
             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
               <button class="action-btn action-delete" data-user-id="${u.id}" data-user-name="${u.userName}" title="Vô hiệu hóa tài khoản" ${disabledAction}><i class="fa fa-ban"></i> Vô hiệu hóa</button>
-              <button class="action-btn action-ban" data-user-id="${u.id}" data-user-name="${u.userName}" title="Ban user" ${disabledAction}><i class="fa fa-lock"></i> Cấm</button>
-              <button class="action-btn action-warn" data-user-id="${u.id}" data-user-name="${u.userName}" title="Send warning" ${disabledAction}><i class="fa fa-exclamation-triangle"></i> Cảnh báo</button>
-              <button class="action-btn action-promote" data-user-id="${u.id}" data-user-name="${u.userName}" title="Promote to staff" ${disabledAction}><i class="fa fa-user-plus"></i> Thăng cấp</button>
+              <button class="action-btn action-ban" data-user-id="${u.id}" data-user-name="${u.userName}" title="Cấm người dùng" ${disabledAction}><i class="fa fa-lock"></i> Cấm</button>
+              <button class="action-btn action-warn" data-user-id="${u.id}" data-user-name="${u.userName}" title="Gửi cảnh báo" ${disabledAction}><i class="fa fa-exclamation-triangle"></i> Cảnh báo</button>
+              <button class="action-btn action-promote" data-user-id="${u.id}" data-user-name="${u.userName}" title="Nâng cấp thành nhân viên" ${disabledAction}><i class="fa fa-user-plus"></i> Thăng cấp</button>
             </div>
             <span class="row-status" style="display: none; font-size: 12px; margin-top: 4px; padding: 4px; border-radius: 3px;"></span>
           </td>
@@ -125,21 +126,58 @@ function renderRows(users) {
 }
 
 function renderPagination(total) {
-  const container = document.querySelector(".admin-pagination");
+  const info = document.getElementById("um-page-info");
+  const container = document.getElementById("um-page-buttons");
   if (!container) return;
-  container.innerHTML = "";
+
   const pages = Math.max(1, Math.ceil(total / pageSize));
+  const start = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const end = Math.min(currentPage * pageSize, total);
+  if (info) {
+    info.textContent = `Đang hiển thị ${start} đến ${end} trong tổng ${total} người dùng`;
+  }
+
+  container.innerHTML = "";
+  container.appendChild(makePagerBtn("<", currentPage === 1, () => {
+    currentPage--;
+    applyFiltersAndRender();
+  }));
+
   for (let p = 1; p <= pages; p++) {
-    const btn = document.createElement("button");
-    btn.className = "btn";
-    btn.textContent = p;
-    if (p === currentPage) btn.style.opacity = "0.8";
-    btn.addEventListener("click", () => {
+    const btn = makePagerBtn(p, false, () => {
       currentPage = p;
       applyFiltersAndRender();
     });
+    if (p === currentPage) {
+      btn.style.background = "linear-gradient(135deg,#c9a84c,#e8cc7a)";
+      btn.style.color = "#1a1a2e";
+      btn.style.borderColor = "transparent";
+      btn.style.fontWeight = "700";
+    }
     container.appendChild(btn);
   }
+
+  container.appendChild(makePagerBtn(">", currentPage === pages, () => {
+    currentPage++;
+    applyFiltersAndRender();
+  }));
+}
+
+function makePagerBtn(label, disabled, onClick) {
+  const btn = document.createElement("button");
+  btn.textContent = label;
+  btn.disabled = disabled;
+  btn.style.cssText = `
+    min-width: 34px; height: 34px; padding: 0 10px;
+    border: 1.5px solid #e2e2da; border-radius: 7px;
+    background: white; color: #4b5563;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.15s;
+    opacity: ${disabled ? 0.4 : 1};
+    font-family: inherit;
+  `;
+  if (!disabled) btn.addEventListener("click", onClick);
+  return btn;
 }
 
 function disableSelfActions() {
@@ -191,7 +229,7 @@ async function loadUsers() {
       status === 401
         ? "Bạn chưa đăng nhập."
         : status === 403
-          ? "Bạn không có quyền Manager để xem danh sách người dùng."
+          ? "Bạn không có quyền Quản lý để xem danh sách người dùng."
           : err?.data?.message || "Tải dữ liệu thất bại.";
     setStatus(message, "error");
     allUsers = [];
@@ -213,7 +251,7 @@ function simulateActionSuccess(userId, action) {
     const u = allUsers.find((x) => x.id === userId);
     if (u) {
       u.active = false;
-      u.lockReason = "Account disabled by manager";
+      u.lockReason = "Tài khoản đã bị quản lý vô hiệu hóa";
     }
     applyFiltersAndRender();
     updateRowStatus(userId, "success", "Đã vô hiệu hóa");
@@ -295,7 +333,7 @@ async function handleGrantStaffRole(userId, userName) {
   }
 
   if (!hotels.length) {
-    updateRowStatus(userId, "error", "✗ Chưa có khách sạn trong database");
+    updateRowStatus(userId, "error", "✗ Chưa có khách sạn trong cơ sở dữ liệu");
     return;
   }
 
@@ -326,28 +364,32 @@ function setupToolbar() {
 
   // create toolbar nodes near the status element
   const toolbar = document.createElement('div');
-  toolbar.style.display = 'flex';
-  toolbar.style.gap = '12px';
-  toolbar.style.alignItems = 'center';
-  toolbar.style.marginBottom = '12px';
+  toolbar.className = "users-management__toolbar";
 
   toolbar.innerHTML = `
-    <div style="flex:1; display:flex; gap:8px;">
-      <input class="admin-search" placeholder="Tìm theo username, email, họ tên..." style="flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:8px;" />
-      <select class="admin-filter-role" style="padding:10px 12px; border:1px solid #ddd; border-radius:8px; background:#fff;">
-        <option value="all">Tất cả vai trò</option>
-        <option value="manager">Manager</option>
-        <option value="staff">Staff</option>
-        <option value="customer">Customer</option>
-      </select>
+    <div class="users-management__search">
+      <i class="fa fa-search"></i>
+      <input class="admin-search" placeholder="Tìm theo username, email, họ tên..." />
     </div>
-    <div style="display:flex; gap:8px; align-items:center;">
-      <label style="color:#666; font-size:13px;">Hiển thị</label>
-      <select class="admin-page-size" style="padding:8px 10px; border:1px solid #ddd; border-radius:8px; background:#fff;">
+    <div class="users-management__select-wrap">
+      <select class="admin-filter-role">
+        <option value="all">Tất cả vai trò</option>
+        <option value="manager">Quản lý</option>
+        <option value="staff">Nhân viên</option>
+        <option value="customer">Khách hàng</option>
+      </select>
+      <i class="fa fa-chevron-down"></i>
+    </div>
+    <div class="users-management__page-size">
+      <label>Hiển thị</label>
+      <div class="users-management__select-wrap users-management__select-wrap--compact">
+        <select class="admin-page-size">
         <option value="5">5</option>
         <option value="10" selected>10</option>
         <option value="25">25</option>
-      </select>
+        </select>
+        <i class="fa fa-chevron-down"></i>
+      </div>
     </div>
   `;
 

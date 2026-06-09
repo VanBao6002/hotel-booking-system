@@ -132,8 +132,8 @@
 }
 
 .booking-search__last-view-text {
-    display: block ;
-    color: #0a9af2;
+    display: block;
+    color: var(--slate-blue);
     font-size: 1.4rem;
     line-height: 2rem;
     font-weight: bold;
@@ -215,7 +215,7 @@
     border-radius: 50%;
     border: none;
     cursor: pointer;
-    background-color: #d1f0ff;
+    background-color: var(--slate-blue-light);
 }
 
 .booking-search__control-btn-minus.booking-search__control-btn--limit,
@@ -232,7 +232,7 @@
 
 .booking-search__control-btn--plus:hover,
 .booking-search__control-btn-minus:hover {
-    background-color: #0a9af2;
+    background-color: var(--slate-blue);
 }
 
 .booking-search__info {

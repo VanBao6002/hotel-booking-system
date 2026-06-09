@@ -3,8 +3,10 @@ import { profileTemplate } from "../components/templates/profile.template.js"
 import { changePasswordTemplate } from "../components/templates/change-password.template.js"
 import { initProfile } from "../components/logics/profile.js";
 import { initChangePassword } from "../components/logics/change-password.js";
+import { showAppDialog } from "../utils/app-dialog.js";
 const routers = {};
 let currentPath = null;
+let isRevertingHash = false;
 
 const rules = [
     {
@@ -40,7 +42,12 @@ const rules = [
     {
         path: ["#setting"],
         roles: ["customer", "staff", "manager"],
-        item: ["profile","changePassword","home"]
+        item: []
+    },
+    {
+        path: ["#change-password"],
+        roles: ["customer", "staff", "manager"],
+        item: []
     },
     {
         path: ["#booking-history"],
@@ -156,13 +163,13 @@ function renderRoute(path) {
 
     const role = localStorage.getItem("role");
     console.log(role);
+    const handler = routers[path];
 
     if(path !== "#error") {
         const matchedRole = rules.find(rule => rule.path.includes(path));
         if(matchedRole) {
             if(matchedRole.roles.includes(role)) {
                 console.log(1);
-                const handler = routers[path];
                 if(handler) {
                     handler();
                 }
@@ -181,13 +188,46 @@ function renderRoute(path) {
 
 }
 
-export function navigation(path) {
+async function shouldBlockNavigation() {
+    const guard = window.__profileUnsavedGuard;
+    if (!guard || typeof guard.hasChanges !== "function" || !guard.hasChanges()) {
+        return false;
+    }
+
+    const choice = await showAppDialog({
+        title: "Thông tin chưa được lưu",
+        message: "Bạn đã chỉnh sửa thông tin cá nhân nhưng chưa lưu. Bạn muốn xử lý thay đổi này như thế nào?",
+        actions: [
+            { label: "Lưu và tiếp tục", value: "save", primary: true },
+            { label: "Rời đi không lưu", value: "discard", danger: true },
+            { label: "Ở lại", value: "stay" },
+        ],
+    });
+
+    if (choice === "save") {
+        const saved = await guard.save?.();
+        return !saved;
+    }
+
+    if (choice === "discard") {
+        guard.clear?.();
+        return false;
+    }
+
+    return true;
+}
+
+export async function navigation(path) {
     if(path === window.location.hash) {
         return;
     }
+    if (await shouldBlockNavigation()) {
+        return;
+    }
     window.location.hash = path;
-    renderRoute(window.location.hash);
-    renderNav(window.location.hash);
+    currentPath = path;
+    renderRoute(path);
+    renderNav(path);
     attachNavEvents();
 }
 
@@ -302,10 +342,21 @@ function attachNavEvents() {
 
 export function initRouter() {
 
-    window.onhashchange = () => {
-        currentPath = window.location.hash;
-        renderRoute(window.location.hash);
-        renderNav(window.location.hash);
+    window.onhashchange = async () => {
+        const nextPath = window.location.hash;
+        if (isRevertingHash) {
+            isRevertingHash = false;
+            return;
+        }
+        if (nextPath === currentPath) return;
+        if (await shouldBlockNavigation()) {
+            isRevertingHash = true;
+            window.location.hash = currentPath || "#home";
+            return;
+        }
+        currentPath = nextPath;
+        renderRoute(nextPath);
+        renderNav(nextPath);
         attachNavEvents();
     };
 

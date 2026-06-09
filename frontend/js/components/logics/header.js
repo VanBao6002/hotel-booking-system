@@ -1,4 +1,5 @@
 import { navigation } from "../../router/router.js";
+import { showAppDialog } from "../../utils/app-dialog.js";
 import { userLogin, userRegister } from "../../services/authentication.js";
 import { getMe, forgotPassword, resetPassword } from "../../services/users.js";
 import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
@@ -75,9 +76,6 @@ const otpField = {
 }
 
 // Su kien Dang nhap/ Dang ky
-
-
-
 const getModal = () => { return document.querySelector(".modal"); }
 const getSignInForm = () => { return document.querySelector("#form-sign-in");}
 const getSignUpForm = () => { return document.querySelector("#form-sign-up");}
@@ -135,6 +133,7 @@ function userExtra() {
     const userInfo = document.querySelector(".user__info");
     const userSignOut = userInfo.querySelector(".extra__item-sign-out");
     const userSetting = userInfo.querySelector(".extra__item-setting");
+    const userChangePassword = userInfo.querySelector(".extra__item-change-password");
     const userManage = userInfo.querySelector(".extra__item-manage");
     
     updateManageMenuVisibility();
@@ -144,6 +143,10 @@ function userExtra() {
     userSetting.onmousedown = (e) => {
         navigation("#setting");
     };
+
+    userChangePassword?.addEventListener("click", () => {
+        navigation("#change-password");
+    });
 
     userManage?.addEventListener("click", () => {
         // userInfoExtra.style.display = "none";
@@ -156,7 +159,28 @@ function userExtra() {
     });
 
     
-    userSignOut.onclick = () => {
+    userSignOut.onclick = async () => {
+        const guard = window.__profileUnsavedGuard;
+        if (guard?.hasChanges?.()) {
+            const choice = await showAppDialog({
+                title: "Thông tin chưa được lưu",
+                message: "Bạn đã chỉnh sửa thông tin cá nhân nhưng chưa lưu. Bạn muốn lưu thay đổi trước khi đăng xuất không?",
+                actions: [
+                    { label: "Lưu rồi đăng xuất", value: "save", primary: true },
+                    { label: "Đăng xuất không lưu", value: "discard", danger: true },
+                    { label: "Ở lại", value: "stay" },
+                ],
+            });
+
+            if (choice === "save") {
+                const saved = await guard.save?.();
+                if (!saved) return;
+            } else if (choice === "discard") {
+                guard.clear?.();
+            } else {
+                return;
+            }
+        }
         document.querySelector(".header__navbar-user").classList.remove("logged-in");
         localStorage.setItem("role", "guest");
         localStorage.setItem("token", "");
@@ -264,7 +288,7 @@ function showBookingHistory() {
     };
 }
 
-function attachHomeBrandNavigation() {
+function attachHomeBrandnavigation() {
     document.querySelector(".header__navbar-logo-link")?.addEventListener("click", (event) => {
         event.preventDefault();
         navigation("#home");
@@ -493,5 +517,5 @@ export function initHeader() {
     attachValidation("form-reset-password",[otpField,passwordFieldSIgnUp,confirmPasswordResetField]);
     submitForm();
     showBookingHistory();
-    attachHomeBrandNavigation();
+    attachHomeBrandnavigation();
 }
