@@ -20,7 +20,7 @@ export function homeManagerTemplate() {
                 <nav style="flex: 1; padding: 10px 0;">
                     ${renderSidebarItem("Tổng Quan", "active", "manager__btn-dashboard")}
                     ${renderSidebarItem("Quản Lý Người Dùng", "", "manager__btn-users")}
-                    ${renderSidebarItem("Quản Lý Khách Sạn", "", "manager__btn-properties")}
+                    ${renderSidebarItem("Quản Lý Các Khách Sạn", "", "manager__btn-properties")}
                     ${renderSidebarItem("Quản Lý Đặt Phòng", "", "manager__btn-bookings")}
                     ${renderSidebarItem("Quản Lý Tài Chính", "", "manager__btn-finance")}
                 </nav>
@@ -162,7 +162,7 @@ function renderStatCard(title, value, sub, type, valueId = "", subId = "") {
 const SIDEBAR_ICONS = {
     "Tổng Quan":     `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" fill="currentColor"/><rect x="9" y="1" width="6" height="6" rx="1" fill="currentColor"/><rect x="1" y="9" width="6" height="6" rx="1" fill="currentColor"/><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor"/></svg>`,
     "Quản Lý Người Dùng":     `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M1 13.5c0-2.5 2-4 5-4s5 1.5 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M12 10c1.5 0 3 .8 3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
-    "Quản Lý Khách Sạn":    `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><path d="M1 14V7l7-5 7 5v7H1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><rect x="6" y="9" width="4" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/></svg>`,
+    "Quản Lý Các Khách Sạn": `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><path d="M1 14V7l7-5 7 5v7H1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><rect x="6" y="9" width="4" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/></svg>`,
     "Quản Lý Đặt Phòng":  `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 3V1.5M11 3V1.5M2 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M5 10h2m2 0h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`,
     "Quản Lý Tài Chính":    `<svg class="sidebar-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M4 4V3a1 1 0 011-1h6a1 1 0 011 1v1" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.3"/></svg>`,
 };

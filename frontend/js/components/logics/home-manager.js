@@ -178,7 +178,7 @@ export function initHomeManager() {
     const sidebarRoutes = {
         "manager__btn-dashboard": { title: "Tổng Quan", getHTML: getDashboardHTML,         initFn: initManagerDashboard    },
         "manager__btn-users":     { title: "Quản Lý Người Dùng", getHTML: usersManagementTemplate,  initFn: initUsersManagement     },
-        "manager__btn-properties":{ title: "Quản Lý Khách Sạn", getHTML: hotelsManagementTemplate, initFn: initHotelsManagement    },
+        "manager__btn-properties":{ title: "Quản Lý Các Khách Sạn", getHTML: hotelsManagementTemplate, initFn: initHotelsManagement    },
         "manager__btn-bookings":  { title: "Quản Lý Đặt Phòng", getHTML: bookingsManagementTemplate, initFn: initBookingsManagement },
         "manager__btn-finance":   { title: "Quản Lý Tài Chính", getHTML: financeManagementTemplate, initFn: initFinanceManagement   },
     };

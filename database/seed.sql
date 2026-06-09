@@ -129,7 +129,29 @@ INSERT INTO users (user_name, email, password_hash, role_id, full_name, date_of_
 VALUES
 ('user', 'user@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Customer User', '1990-01-01', 1, '0909000000', 'HCM', 1),
 ('admin', 'admin@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 2, 'Admin User', '1995-05-05', 1, '0909111111', 'HCM', 1),
-('staff', 'staff@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 3, 'Staff User', '2000-10-10', 2, '0909222222', 'HN', 1);
+('staff', 'staff@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 3, 'Staff User', '2000-10-10', 2, '0909222222', 'HN', 1),
+
+-- Manager bổ sung, mật khẩu: password123
+('manager', 'manager@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 2, 'Hotel Manager', '1992-06-15', 1, '0909300004', 'Đà Nẵng', 1),
+
+-- 10 tài khoản khách hàng, mật khẩu: password123
+('customer01', 'customer01@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Nguyễn Minh Anh', '1996-01-12', 2, '0909400001', 'Hải Châu, Đà Nẵng', 1),
+('customer02', 'customer02@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Trần Quốc Bảo', '1994-02-18', 1, '0909400002', 'Thanh Khê, Đà Nẵng', 1),
+('customer03', 'customer03@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Lê Thu Hà', '1998-03-22', 2, '0909400003', 'Liên Chiểu, Đà Nẵng', 1),
+('customer04', 'customer04@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Phạm Hoàng Nam', '1993-04-09', 1, '0909400004', 'Sơn Trà, Đà Nẵng', 1),
+('customer05', 'customer05@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Võ Ngọc Lan', '1997-05-16', 2, '0909400005', 'Ngũ Hành Sơn, Đà Nẵng', 1),
+('customer06', 'customer06@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Đặng Gia Huy', '1995-06-25', 1, '0909400006', 'Cẩm Lệ, Đà Nẵng', 1),
+('customer07', 'customer07@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Bùi Khánh Linh', '1999-07-11', 2, '0909400007', 'Hải Châu, Đà Nẵng', 1),
+('customer08', 'customer08@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Đỗ Thành Công', '1991-08-20', 1, '0909400008', 'Thanh Khê, Đà Nẵng', 1),
+('customer09', 'customer09@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Hoàng Mỹ Duyên', '1996-09-14', 2, '0909400009', 'Sơn Trà, Đà Nẵng', 1),
+('customer10', 'customer10@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 1, 'Ngô Đức Long', '1994-10-30', 1, '0909400010', 'Liên Chiểu, Đà Nẵng', 1),
+
+-- 5 tài khoản nhân viên, mật khẩu: password123
+('staff01', 'staff01@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 3, 'Nhân Viên Nguyễn An', '1997-02-10', 1, '0909500001', 'Đà Nẵng', 1),
+('staff02', 'staff02@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 3, 'Nhân Viên Trần Bình', '1998-04-12', 1, '0909500002', 'Đà Nẵng', 1),
+('staff03', 'staff03@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 3, 'Nhân Viên Lê Chi', '1999-06-14', 2, '0909500003', 'Đà Nẵng', 1),
+('staff04', 'staff04@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 3, 'Nhân Viên Phạm Dũng', '1996-08-16', 1, '0909500004', 'Đà Nẵng', 1),
+('staff05', 'staff05@example.com', '$2a$10$6J3x2JglipdE/PZ5.KJC3uypDdE6eF323soctbNixZjq8lY5mxT7G', 3, 'Nhân Viên Võ Giang', '1998-10-18', 2, '0909500005', 'Đà Nẵng', 1);
 
 INSERT INTO services (name, description) VALUES
 ('Breakfast Buffet', 'Daily breakfast buffet at the hotel restaurant'),
@@ -227,7 +249,13 @@ VALUES
 
 
 
-INSERT INTO staff (UserID, HotelBranchID) VALUES (3, 1);
+INSERT INTO staff (UserID, HotelBranchID) VALUES
+(3, 1),
+(15, 2),
+(16, 4),
+(17, 7),
+(18, 9),
+(19, 12);
 
 
 INSERT INTO booking (
@@ -281,7 +309,31 @@ VALUES
 
 -- Branch 12
 ('2026-05-06','2026-05-08','2026-04-29 09:00:00','room34.jpg',12,2,550000),
-('2026-05-09','2026-05-11','2026-05-02 09:00:00','room35.jpg',12,3,750000);
+('2026-05-09','2026-05-11','2026-05-02 09:00:00','room35.jpg',12,3,750000),
+
+-- Tháng 1
+('2026-01-10','2026-01-12','2026-01-03 09:00:00','room3.jpg',1,1,800000),
+('2026-01-15','2026-01-17','2026-01-08 10:30:00','room12.jpg',4,2,800000),
+('2026-01-21','2026-01-23','2026-01-14 14:00:00','room21.jpg',7,3,800000),
+('2026-01-27','2026-01-29','2026-01-20 08:45:00','room30.jpg',10,1,800000),
+
+-- Tháng 2
+('2026-02-08','2026-02-10','2026-02-01 09:15:00','room6.jpg',2,2,800000),
+('2026-02-14','2026-02-16','2026-02-07 11:00:00','room15.jpg',5,3,900000),
+('2026-02-20','2026-02-22','2026-02-13 13:30:00','room24.jpg',8,1,1000000),
+('2026-02-25','2026-02-27','2026-02-18 08:30:00','room33.jpg',11,2,900000),
+
+-- Tháng 3
+('2026-03-07','2026-03-09','2026-03-01 09:00:00','room9.jpg',3,3,1000000),
+('2026-03-13','2026-03-15','2026-03-06 10:00:00','room18.jpg',6,1,800000),
+('2026-03-19','2026-03-21','2026-03-12 14:15:00','room27.jpg',9,2,900000),
+('2026-03-26','2026-03-28','2026-03-19 08:00:00','room36.jpg',12,3,800000),
+
+-- Tháng 4
+('2026-04-08','2026-04-10','2026-04-01 09:30:00','room1.jpg',1,1,400000),
+('2026-04-14','2026-04-16','2026-04-07 11:15:00','room14.jpg',5,2,700000),
+('2026-04-20','2026-04-22','2026-04-13 13:00:00','room23.jpg',8,3,600000),
+('2026-04-26','2026-04-28','2026-04-19 08:45:00','room35.jpg',12,1,600000);
 
 INSERT INTO booking_room (booking_id, room_id) VALUES
 -- Branch 1
@@ -330,7 +382,31 @@ INSERT INTO booking_room (booking_id, room_id) VALUES
 
 -- Branch 12
 (23,34),
-(24,35);
+(24,35),
+
+-- Tháng 1
+(25,3),
+(26,12),
+(27,21),
+(28,30),
+
+-- Tháng 2
+(29,6),
+(30,15),
+(31,24),
+(32,33),
+
+-- Tháng 3
+(33,9),
+(34,18),
+(35,27),
+(36,36),
+
+-- Tháng 4
+(37,1),
+(38,14),
+(39,23),
+(40,35);
 
 
 
@@ -353,6 +429,4 @@ VALUES ('Phòng sạch sẽ, dịch vụ tốt', 5, NOW(), 3, 1);
 
 INSERT INTO receipt (paymentMethod, amount, paymentDate, BookingID)
 VALUES ('Cash', 400000, '2026-04-05', 1);
-
-
 
