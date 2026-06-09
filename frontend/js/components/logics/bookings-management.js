@@ -1,4 +1,5 @@
 import { getBookings, searchBookings } from "../../services/admin.js";
+import { downloadCsv, downloadTablePdf, reportDateStamp } from "../../utils/table-export.js";
 
 const PAGE_SIZE = 6;
 let allBookings = [];
@@ -107,14 +108,6 @@ function populateHotelFilter(bookings) {
     if (hotels.includes(currentValue)) {
         select.value = currentValue;
     }
-}
-
-function parseDateRange(value) {
-    const dates = String(value || "").match(/\d{4}-\d{2}-\d{2}/g) || [];
-    return {
-        startDate: dates[0] || "",
-        endDate: dates[1] || "",
-    };
 }
 
 function tagStyle(reviewed) {
@@ -282,7 +275,15 @@ async function applyServerFilter() {
     const searchId = document.getElementById("bm-search-id")?.value || "";
     const guestName = document.getElementById("bm-guest-name")?.value || "";
     const hotel = document.getElementById("bm-hotel-select")?.value || "";
-    const { startDate, endDate } = parseDateRange(document.getElementById("bm-date-range")?.value);
+    const startDate = document.getElementById("bm-start-date")?.value || "";
+    const endDate = document.getElementById("bm-end-date")?.value || "";
+
+    if (startDate && endDate && startDate > endDate) {
+        const endInput = document.getElementById("bm-end-date");
+        endInput?.setCustomValidity("Ngày kết thúc phải bằng hoặc sau ngày bắt đầu.");
+        endInput?.reportValidity();
+        return;
+    }
 
     try {
         filtered = await bookingsApi.searchBookings({ searchId, guestName, hotel, startDate, endDate }) || [];
@@ -297,6 +298,64 @@ async function applyServerFilter() {
     }
 }
 
+function bookingExportRows() {
+    return filtered.map(booking => {
+        const mapped = mapBooking(booking);
+        return [
+            mapped.id,
+            mapped.guest,
+            mapped.hotel,
+            mapped.dates,
+            mapped.price,
+            mapped.bookStatus,
+        ];
+    });
+}
+
+function wireDateInputs() {
+    const startInput = document.getElementById("bm-start-date");
+    const endInput = document.getElementById("bm-end-date");
+    startInput?.addEventListener("change", () => {
+        if (!endInput) return;
+        endInput.min = startInput.value || "";
+        endInput.setCustomValidity("");
+        if (startInput.value && endInput.value && endInput.value < startInput.value) {
+            endInput.value = startInput.value;
+        }
+    });
+    endInput?.addEventListener("change", () => endInput.setCustomValidity(""));
+}
+
+function wireExportButtons() {
+    const headers = ["Mã đặt phòng", "Khách", "Khách sạn", "Nhận / Trả phòng", "Tổng tiền", "Trạng thái đánh giá"];
+
+    document.getElementById("bm-export-csv-btn")?.addEventListener("click", () => {
+        downloadCsv(`danh-sach-dat-phong-${reportDateStamp()}.csv`, headers, bookingExportRows());
+    });
+
+    document.getElementById("bm-export-pdf-btn")?.addEventListener("click", async (event) => {
+        const button = event.currentTarget;
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.textContent = "Đang tạo PDF...";
+        try {
+            await downloadTablePdf({
+                filename: `danh-sach-dat-phong-${reportDateStamp()}.pdf`,
+                title: "Danh sách đặt phòng",
+                headers,
+                rows: bookingExportRows(),
+                columnWidths: [0.1, 0.15, 0.24, 0.2, 0.14, 0.17],
+            });
+        } catch (error) {
+            console.error("Không thể tạo báo cáo đặt phòng PDF", error);
+            alert("Không thể tạo file PDF. Vui lòng thử lại.");
+        } finally {
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+    });
+}
+
 export function initBookingsManagement(options = {}) {
     bookingsApi = {
         getBookings: options.getBookings || getBookings,
@@ -306,5 +365,7 @@ export function initBookingsManagement(options = {}) {
     filtered = [];
     currentPage = 1;
     document.getElementById("bm-filter-btn")?.addEventListener("click", applyServerFilter);
+    wireDateInputs();
+    wireExportButtons();
     loadBookings();
 }
