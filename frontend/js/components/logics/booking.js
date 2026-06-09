@@ -242,7 +242,7 @@ function showRoomDetail() {
             if (showRoomImg) {
                 const imageSrc = resolveMediaUrl(roomDetail.roomIMG) || "assets/images/example-room.jpg";
                 showRoomImg.innerHTML = `
-                    <img src="${imageSrc}" alt="Phòng ${roomDetail.roomNumber}">
+                    <img src="${imageSrc}" alt="Phòng ${roomDetail.roomNumber}" onerror="this.onerror=null;this.src='assets/images/example-room.jpg'">
                 `;
             }
 

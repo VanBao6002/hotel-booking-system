@@ -118,10 +118,20 @@ export const HotelService = {
 
 export function resolveMediaUrl(url) {
     if (!url) return url;
-    if (url.startsWith("/media/")) {
-        return `http://localhost:8080${url}`;
+    const trimmed = String(url).trim();
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    if (trimmed.startsWith("/media/")) {
+        return `http://localhost:8080${trimmed}`;
     }
-    return url;
+    // If value looks like a simple filename (e.g. room1.jpg from seed data),
+    // map it to the rooms public path. Try to infer hotel vs room by prefix.
+    if (/^[\w\-]+\.(jpg|jpeg|png|gif|webp|svg)$/i.test(trimmed)) {
+        if (/^room/i.test(trimmed)) return `http://localhost:8080/media/rooms/${trimmed}`;
+        if (/^hotel/i.test(trimmed) || /^branch/i.test(trimmed)) return `http://localhost:8080/media/hotels/${trimmed}`;
+        // fallback to rooms
+        return `http://localhost:8080/media/rooms/${trimmed}`;
+    }
+    return trimmed;
 }
 
 export function isValidEmail(email) {

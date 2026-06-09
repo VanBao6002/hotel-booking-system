@@ -124,10 +124,17 @@ function placeholderImage(label = "Chưa có ảnh") {
 
 function resolveMediaUrl(url) {
   if (!url) return url;
-  if (url.startsWith("/media/")) {
-    return `http://localhost:8080${url}`;
+  const trimmed = String(url).trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  if (trimmed.startsWith("/media/")) {
+    return `http://localhost:8080${trimmed}`;
   }
-  return url;
+  if (/^[\w\-]+\.(jpg|jpeg|png|gif|webp|svg)$/i.test(trimmed)) {
+    if (/^room/i.test(trimmed)) return `http://localhost:8080/media/rooms/${trimmed}`;
+    if (/^hotel/i.test(trimmed) || /^branch/i.test(trimmed)) return `http://localhost:8080/media/hotels/${trimmed}`;
+    return `http://localhost:8080/media/rooms/${trimmed}`;
+  }
+  return trimmed;
 }
 
 function generateStars(rating) {
@@ -150,8 +157,8 @@ function renderHotelCard(rawHotel) {
 
   return `
     <div class="hotel-card">
-      <div class="hotel-card__image">
-        <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(hotel.hotelName)}" />
+        <div class="hotel-card__image">
+        <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(hotel.hotelName)}" onerror="this.onerror=null;this.src='assets/images/example-room.jpg'" />
       </div>
       <div class="hotel-card__content">
         <h3 class="hotel-card__name">${escapeHtml(hotel.hotelName)}</h3>
@@ -600,7 +607,7 @@ function renderRoomRows(rooms) {
             return `
               <tr>
                 <td>
-                  <img class="hotel-room-thumb" src="${escapeHtml(roomImage)}" alt="Phòng ${escapeHtml(room.roomNumber || "-")}">
+                  <img class="hotel-room-thumb" src="${escapeHtml(roomImage)}" alt="Phòng ${escapeHtml(room.roomNumber || "-")}" onerror="this.onerror=null;this.src='assets/images/example-room.jpg'">
                 </td>
                 <td>
                   <strong>${escapeHtml(room.roomNumber || "-")}</strong>

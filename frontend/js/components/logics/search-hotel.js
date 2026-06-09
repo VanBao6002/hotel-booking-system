@@ -39,7 +39,7 @@ function hotelCard(id, address, averageStar, price, imageUrl) {
     <div class="search-hotel-result__wrap" id="${id}">
       <div class="search-hotel-result__picture">
         <div class="search-hotel-result__picture-img">
-          <img src="${src}" alt="room">
+          <img src="${src}" alt="room" onerror="this.onerror=null;this.src='assets/images/example-room.jpg'">
         </div>
       </div>
       <div class="search-hotel-result__info">
