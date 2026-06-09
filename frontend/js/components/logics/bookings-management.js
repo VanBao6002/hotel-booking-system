@@ -1,10 +1,10 @@
 import { getBookings, searchBookings } from "../../services/admin.js";
 import { downloadCsv, downloadTablePdf, reportDateStamp } from "../../utils/table-export.js";
 
-const PAGE_SIZE = 6;
 let allBookings = [];
 let filtered = [];
 let currentPage = 1;
+let pageSize = 10;
 let bookingsApi = {
     getBookings,
     searchBookings,
@@ -120,8 +120,8 @@ function renderRows(data) {
     const tbody = document.getElementById("bm-tbody");
     if (!tbody) return;
 
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const pageData = data.slice(start, start + PAGE_SIZE);
+    const start = (currentPage - 1) * pageSize;
+    const pageData = data.slice(start, start + pageSize);
 
     if (pageData.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" style="padding:24px;text-align:center;color:#6b7280;">Chưa có đặt phòng</td></tr>`;
@@ -162,9 +162,9 @@ function renderRows(data) {
 
 function updatePagination(data) {
     const total = data.length;
-    const start = total === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
-    const end = Math.min(currentPage * PAGE_SIZE, total);
-    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    const start = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+    const end = Math.min(currentPage * pageSize, total);
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
     const info = document.getElementById("bm-page-info");
     if (info) info.textContent = `Đang hiển thị ${start} đến ${end} trong tổng ${total} đặt phòng`;
@@ -364,7 +364,13 @@ export function initBookingsManagement(options = {}) {
     allBookings = [];
     filtered = [];
     currentPage = 1;
+    pageSize = 10;
     document.getElementById("bm-filter-btn")?.addEventListener("click", applyServerFilter);
+    document.getElementById("bm-page-size")?.addEventListener("change", event => {
+        pageSize = Number(event.target.value) || 10;
+        currentPage = 1;
+        renderRows(filtered);
+    });
     wireDateInputs();
     wireExportButtons();
     loadBookings();

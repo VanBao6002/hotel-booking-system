@@ -198,7 +198,7 @@ function buildImagePdf(pageImages, imageWidth, imageHeight) {
         const imageName = `Im${index + 1}`;
         const content = ascii(`q\n842 0 0 595 0 0 cm\n/${imageName} Do\nQ`);
 
-        objects[pageId] = ascii(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 842 595] /Resources << /XObject << /${imageName} ${imageId} 0 R >> >> >> /Contents ${contentId} 0 R >>`);
+        objects[pageId] = ascii(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 842 595] /Resources << /XObject << /${imageName} ${imageId} 0 R >> >> /Contents ${contentId} 0 R >>`);
         objects[imageId] = concatBytes([
             ascii(`<< /Type /XObject /Subtype /Image /Width ${imageWidth} /Height ${imageHeight} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${image.length} >>\nstream\n`),
             image,

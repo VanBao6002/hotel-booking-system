@@ -9,6 +9,11 @@ const MOCK_MODE = false;
 let allUsers = [];
 let currentPage = 1;
 let pageSize = 10;
+let appliedFilters = {
+  userName: "",
+  email: "",
+  role: "all",
+};
 
 // Display status message at the top of users-management component
 function setStatus(message, type = "info") {
@@ -224,11 +229,13 @@ function disableSelfActions() {
 
 // Apply client-side filters and render
 function applyFiltersAndRender() {
-  const search = document.querySelector(".admin-search")?.value?.toLowerCase()?.trim() || "";
-  const role = document.querySelector(".admin-filter-role")?.value || "all";
+  const { userName, email, role } = appliedFilters;
   let filtered = allUsers.slice();
-  if (search) {
-    filtered = filtered.filter((u) => (u.userName || "").toLowerCase().includes(search) || (u.email || "").toLowerCase().includes(search) || (u.fullName || "").toLowerCase().includes(search));
+  if (userName) {
+    filtered = filtered.filter((u) => (u.userName || "").toLowerCase().includes(userName));
+  }
+  if (email) {
+    filtered = filtered.filter((u) => (u.email || "").toLowerCase().includes(email));
   }
   if (role && role !== "all") {
     filtered = filtered.filter((u) => u.role === role);
@@ -383,7 +390,7 @@ function setupToolbar() {
   const container = document.querySelector('.users-management__status')?.parentElement;
   if (!container) return;
   // Toolbar already added?
-  if (document.querySelector('.admin-search')) return;
+  if (document.querySelector('.users-management__toolbar')) return;
 
   // create toolbar nodes near the status element
   const toolbar = document.createElement('div');
@@ -392,7 +399,11 @@ function setupToolbar() {
   toolbar.innerHTML = `
     <div class="users-management__search">
       <i class="fa fa-search"></i>
-      <input class="admin-search" placeholder="Tìm theo username, email, họ tên..." />
+      <input class="admin-search-username" placeholder="Tìm theo tên đăng nhập" />
+    </div>
+    <div class="users-management__search">
+      <i class="fa fa-envelope"></i>
+      <input class="admin-search-email" type="email" placeholder="Tìm theo email" />
     </div>
     <div class="users-management__select-wrap">
       <select class="admin-filter-role">
@@ -414,18 +425,32 @@ function setupToolbar() {
         <i class="fa fa-chevron-down"></i>
       </div>
     </div>
+    <button type="button" class="users-management__filter-btn">
+      <i class="fa fa-filter"></i>
+      Lọc
+    </button>
   `;
 
   const statusEl = document.querySelector('.users-management__status');
   statusEl.insertAdjacentElement('afterend', toolbar);
 
   // wire events
-  const searchInput = document.querySelector('.admin-search');
-  const roleSelect = document.querySelector('.admin-filter-role');
+  const userNameInput = document.querySelector('.admin-search-username');
+  const emailInput = document.querySelector('.admin-search-email');
+  const filterButton = document.querySelector('.users-management__filter-btn');
   const pageSizeSelect = document.querySelector('.admin-page-size');
 
-  searchInput?.addEventListener('input', () => { currentPage = 1; applyFiltersAndRender(); });
-  roleSelect?.addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+  const applyFilters = () => {
+    appliedFilters = {
+      userName: userNameInput?.value?.toLowerCase()?.trim() || "",
+      email: emailInput?.value?.toLowerCase()?.trim() || "",
+      role: document.querySelector('.admin-filter-role')?.value || "all",
+    };
+    currentPage = 1;
+    applyFiltersAndRender();
+  };
+
+  filterButton?.addEventListener('click', applyFilters);
   pageSizeSelect?.addEventListener('change', (e) => { pageSize = parseInt(e.target.value) || 10; currentPage = 1; applyFiltersAndRender(); });
 }
 
@@ -1007,6 +1032,11 @@ function setupToolbar() {
 //     });
 // }
 export function initUsersManagement() {
+  appliedFilters = {
+    userName: "",
+    email: "",
+    role: "all",
+  };
   setupToolbar();
   loadUsers();
 }

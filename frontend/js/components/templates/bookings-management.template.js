@@ -50,8 +50,24 @@ export function bookingsManagementTemplate() {
                     <input id="bm-guest-name" type="text" placeholder="Tên khách" style="border: none; background: transparent; outline: none; font-size: 13px; color: #1a1a2e; width: 100%;" />
                 </div>
 
+                <!-- Page size -->
+                <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                    <label for="bm-page-size" style="font-size:13px;color:#6b7280;">Hiển thị</label>
+                    <div style="min-width:78px;position:relative;">
+                        <select id="bm-page-size" style="width:100%;appearance:none;border:1px solid #e2e2da;border-radius:7px;padding:9px 30px 9px 12px;background:#fafaf8;font-size:13px;color:#1a1a2e;outline:none;cursor:pointer;">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="25">25</option>
+                        </select>
+                        <i class="fa fa-chevron-down" aria-hidden="true" style="position:absolute;right:11px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9aa3b0;font-size:11px;"></i>
+                    </div>
+                </div>
+
                 <!-- Filter Button -->
-                <button id="bm-filter-btn" style="padding: 9px 22px; background: linear-gradient(135deg, #c9a84c, #e8cc7a); color: #1a1a2e; border: none; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; flex-shrink: 0; transition: opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Lọc</button>
+                <button id="bm-filter-btn" style="min-height:38px;padding:9px 18px;background:linear-gradient(135deg,#c9a84c,#e8cc7a);color:#1a1a2e;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;transition:opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">
+                    <i class="fa fa-filter" aria-hidden="true"></i>
+                    Lọc
+                </button>
             </div>
 
             <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
