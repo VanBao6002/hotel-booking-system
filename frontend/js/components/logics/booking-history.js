@@ -2,6 +2,16 @@ import { getBookingHistory } from "../../services/hotel.js";
 import { safeJsonParse } from "../../utils/utils.js";
 import { submitReview } from "../../services/hotel.js";
 
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+    }[char]));
+}
+
 function parseLocalDate(value) {
     const [year, month, day] = String(value || "").split("-").map(Number);
     if (!year || !month || !day) return null;
@@ -36,6 +46,7 @@ function handleData(rawData) {
     const formattedData = {
         bookingId: rawData.id,
         hotelBranchId: rawData.hotelBranchId,
+        hotelName: rawData.hotelName || `Khách sạn ${rawData.hotelBranchId}`,
         roomList: roomList,
         rawCheckOutDate: rawData.checkOutDate,
         checkInDate: formatDate(rawData.checkInDate),
@@ -104,7 +115,7 @@ function renderBooking(userId){
                     modal.classList.add("active");
                     showWriteReview.classList.add("active");  
                     currentBookingId = button.dataset.bookingId;  
-                    hotelBranchId = button.closest("tr").querySelector("td:nth-child(2)").textContent.replace("Khách sạn ", "").trim();
+                    hotelBranchId = button.closest("tr").dataset.hotelBranchId;
                     console.log("Current Booking ID:", currentBookingId);
                     console.log("Hotel Branch ID on Click:", hotelBranchId);
                 };
@@ -208,9 +219,9 @@ function renderBooking(userId){
                 }
 
                 tableBody.innerHTML += `
-                    <tr>
+                    <tr data-hotel-branch-id="${bookingData.hotelBranchId}">
                         <td>${bookingData.bookingId}</td>
-                        <td>Khách sạn ${bookingData.hotelBranchId}</td>
+                        <td>${escapeHtml(bookingData.hotelName)}</td>
                         <td>${bookingData.roomList.join(", ")}</td>
                         <td>${bookingData.checkInDate}</td>
                         <td>${bookingData.checkOutDate}</td>

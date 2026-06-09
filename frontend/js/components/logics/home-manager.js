@@ -72,24 +72,6 @@ function bookingStatusLabel(status) {
     return status || "-";
 }
 
-function monthLabel(month) {
-    const labels = {
-        JAN: "T1",
-        FEB: "T2",
-        MAR: "T3",
-        APR: "T4",
-        MAY: "T5",
-        JUN: "T6",
-        JUL: "T7",
-        AUG: "T8",
-        SEP: "T9",
-        OCT: "T10",
-        NOV: "T11",
-        DEC: "T12",
-    };
-    return labels[String(month || "").substring(0, 3).toUpperCase()] || month || "";
-}
-
 function renderTopHotels(hotels) {
     const container = document.getElementById("manager-top-hotels");
     if (!container) return;
@@ -123,7 +105,7 @@ function renderRecentBookings(bookings) {
     const tbody = document.getElementById("manager-recent-bookings");
     if (!tbody) return;
 
-    const recent = [...(bookings || [])].slice(0, 5);
+    const recent = bookings || [];
     if (!recent.length) {
         tbody.innerHTML = `<tr><td colspan="5" style="padding: 14px 12px; font-size: 13px; color: #8892a4;">Chưa có đặt phòng</td></tr>`;
         return;
@@ -146,69 +128,6 @@ function renderRecentBookings(bookings) {
             </tr>
         `;
     }).join("");
-}
-
-function renderRevenueChart(monthlyData) {
-    const canvas = document.getElementById("manager-revenue-chart");
-    if (!canvas) return;
-
-    canvas.width = canvas.parentElement.offsetWidth || 600;
-    canvas.height = 220;
-    const ctx = canvas.getContext("2d");
-    const rootStyles = getComputedStyle(document.documentElement);
-    const accentColor = rootStyles.getPropertyValue("--gold-color").trim() || "#C8A96C";
-    const mutedColor = rootStyles.getPropertyValue("--text-gray-color").trim() || "#7A7685";
-    const gridColor = rootStyles.getPropertyValue("--lightGray-color").trim() || "#E2DDD5";
-    const data = monthlyData?.length ? monthlyData : [];
-    const months = data.map(item => monthLabel(item.month));
-    const values = data.map(item => Number(item.revenue || 0));
-    const fallbackMonths = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"];
-    const labels = months.length ? months : fallbackMonths;
-    const revenue = values.length ? values : Array(12).fill(0);
-
-    const width = canvas.width;
-    const height = canvas.height;
-    const left = 64;
-    const right = 20;
-    const top = 34;
-    const bottom = 38;
-    const chartWidth = width - left - right;
-    const chartHeight = height - top - bottom;
-    const maxValue = Math.max(...revenue, 100000);
-    const roundedMax = Math.ceil((maxValue * 1.15) / 100000) * 100000;
-
-    ctx.clearRect(0, 0, width, height);
-    ctx.font = "11px Inter, sans-serif";
-    ctx.fillStyle = mutedColor;
-    ctx.textAlign = "right";
-
-    for (let i = 0; i <= 4; i++) {
-        const value = Math.round((roundedMax / 4) * i);
-        const y = top + chartHeight - (value / roundedMax) * chartHeight;
-        ctx.fillText(`${Math.round(value / 1000)}k`, left - 8, y + 4);
-        ctx.beginPath();
-        ctx.strokeStyle = gridColor;
-        ctx.setLineDash([3, 3]);
-        ctx.moveTo(left, y);
-        ctx.lineTo(left + chartWidth, y);
-        ctx.stroke();
-        ctx.setLineDash([]);
-    }
-
-    const barGap = chartWidth / labels.length;
-    const barWidth = Math.max(8, barGap * 0.45);
-    labels.forEach((label, index) => {
-        const barHeight = (revenue[index] / roundedMax) * chartHeight;
-        const x = left + index * barGap + (barGap - barWidth) / 2;
-        const y = top + chartHeight - barHeight;
-        ctx.fillStyle = accentColor;
-        ctx.beginPath();
-        ctx.roundRect ? ctx.roundRect(x, y, barWidth, barHeight, [4, 4, 0, 0]) : ctx.rect(x, y, barWidth, barHeight);
-        ctx.fill();
-        ctx.fillStyle = mutedColor;
-        ctx.textAlign = "center";
-        ctx.fillText(label, x + barWidth / 2, height - 10);
-    });
 }
 
 function wireDashboardActions() {
@@ -243,7 +162,6 @@ async function initManagerDashboard() {
 
         renderTopHotels(dashboard?.topHotels || []);
         renderRecentBookings(dashboard?.recentBookings || []);
-        renderRevenueChart(dashboard?.monthlyRevenue?.data || []);
     } catch (err) {
         console.error("Không thể tải dashboard quản lý", err);
         setText("manager-stat-revenue", "Lỗi");
@@ -252,7 +170,6 @@ async function initManagerDashboard() {
         setText("manager-stat-users", "Lỗi");
         renderTopHotels([]);
         renderRecentBookings([]);
-        renderRevenueChart([]);
     }
 }
 

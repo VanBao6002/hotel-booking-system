@@ -130,8 +130,6 @@ function renderFinanceBarChart(monthlyData) {
         ? monthlyData.map(item => monthLabel(item.month))
         : ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"];
     const revenueData = monthlyData.length ? monthlyData.map(item => Number(item.revenue || 0)) : Array(12).fill(0);
-    const expensesData = monthlyData.length ? monthlyData.map(item => Number(item.expenses || 0)) : Array(12).fill(0);
-
     const width = canvas.width;
     const height = canvas.height;
     const paddingLeft = 76;
@@ -140,7 +138,7 @@ function renderFinanceBarChart(monthlyData) {
     const paddingBottom = 46;
     const chartWidth = width - paddingLeft - paddingRight;
     const chartHeight = height - paddingTop - paddingBottom;
-    const maxSeriesValue = Math.max(...revenueData, ...expensesData, 100000);
+    const maxSeriesValue = Math.max(...revenueData, 100000);
     const maxValue = Math.ceil((maxSeriesValue * 1.15) / 100000) * 100000;
     const ySteps = Array.from({ length: 6 }, (_, index) => Math.round((maxValue / 5) * index));
 
@@ -163,29 +161,22 @@ function renderFinanceBarChart(monthlyData) {
     });
 
     const groupWidth = chartWidth / months.length;
-    const barPadding = groupWidth * 0.15;
-    const barWidth = (groupWidth - barPadding * 2) / 2 - 2;
+    const barWidth = Math.min(42, groupWidth * 0.42);
 
     months.forEach((month, i) => {
-        const groupX = paddingLeft + i * groupWidth + barPadding;
+        const groupCenter = paddingLeft + (i + 0.5) * groupWidth;
+        const barX = groupCenter - barWidth / 2;
         const revH = (revenueData[i] / maxValue) * chartHeight;
         const revY = paddingTop + chartHeight - revH;
         ctx.fillStyle = "#c9a84c";
         ctx.beginPath();
-        ctx.roundRect ? ctx.roundRect(groupX, revY, barWidth, revH, [3, 3, 0, 0]) : ctx.rect(groupX, revY, barWidth, revH);
-        ctx.fill();
-
-        const expH = (expensesData[i] / maxValue) * chartHeight;
-        const expY = paddingTop + chartHeight - expH;
-        ctx.fillStyle = "#1a1a2e";
-        ctx.beginPath();
-        ctx.roundRect ? ctx.roundRect(groupX + barWidth + 3, expY, barWidth, expH, [3, 3, 0, 0]) : ctx.rect(groupX + barWidth + 3, expY, barWidth, expH);
+        ctx.roundRect ? ctx.roundRect(barX, revY, barWidth, revH, [3, 3, 0, 0]) : ctx.rect(barX, revY, barWidth, revH);
         ctx.fill();
 
         ctx.fillStyle = "#9aa3b0";
         ctx.textAlign = "center";
         ctx.font = "11px Inter, sans-serif";
-        ctx.fillText(month, groupX + barWidth, height - 8);
+        ctx.fillText(month, groupCenter, height - 8);
     });
 }
 

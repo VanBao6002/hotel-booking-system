@@ -59,17 +59,29 @@ function renderDashboardContent() {
             ${renderStatCard("Tổng Người Dùng", "Đang tải...", "Tài khoản trong cơ sở dữ liệu", "users", "manager-stat-users", "manager-stat-users-sub")}
         </div>
 
-        <!-- Chart + Right Panel -->
+        <!-- Recent Bookings + Right Panel -->
         <div style="display: grid; grid-template-columns: 1fr 280px; gap: 20px; margin-bottom: 20px;">
-            <!-- Revenue vs Bookings Chart -->
+            <!-- Recent Bookings Table -->
             <div style="background: white; border-radius: 12px; padding: 24px; border: 1px solid #e8e4dc;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3 style="margin: 0; font-size: 16px; font-weight: 600; color: #1a1a2e;">Doanh Thu Theo Tháng</h3>
-                    <div style="display: flex; gap: 16px; font-size: 12px; color: #8892a4;">
-                        <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 20px; height: 2px; background: #c9a84c; display: inline-block; border-radius: 1px;"></span>Doanh thu</span>
-                    </div>
+                <h3 style="margin: 0 0 18px; font-size: 16px; font-weight: 600; color: #1a1a2e;">Đặt Phòng Gần Đây</h3>
+                <div style="overflow-x:auto;">
+                    <table style="width: 100%; min-width: 720px; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #f0ece4;">
+                                <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Khách</th>
+                                <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Khách sạn</th>
+                                <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Ngày</th>
+                                <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Số tiền</th>
+                                <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manager-recent-bookings">
+                            <tr>
+                                <td colspan="5" style="padding: 14px 12px; font-size: 13px; color: #8892a4;">Đang tải đặt phòng...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <canvas id="manager-revenue-chart" style="width: 100%; height: 220px;"></canvas>
             </div>
 
             <!-- Quick Actions + Top Hotels -->
@@ -86,27 +98,6 @@ function renderDashboardContent() {
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Recent Bookings Table -->
-        <div style="background: white; border-radius: 12px; padding: 24px; border: 1px solid #e8e4dc;">
-            <h3 style="margin: 0 0 18px; font-size: 16px; font-weight: 600; color: #1a1a2e;">Đặt Phòng Gần Đây</h3>
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="border-bottom: 1px solid #f0ece4;">
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Khách</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Khách sạn</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Ngày</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Số tiền</th>
-                        <th style="padding: 10px 12px; text-align: left; font-size: 11px; color: #8892a4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;">Trạng thái</th>
-                    </tr>
-                </thead>
-                <tbody id="manager-recent-bookings">
-                    <tr>
-                        <td colspan="5" style="padding: 14px 12px; font-size: 13px; color: #8892a4;">Đang tải đặt phòng...</td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     `;
 }
