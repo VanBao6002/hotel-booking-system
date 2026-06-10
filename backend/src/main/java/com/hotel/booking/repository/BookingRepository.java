@@ -191,6 +191,10 @@ public class BookingRepository {
         return true;
     }
 
+    public boolean isRoomBookedOn(int roomId, LocalDate date) {
+        return !isRoomAvailable(roomId, date, date.plusDays(1));
+    }
+
     // Them booking moi (frontend)
     public int addBooking(BookingRequest request) {
         BookingSchema schema = bookingSchema();
