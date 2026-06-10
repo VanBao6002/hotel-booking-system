@@ -14,7 +14,7 @@
 
 .users-management__search {
   flex: 1;
-  min-width: 240px;
+  min-width: 190px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -37,6 +37,28 @@
   color: #1a1a2e;
   font-size: 13px;
   font-family: inherit;
+}
+
+.users-management__filter-btn {
+  min-height: 38px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #c9a84c, #e8cc7a);
+  color: #1a1a2e;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.users-management__filter-btn:hover {
+  opacity: 0.86;
+}
+
+.users-management__filter-btn:active {
+  transform: translateY(1px);
 }
 
 .users-management__select-wrap {

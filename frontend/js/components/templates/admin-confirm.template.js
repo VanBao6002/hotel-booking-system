@@ -26,14 +26,14 @@ export const renderConfirmModal = (actionType, userId, userName, options = {}) =
     ban: {
       title: "Xác nhận Cấm Người Dùng",
       message: `Bạn có chắc là muốn cấm người dùng "${safeUserName}"?`,
-      // inputLabel: "Lý do (tùy chọn):",
+      inputLabel: "Lý do (tùy chọn)",
       inputPlaceholder: "Nhập lý do để cấm...",
       showInput: true,
     },
     warn: {
       title: "Xác nhận Gửi Cảnh Báo",
       message: `Bạn có chắc là muốn gửi một cảnh báo đến người dùng "${safeUserName}"?`,
-      // inputLabel: "Thông báo cảnh báo (tùy chọn):",
+      inputLabel: "Nội dung cảnh báo (tùy chọn)",
       inputPlaceholder: "Nhập thông báo cảnh báo...",
       showInput: true,
     },
@@ -65,7 +65,7 @@ export const renderConfirmModal = (actionType, userId, userName, options = {}) =
   if (config.showInput) {
     html += `
           <div class="form-group">
-            <label>${config.inputLabel}</label>
+            ${config.inputLabel ? `<label>${config.inputLabel}</label>` : ""}
             <input 
               type="text" 
               id="confirmInput" 

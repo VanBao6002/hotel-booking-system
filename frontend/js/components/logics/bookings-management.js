@@ -1,9 +1,10 @@
 import { getBookings, searchBookings } from "../../services/admin.js";
+import { downloadCsv, downloadTablePdf, reportDateStamp } from "../../utils/table-export.js";
 
-const PAGE_SIZE = 6;
 let allBookings = [];
 let filtered = [];
 let currentPage = 1;
+let pageSize = 10;
 let bookingsApi = {
     getBookings,
     searchBookings,
@@ -109,14 +110,6 @@ function populateHotelFilter(bookings) {
     }
 }
 
-function parseDateRange(value) {
-    const dates = String(value || "").match(/\d{4}-\d{2}-\d{2}/g) || [];
-    return {
-        startDate: dates[0] || "",
-        endDate: dates[1] || "",
-    };
-}
-
 function tagStyle(reviewed) {
     return reviewed
         ? "border: 1.5px solid #c9a84c; color: #c9a84c; background: transparent;"
@@ -127,8 +120,8 @@ function renderRows(data) {
     const tbody = document.getElementById("bm-tbody");
     if (!tbody) return;
 
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const pageData = data.slice(start, start + PAGE_SIZE);
+    const start = (currentPage - 1) * pageSize;
+    const pageData = data.slice(start, start + pageSize);
 
     if (pageData.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" style="padding:24px;text-align:center;color:#6b7280;">Chưa có đặt phòng</td></tr>`;
@@ -169,9 +162,9 @@ function renderRows(data) {
 
 function updatePagination(data) {
     const total = data.length;
-    const start = total === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
-    const end = Math.min(currentPage * PAGE_SIZE, total);
-    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    const start = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+    const end = Math.min(currentPage * pageSize, total);
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
     const info = document.getElementById("bm-page-info");
     if (info) info.textContent = `Đang hiển thị ${start} đến ${end} trong tổng ${total} đặt phòng`;
@@ -282,7 +275,15 @@ async function applyServerFilter() {
     const searchId = document.getElementById("bm-search-id")?.value || "";
     const guestName = document.getElementById("bm-guest-name")?.value || "";
     const hotel = document.getElementById("bm-hotel-select")?.value || "";
-    const { startDate, endDate } = parseDateRange(document.getElementById("bm-date-range")?.value);
+    const startDate = document.getElementById("bm-start-date")?.value || "";
+    const endDate = document.getElementById("bm-end-date")?.value || "";
+
+    if (startDate && endDate && startDate > endDate) {
+        const endInput = document.getElementById("bm-end-date");
+        endInput?.setCustomValidity("Ngày kết thúc phải bằng hoặc sau ngày bắt đầu.");
+        endInput?.reportValidity();
+        return;
+    }
 
     try {
         filtered = await bookingsApi.searchBookings({ searchId, guestName, hotel, startDate, endDate }) || [];
@@ -297,6 +298,64 @@ async function applyServerFilter() {
     }
 }
 
+function bookingExportRows() {
+    return filtered.map(booking => {
+        const mapped = mapBooking(booking);
+        return [
+            mapped.id,
+            mapped.guest,
+            mapped.hotel,
+            mapped.dates,
+            mapped.price,
+            mapped.bookStatus,
+        ];
+    });
+}
+
+function wireDateInputs() {
+    const startInput = document.getElementById("bm-start-date");
+    const endInput = document.getElementById("bm-end-date");
+    startInput?.addEventListener("change", () => {
+        if (!endInput) return;
+        endInput.min = startInput.value || "";
+        endInput.setCustomValidity("");
+        if (startInput.value && endInput.value && endInput.value < startInput.value) {
+            endInput.value = startInput.value;
+        }
+    });
+    endInput?.addEventListener("change", () => endInput.setCustomValidity(""));
+}
+
+function wireExportButtons() {
+    const headers = ["Mã đặt phòng", "Khách", "Khách sạn", "Nhận / Trả phòng", "Tổng tiền", "Trạng thái đánh giá"];
+
+    document.getElementById("bm-export-csv-btn")?.addEventListener("click", () => {
+        downloadCsv(`danh-sach-dat-phong-${reportDateStamp()}.csv`, headers, bookingExportRows());
+    });
+
+    document.getElementById("bm-export-pdf-btn")?.addEventListener("click", async (event) => {
+        const button = event.currentTarget;
+        const originalText = button.innerHTML;
+        button.disabled = true;
+        button.textContent = "Đang tạo PDF...";
+        try {
+            await downloadTablePdf({
+                filename: `danh-sach-dat-phong-${reportDateStamp()}.pdf`,
+                title: "Danh sách đặt phòng",
+                headers,
+                rows: bookingExportRows(),
+                columnWidths: [0.1, 0.15, 0.24, 0.2, 0.14, 0.17],
+            });
+        } catch (error) {
+            console.error("Không thể tạo báo cáo đặt phòng PDF", error);
+            alert("Không thể tạo file PDF. Vui lòng thử lại.");
+        } finally {
+            button.disabled = false;
+            button.innerHTML = originalText;
+        }
+    });
+}
+
 export function initBookingsManagement(options = {}) {
     bookingsApi = {
         getBookings: options.getBookings || getBookings,
@@ -305,6 +364,14 @@ export function initBookingsManagement(options = {}) {
     allBookings = [];
     filtered = [];
     currentPage = 1;
+    pageSize = 10;
     document.getElementById("bm-filter-btn")?.addEventListener("click", applyServerFilter);
+    document.getElementById("bm-page-size")?.addEventListener("change", event => {
+        pageSize = Number(event.target.value) || 10;
+        currentPage = 1;
+        renderRows(filtered);
+    });
+    wireDateInputs();
+    wireExportButtons();
     loadBookings();
 }

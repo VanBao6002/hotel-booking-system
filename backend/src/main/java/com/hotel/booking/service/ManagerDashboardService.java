@@ -50,7 +50,7 @@ public class ManagerDashboardService {
             .toList();
 
         List<BookingDTO> recentBookings = bookings.stream()
-            .limit(5)
+            .limit(10)
             .toList();
 
         int selectedYear = year == null ? Year.now().getValue() : year;
