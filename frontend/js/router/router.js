@@ -36,8 +36,7 @@ const rules = [
     },
     {
         path: ["#booking"],
-        roles: ["customer","staff", "manager","guest"
-        ],
+        roles: ["customer","staff", "manager","guest"],
         item: ["genaral","room","location","service","rate"]
     },
     {
@@ -53,7 +52,7 @@ const rules = [
     {
         path: ["#booking-history"],
         roles: ["customer","staff", "manager"],
-        item: ["home"]
+        item: [""]
     },
     {
         path: ["#error"],

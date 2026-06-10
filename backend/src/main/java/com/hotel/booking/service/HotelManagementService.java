@@ -1,9 +1,13 @@
 package com.hotel.booking.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.hotel.booking.repository.BookingRepository;
 
 import com.hotel.booking.dto.HotelBranchDTO;
 import com.hotel.booking.dto.LocationsDTO;
@@ -17,10 +21,12 @@ import com.hotel.booking.repository.RoomRepository;
 public class HotelManagementService {
     private final HotelBranchRepository hotelRepository;
     private final RoomRepository roomRepository;
+    private final BookingRepository bookingRepository;
 
-    public HotelManagementService(HotelBranchRepository hotelRepository, RoomRepository roomRepository) {
+    public HotelManagementService(HotelBranchRepository hotelRepository, RoomRepository roomRepository, BookingRepository bookingRepository) {
         this.hotelRepository = hotelRepository;
         this.roomRepository = roomRepository;
+        this.bookingRepository = bookingRepository;
     }
 
     public List<HotelBranchDTO> getAllHotels() {
@@ -36,6 +42,7 @@ public class HotelManagementService {
         if (hotel == null) {
             throw new ResourceNotFoundException("Hotel not found with ID: " + hotelId);
         }
+        refreshRoomsStatusByBookingDate(hotel.getRooms());
         return hotel;
     }
 
@@ -63,7 +70,9 @@ public class HotelManagementService {
 
     public List<RoomDTO> getHotelRooms(Integer hotelId) {
         getHotelById(hotelId);
-        return roomRepository.getRoomsByHotelId(hotelId);
+        List<RoomDTO> rooms = roomRepository.getRoomsByHotelId(hotelId);
+        refreshRoomsStatusByBookingDate(rooms);
+        return rooms;
     }
 
     @Transactional
@@ -95,6 +104,21 @@ public class HotelManagementService {
             throw new ResourceNotFoundException("Room not found with ID: " + roomId);
         }
         return updated;
+    }
+
+    private void refreshRoomsStatusByBookingDate(List<RoomDTO> rooms) {
+        if (rooms == null || rooms.isEmpty()) {
+            return;
+        }
+
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        for (RoomDTO room : rooms) {
+            if (room == null || "Maintenance".equalsIgnoreCase(room.getRoomStatus())) {
+                continue;
+            }
+            boolean booked = bookingRepository.isRoomBookedOn(room.getId(), today);
+            room.setRoomStatus(booked ? "Booked" : "Available");
+        }
     }
 
     @Transactional

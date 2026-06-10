@@ -10,6 +10,7 @@ import com.hotel.booking.repository.BookingRepository;
 import com.hotel.booking.repository.RoomRepository;
 import com.hotel.booking.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,8 +42,9 @@ public class StaffWorkspaceService {
         Integer hotelBranchId = resolveAssignedHotelBranchId(username);
         HotelBranchDTO hotel = hotelManagementService.getHotelById(hotelBranchId);
         List<RoomDTO> rooms = roomRepository.getRoomsByHotelId(hotelBranchId);
+        refreshRoomsStatusByBookingDate(rooms);
         List<BookingDTO> bookings = bookingRepository.getBookingsByHotelBranchId(hotelBranchId);
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
 
         StaffDashboardDTO dashboard = new StaffDashboardDTO();
         dashboard.setHotelBranchId(hotelBranchId);
@@ -74,7 +76,9 @@ public class StaffWorkspaceService {
     }
 
     public List<RoomDTO> getAssignedRooms(String username) {
-        return roomRepository.getRoomsByHotelId(resolveAssignedHotelBranchId(username));
+        List<RoomDTO> rooms = roomRepository.getRoomsByHotelId(resolveAssignedHotelBranchId(username));
+        refreshRoomsStatusByBookingDate(rooms);
+        return rooms;
     }
 
     public List<BookingDTO> getAssignedBookings(String username) {
@@ -131,5 +135,20 @@ public class StaffWorkspaceService {
 
     private boolean hasText(String value) {
         return value != null && !value.isBlank();
+    }
+
+    private void refreshRoomsStatusByBookingDate(List<RoomDTO> rooms) {
+        if (rooms == null || rooms.isEmpty()) {
+            return;
+        }
+
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        for (RoomDTO room : rooms) {
+            if (room == null || "Maintenance".equalsIgnoreCase(room.getRoomStatus())) {
+                continue;
+            }
+            boolean booked = bookingRepository.isRoomBookedOn(room.getId(), today);
+            room.setRoomStatus(booked ? "Booked" : "Available");
+        }
     }
 }
