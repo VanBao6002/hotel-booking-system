@@ -36,7 +36,8 @@ const rules = [
     },
     {
         path: ["#booking"],
-        roles: ["customer","staff", "manager"],
+        roles: ["customer","staff", "manager","guest"
+        ],
         item: ["genaral","room","location","service","rate"]
     },
     {
