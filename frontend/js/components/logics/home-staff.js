@@ -8,10 +8,8 @@ import {
     getStaffRooms,
     getStaffBookings,
     searchStaffBookings,
-    updateStaffRoomStatus,
 } from "../../services/staff.js";
 
-const ROOM_STATUSES = ["Available", "Booked", "Maintenance"];
 const ROOM_STATUS_LABELS = {
     Available: "Còn trống",
     Booked: "Đã đặt",
@@ -227,7 +225,7 @@ function staffHotelTemplate() {
                 <div style="padding:18px 20px;border-bottom:1px solid #f0ece4;display:flex;justify-content:space-between;align-items:center;gap:12px;">
                     <div>
                         <h2 style="margin:0;font-size:18px;font-weight:700;">Danh sách phòng</h2>
-                        <p style="margin:4px 0 0;font-size:13px;color:#6b7280;">Nhân viên chỉ được cập nhật trạng thái phòng.</p>
+                        <p style="margin:4px 0 0;font-size:13px;color:#6b7280;">Danh sách phòng thuộc khách sạn được phân công.</p>
                     </div>
                 </div>
                 <div style="overflow:auto;">
@@ -240,11 +238,10 @@ function staffHotelTemplate() {
                                 <th style="padding:13px 16px;text-align:left;font-size:12px;text-transform:uppercase;color:#6b7280;">Giường</th>
                                 <th style="padding:13px 16px;text-align:left;font-size:12px;text-transform:uppercase;color:#6b7280;">Giá</th>
                                 <th style="padding:13px 16px;text-align:left;font-size:12px;text-transform:uppercase;color:#6b7280;">Trạng thái</th>
-                                <th style="padding:13px 16px;text-align:left;font-size:12px;text-transform:uppercase;color:#6b7280;">Cập nhật</th>
                             </tr>
                         </thead>
                         <tbody id="staff-rooms-tbody">
-                            <tr><td colspan="7" style="padding:24px;text-align:center;color:#8892a4;">Đang tải phòng...</td></tr>
+                            <tr><td colspan="6" style="padding:24px;text-align:center;color:#8892a4;">Đang tải phòng...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -291,7 +288,7 @@ function renderRooms(rooms) {
     if (!tbody) return;
 
     if (!rooms?.length) {
-        tbody.innerHTML = `<tr><td colspan="7" style="padding:24px;text-align:center;color:#8892a4;">Chưa có phòng</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="padding:24px;text-align:center;color:#8892a4;">Chưa có phòng</td></tr>`;
         return;
     }
 
@@ -303,32 +300,8 @@ function renderRooms(rooms) {
             <td style="padding:13px 16px;font-size:13px;color:#4b5563;">${escapeHtml(room.numberOfBed)}</td>
             <td style="padding:13px 16px;font-size:13px;font-weight:700;color:#1a1a2e;">${formatMoney(room.price)}</td>
             <td class="staff-room-status-cell" data-room-id="${room.id}" style="padding:13px 16px;">${renderStatusPill(room.roomStatus)}</td>
-            <td style="padding:13px 16px;">
-                <select class="staff-room-status-select" data-room-id="${room.id}" style="height:34px;min-width:142px;border:1px solid #e2e2da;border-radius:7px;background:#fafaf8;color:#1a1a2e;padding:0 10px;font-family:inherit;font-size:13px;outline:none;">
-                    ${ROOM_STATUSES.map(status => `<option value="${status}" ${status === room.roomStatus ? "selected" : ""}>${roomStatusLabel(status)}</option>`).join("")}
-                </select>
-            </td>
         </tr>
     `).join("");
-
-    tbody.querySelectorAll(".staff-room-status-select").forEach(select => {
-        select.addEventListener("change", async () => {
-            const roomId = select.dataset.roomId;
-            const roomStatus = select.value;
-            select.disabled = true;
-            try {
-                const updated = await updateStaffRoomStatus(roomId, roomStatus);
-                const statusCell = document.querySelector(`.staff-room-status-cell[data-room-id="${roomId}"]`);
-                if (statusCell) statusCell.innerHTML = renderStatusPill(updated.roomStatus);
-                showStaffHotelMessage(`Phòng ${updated.roomNumber} đã được cập nhật sang ${roomStatusLabel(updated.roomStatus)}.`);
-            } catch (err) {
-                console.error("Không thể cập nhật trạng thái phòng", err);
-                showStaffHotelMessage(err?.data?.message || "Không thể cập nhật trạng thái phòng.", "error");
-            } finally {
-                select.disabled = false;
-            }
-        });
-    });
 }
 
 async function initStaffHotel() {
@@ -341,7 +314,7 @@ async function initStaffHotel() {
         renderHotelOverview({});
         const tbody = document.getElementById("staff-rooms-tbody");
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="7" style="padding:24px;text-align:center;color:#b91c1c;">${escapeHtml(err?.data?.message || "Không thể tải khách sạn của nhân viên.")}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="padding:24px;text-align:center;color:#b91c1c;">${escapeHtml(err?.data?.message || "Không thể tải khách sạn của nhân viên.")}</td></tr>`;
         }
     }
 }

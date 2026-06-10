@@ -3,30 +3,11 @@ import { formatDate } from "../../utils/utils.js";
 import { navigation } from "../../router/router.js";
 import { searchHoteltemplate } from "../templates/search-hotel.template.js";
 import { initSearchHotel } from "../logics/search-hotel.js";
-import { showAppDialog } from "../../utils/app-dialog.js";
 
 function choicePopularDestinations() {
     const popularDestinationsOverlay = document.querySelectorAll(".popular-destinations__box-overlay");
     popularDestinationsOverlay.forEach(destinationOverlay => {
-        destinationOverlay.onclick = async () => {
-            const role = localStorage.getItem("role");
-            const token = localStorage.getItem("token");
-            if (role === "guest" || !token) {
-                const choice = await showAppDialog({
-                    title: "Vui lòng đăng nhập",
-                    message: "Bạn cần đăng nhập trước khi xem khách sạn nổi bật.",
-                    actions: [
-                        { label: "Đăng nhập", value: "login", primary: true },
-                        { label: "Để sau", value: "cancel" },
-                    ],
-                });
-
-                if (choice === "login") {
-                    document.querySelector(".auth__btn-login")?.click();
-                }
-                return;
-            }
-            
+        destinationOverlay.onclick = () => {
             const destination = destinationOverlay.closest(".popular-destinations__box");
             const destinationName = destination.querySelector(".popular-destinations__box-title h3").textContent;
             

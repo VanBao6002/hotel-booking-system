@@ -37,6 +37,20 @@ class RequestAccessPolicyTest {
     }
 
     @Test
+    void shouldAllowHotelSearchWithoutAuthentication() {
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/api/search/hotel");
+
+        assertTrue(RequestAccessPolicy.isPublicEndpoint(request));
+    }
+
+    @Test
+    void shouldRequireAuthenticationForBooking() {
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/api/bookings");
+
+        assertFalse(RequestAccessPolicy.isPublicEndpoint(request));
+    }
+
+    @Test
     void shouldNotMatchProtectedPathAsPublicEndpoint() {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/v1/users/me");
 

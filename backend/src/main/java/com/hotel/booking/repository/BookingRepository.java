@@ -562,11 +562,7 @@ public class BookingRepository {
             SELECT b.id,
                    b.check_in_date,
                    b.check_out_date,
-                   CASE
-                       WHEN b.booked_at >= TIMESTAMP(b.check_in_date)
-                           THEN DATE_SUB(TIMESTAMP(b.check_in_date, '09:00:00'), INTERVAL 7 DAY)
-                       ELSE b.booked_at
-                   END AS booked_at,
+                   b.booked_at,
                    b.hotel_branch_id,
                    b.user_id,
                    b.booking_price,

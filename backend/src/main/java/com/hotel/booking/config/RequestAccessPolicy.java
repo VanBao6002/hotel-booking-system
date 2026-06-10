@@ -20,7 +20,6 @@ public final class RequestAccessPolicy {
         "/internal/debug/last-otp",
         "/api/search/hotel",
         "/media/**",
-        "/api/bookings/**",
         "/api/reviews/**"
     };
 

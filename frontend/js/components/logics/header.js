@@ -1,7 +1,7 @@
 import { navigation } from "../../router/router.js";
 import { showAppDialog } from "../../utils/app-dialog.js";
 import { userLogin, userRegister } from "../../services/authentication.js";
-import { getMe, forgotPassword, resetPassword } from "../../services/users.js";
+import { getMe, forgotPassword, resetPassword, getUnreadNotifications, markNotificationAsRead } from "../../services/users.js";
 import { isValidEmail, isValidPassword, isValidUsername, isValidPhoneNumber } from "../../utils/utils.js";
 
 // global var
@@ -281,6 +281,37 @@ function showToast(message, type = "success") {
         toastBody.innerText = "";
     },3000);
 }
+
+function escapeDialogText(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+    }[char]));
+}
+
+async function showUnreadNotifications() {
+    if (!localStorage.getItem("token")) return;
+
+    try {
+        const notifications = await getUnreadNotifications();
+        for (const notification of notifications || []) {
+            await showAppDialog({
+                title: "Thông báo từ quản lý",
+                message: escapeDialogText(notification.message),
+                actions: [
+                    { label: "Đã hiểu", value: "read", primary: true },
+                ],
+            });
+            await markNotificationAsRead(notification.id);
+        }
+    } catch (error) {
+        console.error("Không thể tải thông báo người dùng", error);
+    }
+}
+
 function showBookingHistory() {
     const bookingHistory = document.querySelector(".header__navbar-extras-booking");
     bookingHistory.onclick = () => {
@@ -335,6 +366,7 @@ function submitForm(){
                     document.querySelector(".user__info-name span").innerText = data.user.fullName;
                     updateManageMenuVisibility();
                     showToast("Đăng nhập thành công");
+                    showUnreadNotifications();
                     // navigation("#home");
                     getMe()
                         .then(userData => {
@@ -518,4 +550,5 @@ export function initHeader() {
     submitForm();
     showBookingHistory();
     attachHomeBrandnavigation();
+    showUnreadNotifications();
 }

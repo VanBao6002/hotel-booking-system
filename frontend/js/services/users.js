@@ -37,6 +37,20 @@ export const warnUser = (userId, message = "") => {
   });
 };
 
+export const getUnreadNotifications = () => {
+  return apiClient("/api/v1/notifications/unread", {
+    method: "GET",
+    skipAuth: false,
+  });
+};
+
+export const markNotificationAsRead = (notificationId) => {
+  return apiClient(`/api/v1/notifications/${notificationId}/read`, {
+    method: "PUT",
+    skipAuth: false,
+  });
+};
+
 // Grant staff role to a user
 export const grantStaffRole = (userId, hotelBranchId = null) => {
   return apiClient(`/api/v1/users/${userId}/role`, {
