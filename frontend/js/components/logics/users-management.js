@@ -9,6 +9,11 @@ const MOCK_MODE = false;
 let allUsers = [];
 let currentPage = 1;
 let pageSize = 10;
+let appliedFilters = {
+  userName: "",
+  email: "",
+  role: "all",
+};
 
 // Display status message at the top of users-management component
 function setStatus(message, type = "info") {
@@ -109,10 +114,10 @@ function renderRows(users) {
           <td style="padding: 12px 14px;">${accountStatusBadge(u)}${lockInfo}${lockReason}</td>
           <td style="padding: 12px 14px;">
             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-              <button class="action-btn action-delete" data-user-id="${u.id}" data-user-name="${u.userName}" title="Vô hiệu hóa tài khoản" ${disabledAction}><i class="fa fa-ban"></i> Vô hiệu hóa</button>
-              <button class="action-btn action-ban" data-user-id="${u.id}" data-user-name="${u.userName}" title="Cấm người dùng" ${disabledAction}><i class="fa fa-lock"></i> Cấm</button>
-              <button class="action-btn action-warn" data-user-id="${u.id}" data-user-name="${u.userName}" title="Gửi cảnh báo" ${disabledAction}><i class="fa fa-exclamation-triangle"></i> Cảnh báo</button>
-              <button class="action-btn action-promote" data-user-id="${u.id}" data-user-name="${u.userName}" title="Nâng cấp thành nhân viên" ${disabledAction}><i class="fa fa-user-plus"></i> Thăng cấp</button>
+              <button class="action-btn action-delete" data-user-id="${u.id}" data-user-name="${escapeHtml(u.userName)}" title="Vô hiệu hóa tài khoản" ${disabledAction}><i class="fa fa-ban"></i> Vô hiệu hóa</button>
+              <button class="action-btn action-ban" data-user-id="${u.id}" data-user-name="${escapeHtml(u.userName)}" title="Cấm người dùng" ${disabledAction}><i class="fa fa-lock"></i> Cấm</button>
+              <button class="action-btn action-warn" data-user-id="${u.id}" data-user-name="${escapeHtml(u.userName)}" title="Gửi cảnh báo" ${disabledAction}><i class="fa fa-exclamation-triangle"></i> Cảnh báo</button>
+              <button class="action-btn action-promote" data-user-id="${u.id}" data-user-name="${escapeHtml(u.userName)}" title="Nâng cấp thành nhân viên" ${disabledAction}><i class="fa fa-user-plus"></i> Thăng cấp</button>
             </div>
             <span class="row-status" style="display: none; font-size: 12px; margin-top: 4px; padding: 4px; border-radius: 3px;"></span>
           </td>
@@ -123,6 +128,29 @@ function renderRows(users) {
 
   renderPagination(users.length);
   disableSelfActions();
+  wireActionButtons();
+}
+
+function wireActionButtons() {
+  document.querySelectorAll(".users-management__tbody .action-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.disabled) return;
+
+      const userId = Number(button.dataset.userId);
+      const userName = button.dataset.userName || "";
+      if (!Number.isFinite(userId)) return;
+
+      if (button.classList.contains("action-delete")) {
+        handleDeleteUser(userId, userName);
+      } else if (button.classList.contains("action-ban")) {
+        handleBanUser(userId, userName);
+      } else if (button.classList.contains("action-warn")) {
+        handleWarnUser(userId, userName);
+      } else if (button.classList.contains("action-promote")) {
+        handleGrantStaffRole(userId, userName);
+      }
+    });
+  });
 }
 
 function renderPagination(total) {
@@ -201,11 +229,13 @@ function disableSelfActions() {
 
 // Apply client-side filters and render
 function applyFiltersAndRender() {
-  const search = document.querySelector(".admin-search")?.value?.toLowerCase()?.trim() || "";
-  const role = document.querySelector(".admin-filter-role")?.value || "all";
+  const { userName, email, role } = appliedFilters;
   let filtered = allUsers.slice();
-  if (search) {
-    filtered = filtered.filter((u) => (u.userName || "").toLowerCase().includes(search) || (u.email || "").toLowerCase().includes(search) || (u.fullName || "").toLowerCase().includes(search));
+  if (userName) {
+    filtered = filtered.filter((u) => (u.userName || "").toLowerCase().includes(userName));
+  }
+  if (email) {
+    filtered = filtered.filter((u) => (u.email || "").toLowerCase().includes(email));
   }
   if (role && role !== "all") {
     filtered = filtered.filter((u) => u.role === role);
@@ -360,7 +390,7 @@ function setupToolbar() {
   const container = document.querySelector('.users-management__status')?.parentElement;
   if (!container) return;
   // Toolbar already added?
-  if (document.querySelector('.admin-search')) return;
+  if (document.querySelector('.users-management__toolbar')) return;
 
   // create toolbar nodes near the status element
   const toolbar = document.createElement('div');
@@ -369,7 +399,11 @@ function setupToolbar() {
   toolbar.innerHTML = `
     <div class="users-management__search">
       <i class="fa fa-search"></i>
-      <input class="admin-search" placeholder="Tìm theo username, email, họ tên..." />
+      <input class="admin-search-username" placeholder="Tìm theo tên đăng nhập" />
+    </div>
+    <div class="users-management__search">
+      <i class="fa fa-envelope"></i>
+      <input class="admin-search-email" type="email" placeholder="Tìm theo email" />
     </div>
     <div class="users-management__select-wrap">
       <select class="admin-filter-role">
@@ -391,18 +425,32 @@ function setupToolbar() {
         <i class="fa fa-chevron-down"></i>
       </div>
     </div>
+    <button type="button" class="users-management__filter-btn">
+      <i class="fa fa-filter"></i>
+      Lọc
+    </button>
   `;
 
   const statusEl = document.querySelector('.users-management__status');
   statusEl.insertAdjacentElement('afterend', toolbar);
 
   // wire events
-  const searchInput = document.querySelector('.admin-search');
-  const roleSelect = document.querySelector('.admin-filter-role');
+  const userNameInput = document.querySelector('.admin-search-username');
+  const emailInput = document.querySelector('.admin-search-email');
+  const filterButton = document.querySelector('.users-management__filter-btn');
   const pageSizeSelect = document.querySelector('.admin-page-size');
 
-  searchInput?.addEventListener('input', () => { currentPage = 1; applyFiltersAndRender(); });
-  roleSelect?.addEventListener('change', () => { currentPage = 1; applyFiltersAndRender(); });
+  const applyFilters = () => {
+    appliedFilters = {
+      userName: userNameInput?.value?.toLowerCase()?.trim() || "",
+      email: emailInput?.value?.toLowerCase()?.trim() || "",
+      role: document.querySelector('.admin-filter-role')?.value || "all",
+    };
+    currentPage = 1;
+    applyFiltersAndRender();
+  };
+
+  filterButton?.addEventListener('click', applyFilters);
   pageSizeSelect?.addEventListener('change', (e) => { pageSize = parseInt(e.target.value) || 10; currentPage = 1; applyFiltersAndRender(); });
 }
 
@@ -984,28 +1032,11 @@ function setupToolbar() {
 //     });
 // }
 export function initUsersManagement() {
+  appliedFilters = {
+    userName: "",
+    email: "",
+    role: "all",
+  };
   setupToolbar();
-  
   loadUsers();
-
-  // Event delegation: attach listeners to tbody for action buttons
-  const tbody = document.querySelector(".users-management__tbody");
-  if (tbody) {
-    tbody.addEventListener("click", (event) => {
-      const target = event.target.closest('.action-btn');
-      if (!target) return;
-      const userId = parseInt(target.dataset.userId);
-      const userName = target.dataset.userName;
-
-      if (target.classList.contains("action-delete")) {
-        handleDeleteUser(userId, userName);
-      } else if (target.classList.contains("action-ban")) {
-        handleBanUser(userId, userName);
-      } else if (target.classList.contains("action-warn")) {
-        handleWarnUser(userId, userName);
-      } else if (target.classList.contains("action-promote")) {
-        handleGrantStaffRole(userId, userName);
-      }
-    });
-  }
 }

@@ -558,21 +558,41 @@ public class BookingRepository {
     }
     // Lấy booking theo UserID (frontend)
     public List<BookingDTO> getBookingsByUserId(int userId) {
-        String sql = "SELECT id, check_in_date, check_out_date, booked_at, " +
-                    "hotel_branch_id, user_id, booking_price, reviewed " +
-                    "FROM booking WHERE user_id = ?";        
+        String sql = """
+            SELECT b.id,
+                   b.check_in_date,
+                   b.check_out_date,
+                   CASE
+                       WHEN b.booked_at >= TIMESTAMP(b.check_in_date)
+                           THEN DATE_SUB(TIMESTAMP(b.check_in_date, '09:00:00'), INTERVAL 7 DAY)
+                       ELSE b.booked_at
+                   END AS booked_at,
+                   b.hotel_branch_id,
+                   b.user_id,
+                   b.booking_price,
+                   b.reviewed,
+                   hb.address AS hotel_name
+            FROM booking b
+            LEFT JOIN hotelbranch hb ON hb.id = b.hotel_branch_id
+            WHERE b.user_id = ?
+            ORDER BY b.booked_at DESC, b.id DESC
+            """;
         List<BookingDTO> bookings = jdbcTemplate.query(sql,
-                (rs, rowNum) -> new BookingDTO(
-                    rs.getInt("id"),
-                    rs.getDate("check_in_date").toLocalDate(),
-                    rs.getDate("check_out_date").toLocalDate(),
-                    rs.getTimestamp("booked_at").toLocalDateTime(),
-                    rs.getLong("booking_price"),
-                    rs.getInt("user_id"),
-                    rs.getInt("hotel_branch_id"),
-                    rs.getBoolean("reviewed"),
-                    List.of()
-                ),
+                (rs, rowNum) -> {
+                    BookingDTO booking = new BookingDTO(
+                        rs.getInt("id"),
+                        rs.getDate("check_in_date").toLocalDate(),
+                        rs.getDate("check_out_date").toLocalDate(),
+                        rs.getTimestamp("booked_at").toLocalDateTime(),
+                        rs.getLong("booking_price"),
+                        rs.getInt("user_id"),
+                        rs.getInt("hotel_branch_id"),
+                        rs.getBoolean("reviewed"),
+                        List.of()
+                    );
+                    booking.setHotelName(valueOrDefault(rs.getString("hotel_name"), "Chưa rõ khách sạn"));
+                    return booking;
+                },
                 userId
             );
 
