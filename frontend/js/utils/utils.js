@@ -116,20 +116,26 @@ export const HotelService = {
     }
 }
 
+import { BASE_URL } from "../services/apiClient.js";
+
 export function resolveMediaUrl(url) {
     if (!url) return url;
     const trimmed = String(url).trim();
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    // Prefer the configured backend base URL, fall back to page origin.
+    const base = (typeof BASE_URL !== 'undefined' && BASE_URL) ? BASE_URL
+        : ((typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : 'http://localhost:8080');
+
     if (trimmed.startsWith("/media/")) {
-        return `http://localhost:8080${trimmed}`;
+        return `${base}${trimmed}`;
     }
     // If value looks like a simple filename (e.g. room1.jpg from seed data),
     // map it to the rooms public path. Try to infer hotel vs room by prefix.
     if (/^[\w\-]+\.(jpg|jpeg|png|gif|webp|svg)$/i.test(trimmed)) {
-        if (/^room/i.test(trimmed)) return `http://localhost:8080/media/rooms/${trimmed}`;
-        if (/^hotel/i.test(trimmed) || /^branch/i.test(trimmed)) return `http://localhost:8080/media/hotels/${trimmed}`;
+        if (/^room/i.test(trimmed)) return `${base}/media/rooms/${trimmed}`;
+        if (/^hotel/i.test(trimmed) || /^branch/i.test(trimmed)) return `${base}/media/hotels/${trimmed}`;
         // fallback to rooms
-        return `http://localhost:8080/media/rooms/${trimmed}`;
+        return `${base}/media/rooms/${trimmed}`;
     }
     return trimmed;
 }

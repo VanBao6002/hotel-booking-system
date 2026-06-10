@@ -259,23 +259,6 @@ export function initBookingSearch() {
     const locationInput = document.getElementById("hotel-location");
 
     searchButton.onclick = async () => {
-        const role = localStorage.getItem("role");
-        const token = localStorage.getItem("token");
-        if (role === "guest" || !token) {
-            const choice = await showAppDialog({
-                title: "Vui lòng đăng nhập",
-                message: "Bạn cần đăng nhập trước khi tìm kiếm và đặt khách sạn.",
-                actions: [
-                    { label: "Đăng nhập", value: "login", primary: true },
-                    { label: "Để sau", value: "cancel" },
-                ],
-            });
-            if (choice === "login") {
-                document.querySelector(".auth__btn-login")?.click();
-            }
-            return;
-        }
-
         if(locationInput.value !== "" && (count.singleRoom !== 0 || count.coupleRoom !== 0)) {
 
             const searchInfoData = {

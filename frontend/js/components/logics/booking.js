@@ -1,6 +1,7 @@
 import { navigation } from "../../router/router.js";
 import { bookingRoom, getReviewsHotel } from "../../services/hotel.js";
 import { formatDateToDisplay, HotelService, safeJsonParse, resolveMediaUrl } from "../../utils/utils.js";
+import { showAppDialog } from "../../utils/app-dialog.js";
 
 let isShowRoomDetailInit = false;
 
@@ -15,20 +16,40 @@ function renderHotelGenaral(hotelName, price, address, phoneNumber){
 function renderBookingGallery(hotel, rooms) {
     const mainImg = document.querySelector(".booking__picture-main-img img");
     const thumbs = document.querySelectorAll(".booking__picture-add-img img");
-    if (!mainImg || thumbs.length === 0) return;
+    if (!mainImg || thumbs.length === 0) {
+        console.debug('renderBookingGallery: missing mainImg or thumbs', { mainImgExists: !!mainImg, thumbsCount: thumbs.length });
+        return;
+    }
 
-    const mainSrc = resolveMediaUrl(hotel.imageUrl) || "assets/images/example-room.jpg";
+    const mainSrc = resolveMediaUrl(hotel && hotel.imageUrl) || "assets/images/example-room.jpg";
     mainImg.src = mainSrc;
     mainImg.alt = hotel.locationName || hotel.address || "Hình phòng";
+    mainImg.onerror = function() { this.onerror = null; this.src = 'assets/images/example-room.jpg'; };
 
-    const roomImages = rooms
-        .map(room => resolveMediaUrl(room.roomIMG))
-        .filter(src => src)
-        .slice(0, thumbs.length);
+    const roomImages = (rooms || [])
+        .map(room => resolveMediaUrl(room && room.roomIMG))
+        .filter(src => src);
 
+    console.debug('renderBookingGallery', { mainSrc, roomImages, thumbsCount: thumbs.length });
+
+    // If there are no room images, fall back to hotel image for all thumbs
+    if (roomImages.length === 0) {
+        thumbs.forEach((thumb, index) => {
+            thumb.src = mainSrc;
+            thumb.alt = `Hình phòng ${index + 1}`;
+        });
+        return;
+    }
+
+    // Cycle room images to fill all thumb slots (e.g., 3 room images -> fill 6 thumbs by repeating)
     thumbs.forEach((thumb, index) => {
-        thumb.src = roomImages[index] || mainSrc;
+        const src = roomImages[index % roomImages.length] || mainSrc;
+        thumb.src = src;
         thumb.alt = `Hình phòng ${index + 1}`;
+        thumb.onerror = function() { this.onerror = null; this.src = mainSrc; };
+        // make thumbnails clickable to swap main image
+        thumb.style.cursor = 'pointer';
+        thumb.onclick = () => { mainImg.src = src; };
     });
 }
 
@@ -441,15 +462,39 @@ function handleBooking() {
             nextButton.innerText = "Thanh toán";
             nextButton.style.display = "block";
             backButton.style.display = "block"
-            nextButton.onclick = () => {
+            nextButton.onclick = async () => {
+                const role = localStorage.getItem("role");
+                const token = localStorage.getItem("token");
+
+                if (role === "guest" || !token) {
+                    const choice = await showAppDialog({
+                        title: "Vui lòng đăng nhập",
+                        message: "Bạn cần đăng nhập trước khi thanh toán.",
+                        actions: [
+                            { label: "Đăng nhập", value: "login", primary: true },
+                            { label: "Hủy", value: "cancel" },
+                        ],
+                    });
+
+                    showNotification.classList.remove("show", "error", "warning", "success", "qrcode");
+                    notificationText.innerText   = "";
+                    notificationTitle.innerText  = "";
+                    modal.classList.remove("active");
+
+                    if (choice === "login") {
+                        document.querySelector(".auth__btn-login")?.click();
+                    }
+                    return;
+                }
+
                 showNotification.classList.remove("error", "warning", "success", "qrcode");
                 showNotification.classList.add("qrcode");
                 notificationTitle.innerText = "QR Code";
                 notificationText.innerHTML = `
                     <img style="width: 100%;" src="./assets/images/qrcode.png" atl="QR pyament">
-                `
-                backButton.style.display = "none"
-                nextButton.style.display = "none"
+                `;
+                backButton.style.display = "none";
+                nextButton.style.display = "none";
                 
                 if(showNotification.classList.contains("qrcode")) {
                     setTimeout(() => {
@@ -460,17 +505,22 @@ function handleBooking() {
                             notificationTitle.innerText = "Đăt phòng thành công";
                             notificationText.innerText = "Cảm ơn bạn đã đặt phòng của chúng tôi";
 
-
                             const searchInfoData = safeJsonParse(localStorage.getItem("searchInfoData"), {});
                             const currentUser = safeJsonParse(localStorage.getItem("userData"), {});
+                            const userId = currentUser?.id;
+                            if (!userId) {
+                                console.error("Payment blocked: missing logged-in user data.");
+                                return;
+                            }
+
                             const bookingData  = {
                                 checkInDate: searchInfoData.checkInDate,
                                 checkOutDate: searchInfoData.checkOutDate,
                                 bookingPrice: confirmDetail.totalPrice,
-                                userId: currentUser.id,
+                                userId,
                                 hotelBranchId : Number(localStorage.getItem("choicedHotelId")),
                                 roomIds: [...confirmDetail.singleRoomsId, ...confirmDetail.doubleRoomsId]
-                            }
+                            };
 
                             bookingRoom(bookingData);
                         }
